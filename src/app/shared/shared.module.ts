@@ -36,6 +36,7 @@ import { CloseBillDialogComponent } from './components/close-bill-dialog/close-b
 import { CreateBillDialogComponent } from './components/create-bill-dialog/create-bill-dialog.component';
 import { MapSelectedChildrenPipe } from './pipes/map-selected-children.pipe';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCardModule } from '@angular/material/card';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -78,6 +79,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatDatepickerModule,
     RouterModule,
     MatListModule,
+    MatCardModule,
     MatButtonModule,
     MatExpansionModule,
     MatRadioModule,

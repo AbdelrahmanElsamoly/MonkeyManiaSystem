@@ -10,22 +10,44 @@ import { SharedService } from '../../shared.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
+interface Child {
+  id: number;
+  name: string;
+}
+
+interface PhoneNumber {
+  phone_number: { value: string };
+  relationship: string;
+}
+
 @Component({
   selector: 'app-create-bill-dialog',
   templateUrl: './create-bill-dialog.component.html',
   styleUrls: ['./create-bill-dialog.component.scss'],
 })
 export class CreateBillDialogComponent implements OnInit {
+  // Form Controls
   childrenControl = new FormControl<number[]>([]);
-  itemList: any[] = [];
-  filteredChildren: any[] = [];
-  selectedChildIds: number[] = [];
-  searchValue: string = '';
-  label = 'الأطفال';
-  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-  branch = JSON.parse(localStorage.getItem('branch') || '{}');
-
   form!: FormGroup;
+
+  // Data Properties
+  itemList: Child[] = [];
+  filteredChildren: Child[] = [];
+  selectedChildIds: number[] = [];
+  searchValue = '';
+  label = 'الأطفال';
+
+  // User Info
+  private readonly userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  private readonly branch = JSON.parse(localStorage.getItem('branch') || '{}');
+
+  // Relationship Options
+  readonly relationshipOptions = [
+    { value: 'father', label: 'أب' },
+    { value: 'mother', label: 'أم' },
+    { value: 'sibling', label: 'أخ / أخت' },
+    { value: 'other', label: 'أخرى' },
+  ];
 
   constructor(
     private sharedService: SharedService,
@@ -35,107 +57,136 @@ export class CreateBillDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.gettingAllChild();
     this.initializeForm();
-
-    this.childrenControl.valueChanges.subscribe((value: number[] | null) => {
-      this.selectedChildIds = value || [];
-    });
+    this.loadChildren();
+    this.setupChildrenControlSubscription();
   }
 
-  initializeForm() {
+  // Form Initialization
+  private initializeForm(): void {
     this.form = this.fb.group({
       new_children: this.fb.array([]),
     });
   }
 
+  private setupChildrenControlSubscription(): void {
+    this.childrenControl.valueChanges.subscribe((value: number[] | null) => {
+      this.selectedChildIds = value || [];
+    });
+  }
+
+  // Getters
   get newChildren(): FormArray {
     return this.form.get('new_children') as FormArray;
   }
 
-  addNewChild() {
-    const childForm = this.fb.group({
-      name: [''],
-      birth_date: [''],
-      child_phone_numbers_set: this.fb.array([
-        this.fb.group({
-          phone_number: this.fb.group({
-            value: [''],
-          }),
-          relationship: [''],
-        }),
-      ]),
+  // Data Loading
+  private loadChildren(): void {
+    this.sharedService.getAllNonActiveChildren().subscribe({
+      next: (res: any) => {
+        this.itemList = res;
+        this.filteredChildren = [...res];
+      },
+      error: (err) => {
+        console.error('Failed to load children:', err);
+        this.toaster.error('فشل في تحميل بيانات الأطفال');
+      },
     });
+  }
 
+  // Child Management
+  addNewChild(): void {
+    const childForm = this.createChildFormGroup();
     this.newChildren.push(childForm);
   }
 
-  removeNewChild(index: number) {
-    this.newChildren.removeAt(index);
+  removeNewChild(index: number): void {
+    if (index >= 0 && index < this.newChildren.length) {
+      this.newChildren.removeAt(index);
+    }
   }
 
-  addPhoneNumber(childIndex: number) {
-    const phoneNumbers = this.newChildren
-      .at(childIndex)
-      .get('child_phone_numbers_set') as FormArray;
-
-    phoneNumbers.push(this.createPhoneNumberGroup());
+  private createChildFormGroup(): FormGroup {
+    return this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      birth_date: ['', Validators.required],
+      child_phone_numbers_set: this.fb.array([this.createPhoneNumberGroup()]),
+    });
   }
 
-  removePhoneNumber(childIndex: number, phoneIndex: number) {
-    const phoneNumbers = this.newChildren
-      .at(childIndex)
-      .get('child_phone_numbers_set') as FormArray;
-
-    phoneNumbers.removeAt(phoneIndex);
+  // Phone Number Management
+  addPhoneNumber(childIndex: number): void {
+    const phoneNumbers = this.getPhoneNumbersArray(childIndex);
+    if (phoneNumbers) {
+      phoneNumbers.push(this.createPhoneNumberGroup());
+    }
   }
 
-  createPhoneNumberGroup(): FormGroup {
+  removePhoneNumber(childIndex: number, phoneIndex: number): void {
+    const phoneNumbers = this.getPhoneNumbersArray(childIndex);
+    if (phoneNumbers && phoneNumbers.length > 1) {
+      phoneNumbers.removeAt(phoneIndex);
+    }
+  }
+
+  private createPhoneNumberGroup(): FormGroup {
     return this.fb.group({
       phone_number: this.fb.group({
-        value: ['', Validators.required],
+        value: [
+          '',
+          [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)],
+        ],
       }),
       relationship: ['', Validators.required],
     });
   }
 
-  gettingAllChild() {
-    this.sharedService.getAllNonActiveChildren().subscribe((res: any) => {
-      this.itemList = res;
-      this.filteredChildren = res;
-    });
+  getPhoneNumbersArray(childIndex: number): FormArray | null {
+    const childGroup = this.newChildren.at(childIndex);
+    return childGroup?.get('child_phone_numbers_set') as FormArray;
   }
 
+  getPhoneControls(childIndex: number): FormGroup[] {
+    const phoneArray = this.getPhoneNumbersArray(childIndex);
+    return (phoneArray?.controls as FormGroup[]) || [];
+  }
+
+  // Child Selection Logic
   getChildNameById(id: number): string {
     const child = this.itemList.find((c) => c.id === id);
-    return child ? child.name : '';
+    return child?.name || '';
   }
 
-  onFilterChange(search: string) {
+  onFilterChange(search: string): void {
     this.searchValue = search;
     this.filteredChildren = this.itemList.filter((child) =>
       child.name.toLowerCase().includes(search.toLowerCase())
     );
   }
 
-  clearFilter() {
+  clearFilter(): void {
     this.searchValue = '';
     this.filteredChildren = [...this.itemList];
   }
 
   isAllSelected(): boolean {
-    return this.filteredChildren.every((child) =>
-      this.selectedChildIds.includes(child.id)
+    return (
+      this.filteredChildren.length > 0 &&
+      this.filteredChildren.every((child) =>
+        this.selectedChildIds.includes(child.id)
+      )
     );
   }
 
-  toggleSelectAll() {
+  toggleSelectAll(): void {
     if (this.isAllSelected()) {
+      // Deselect all filtered children
       const remaining = this.selectedChildIds.filter(
         (id) => !this.filteredChildren.some((c) => c.id === id)
       );
       this.childrenControl.setValue(remaining);
     } else {
+      // Select all filtered children
       const allIds = [
         ...new Set([
           ...this.selectedChildIds,
@@ -146,8 +197,8 @@ export class CreateBillDialogComponent implements OnInit {
     }
   }
 
-  childClicked(id: number) {
-    const current = this.childrenControl.value || [];
+  childClicked(id: number): void {
+    const current = this.selectedChildIds;
     if (current.includes(id)) {
       this.childrenControl.setValue(current.filter((i) => i !== id));
     } else {
@@ -155,25 +206,43 @@ export class CreateBillDialogComponent implements OnInit {
     }
   }
 
-  removeChild(id: number) {
+  removeChild(id: number): void {
     const updated = this.selectedChildIds.filter((i) => i !== id);
     this.childrenControl.setValue(updated);
   }
 
-  getPhoneControls(group: FormGroup): FormGroup[] {
-    const formArray = group.get('child_phone_numbers_set') as FormArray;
-    return (formArray?.controls as FormGroup[]) || [];
+  // Form Validation
+  private validateForm(): boolean {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.toaster.error('يرجى تصحيح الأخطاء في النموذج');
+      return false;
+    }
+
+    if (this.selectedChildIds.length === 0 && this.newChildren.length === 0) {
+      this.toaster.error('يرجى اختيار طفل واحد على الأقل أو إنشاء طفل جديد');
+      return false;
+    }
+
+    return true;
   }
 
-  onClose(): void {
-    this.dialogRef.close();
+  // Payload Generation
+  private getPayload() {
+    const children =
+      this.selectedChildIds.length > 0 ? this.selectedChildIds : undefined;
+    const newChildren = this.buildNewChildrenPayload();
+    const branchId = this.getBranchId();
+
+    return {
+      ...(children && { children }),
+      ...(newChildren.length > 0 && { new_children: newChildren }),
+      branch: branchId,
+    };
   }
 
-  // ✅ Get final payload with full nested structure
-  getPayload() {
-    const children = this.childrenControl.value;
-
-    const new_children = this.newChildren.controls.map((childGroup) => {
+  private buildNewChildrenPayload() {
+    return this.newChildren.controls.map((childGroup) => {
       const { name, birth_date } = childGroup.value;
       const phoneArray = childGroup.get('child_phone_numbers_set') as FormArray;
 
@@ -181,30 +250,26 @@ export class CreateBillDialogComponent implements OnInit {
         name,
         birth_date,
         child_phone_numbers_set: phoneArray.controls.map((phoneGroup) => ({
-          phone_number: { value: phoneGroup.get('phone_number.value')?.value },
+          phone_number: {
+            value: phoneGroup.get('phone_number.value')?.value,
+          },
           relationship: phoneGroup.get('relationship')?.value,
         })),
       };
     });
-
-    let branch;
-    if (this.userInfo.branch_id == null) {
-      branch = this.branch.id;
-    } else {
-      branch = this.userInfo.branch_id;
-    }
-
-    return {
-      ...(children?.length ? { children } : {}),
-      ...(new_children.length ? { new_children } : {}),
-      branch,
-    };
   }
 
-  // ✅ Final submission with service call
+  private getBranchId(): number {
+    return this.userInfo.branch_id ?? this.branch.id;
+  }
+
+  // Dialog Actions
+  onClose(): void {
+    this.dialogRef.close();
+  }
+
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (!this.validateForm()) {
       return;
     }
 
@@ -213,12 +278,36 @@ export class CreateBillDialogComponent implements OnInit {
 
     this.sharedService.createBill(payload).subscribe({
       next: (res: any) => {
-        this.toaster.success(res.message);
+        this.toaster.success(res.message || 'تم إنشاء الفاتورة بنجاح');
         this.dialogRef.close(true);
       },
       error: (err) => {
         console.error('Failed to create bill:', err);
+        this.toaster.error('فشل في إنشاء الفاتورة');
       },
     });
+  }
+
+  // Utility Methods
+  getErrorMessage(controlName: string, childIndex?: number): string {
+    let control;
+
+    if (childIndex !== undefined) {
+      control = this.newChildren.at(childIndex).get(controlName);
+    } else {
+      control = this.form.get(controlName);
+    }
+
+    if (control?.hasError('required')) {
+      return 'هذا الحقل مطلوب';
+    }
+    if (control?.hasError('minlength')) {
+      return 'يجب أن يكون النص أطول من حرفين';
+    }
+    if (control?.hasError('pattern')) {
+      return 'تنسيق غير صحيح';
+    }
+
+    return '';
   }
 }

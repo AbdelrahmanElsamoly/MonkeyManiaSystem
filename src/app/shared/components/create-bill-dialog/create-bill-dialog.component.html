@@ -1,7 +1,7 @@
 <div class="dialog-container p-3">
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="dialog-header m-0">🧒 انشاء فاتورة</h2>
+    <h2 class="dialog-header m-0">🧒 {{ "CREATE_BILL" | translate }}</h2>
     <button mat-icon-button color="warn" (click)="onClose()">
       <mat-icon>close</mat-icon>
     </button>
@@ -9,47 +9,53 @@
 
   <!-- Body -->
   <div class="dialog-body">
-    <!-- Existing Multi-select Child List -->
+    <!-- Existing Children Multi-select -->
     <mat-form-field style="width: 100%" appearance="outline">
       <mat-label>{{ label }}</mat-label>
 
-      <div style="position: absolute">
-        {{ getChildNameById(selectedChildIds[0]) || "" }}
-        <span
-          *ngIf="selectedChildIds.length > 1"
-          class="example-additional-selection"
-        >
-          (+{{ selectedChildIds.length - 1 }}
-          {{ selectedChildIds.length === 2 ? "other" : "others" }})
-        </span>
-      </div>
-
       <mat-select [formControl]="childrenControl" multiple>
-        <div style="margin-bottom: 5px">
-          <mat-chip
-            *ngFor="let id of selectedChildIds"
-            style="margin: 5px"
-            [removable]="true"
-            (removed)="removeChild(id)"
+        <!-- Custom trigger to show selected children -->
+        <mat-select-trigger>
+          <div
+            *ngIf="selectedChildIds.length === 0; else selectedContent"
+            class="placeholder-text"
           >
-            {{ getChildNameById(id) }}
-            <mat-icon matChipRemove>cancel</mat-icon>
-          </mat-chip>
-        </div>
+            {{ "CHOOSE_CHILDREN_PLACEHOLDER" | translate }}
+          </div>
+          <ng-template #selectedContent>
+            <div class="selected-children-display">
+              <mat-chip
+                *ngFor="let id of selectedChildIds.slice(0, 2)"
+                class="selected-chip"
+                [removable]="true"
+                (removed)="removeChild(id)"
+              >
+                {{ getChildNameById(id) }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <span
+                *ngIf="selectedChildIds.length > 2"
+                class="additional-count"
+              >
+                +{{ selectedChildIds.length - 2 }}
+                {{ "MORE_SELECTED" | translate }}
+              </span>
+            </div>
+          </ng-template>
+        </mat-select-trigger>
 
-        <mat-select-trigger></mat-select-trigger>
-
+        <!-- Search Field -->
         <mat-form-field style="width: 100%" appearance="outline">
-          <mat-label>بحث عن طفل</mat-label>
+          <mat-label>🔍 {{ "SEARCH_CHILD" | translate }}</mat-label>
           <input
             matInput
             [(ngModel)]="searchValue"
             (ngModelChange)="onFilterChange($event)"
-            placeholder="بحث..."
+            [placeholder]="'SEARCH_CHILD' | translate"
           />
           <button
             *ngIf="searchValue"
-            style="position: absolute; right: -10px; top: 5px"
+            style="position: absolute; left: -10px; top: 5px"
             mat-icon-button
             (click)="clearFilter()"
           >
@@ -57,72 +63,181 @@
           </button>
         </mat-form-field>
 
-        <!-- Removed "Select All" checkbox here -->
-
+        <!-- Children Options -->
         <mat-option *ngFor="let child of filteredChildren" [value]="child.id">
           {{ child.name }}
         </mat-option>
 
-        <div *ngIf="filteredChildren.length === 0" style="padding: 5px 10px">
-          لا توجد نتائج!
+        <!-- No Results Message -->
+        <div
+          *ngIf="filteredChildren.length === 0"
+          style="padding: 16px; text-align: center; color: #666"
+        >
+          😔 {{ "NO_RESULTS" | translate }}
         </div>
       </mat-select>
     </mat-form-field>
 
     <!-- Add New Child Button -->
-    <button mat-raised-button color="primary" (click)="addNewChild()">
-      + إنشاء طفل جديد
-    </button>
+    <div class="mb-3">
+      <button mat-raised-button color="primary" (click)="addNewChild()">
+        <mat-icon>add</mat-icon>
+        👶 {{ "CREATE_NEW_CHILD" | translate }}
+      </button>
+    </div>
 
     <!-- Dynamic Child Form Array -->
-    <form [formGroup]="form">
+    <form [formGroup]="form" *ngIf="newChildren.length > 0">
       <div formArrayName="new_children">
         <div
           *ngFor="let group of newChildren.controls; let i = index"
           [formGroupName]="i"
-          class="p-3 border rounded mt-3"
+          class="child-card p-3 border rounded mb-3"
         >
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>اسم الطفل</mat-label>
-            <input matInput [formControlName]="'name'" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>تاريخ الميلاد</mat-label>
-            <input matInput [formControlName]="'birth_date'" type="date" />
-          </mat-form-field>
-
-          <!-- Phone Numbers -->
-          <div formArrayName="child_phone_numbers_set">
-            <div [formGroupName]="i">
-              <div [formGroupName]="'phone_number'">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>رقم الهاتف</mat-label>
-                  <input matInput formControlName="value" />
-                </mat-form-field>
-              </div>
-
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>العلاقة</mat-label>
-                <mat-select formControlName="relationship">
-                  <mat-option value="father">أب</mat-option>
-                  <mat-option value="mother">أم</mat-option>
-                  <mat-option value="sibling">أخ / أخت</mat-option>
-                  <mat-option value="other">أخرى</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">👶 {{ "NEW_CHILD" | translate }} #{{ i + 1 }}</h4>
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeNewChild(i)"
+              [attr.aria-label]="('REMOVE_CHILD' | translate) + ' ' + (i + 1)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
 
-          <button
-            mat-button
-            color="warn"
-            type="button"
-            (click)="removeNewChild(i)"
-            class="mt-2"
-          >
-            🗑️ حذف الطفل
-          </button>
+          <div class="child-content">
+            <!-- Child Name -->
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>📝 {{ "CHILD_NAME" | translate }} *</mat-label>
+              <input matInput formControlName="name" />
+              <mat-error
+                *ngIf="newChildren.at(i).get('name')?.hasError('required')"
+              >
+                {{ "CHILD_NAME_REQUIRED" | translate }}
+              </mat-error>
+              <mat-error
+                *ngIf="newChildren.at(i).get('name')?.hasError('minlength')"
+              >
+                {{ "NAME_TOO_SHORT" | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Birth Date -->
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>🎂 {{ "BIRTH_DATE" | translate }} *</mat-label>
+              <input matInput formControlName="birth_date" type="date" />
+              <mat-error
+                *ngIf="
+                  newChildren.at(i).get('birth_date')?.hasError('required')
+                "
+              >
+                {{ "BIRTH_DATE_REQUIRED" | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Phone Numbers Section -->
+            <div formArrayName="child_phone_numbers_set">
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <h4 class="mb-0">
+                  📱 {{ "PHONE_NUMBERS_SECTION" | translate }}
+                </h4>
+                <button
+                  mat-icon-button
+                  color="primary"
+                  type="button"
+                  (click)="addPhoneNumber(i)"
+                  [attr.aria-label]="
+                    ('ADD_PHONE_NUMBER' | translate) +
+                    ' ' +
+                    ('CHILD_NAME' | translate) +
+                    ' ' +
+                    (i + 1)
+                  "
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <div
+                *ngFor="let phoneGroup of getPhoneControls(i); let j = index"
+                [formGroupName]="j"
+                class="phone-group mb-3 p-3 border rounded"
+              >
+                <div
+                  class="d-flex justify-content-between align-items-start mb-2"
+                >
+                  <h5 class="mb-0">
+                    ☎️ {{ "PHONE_NUMBER" | translate }} {{ j + 1 }}
+                  </h5>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    type="button"
+                    (click)="removePhoneNumber(i, j)"
+                    [disabled]="getPhoneControls(i).length === 1"
+                    [attr.aria-label]="
+                      ('REMOVE_PHONE_NUMBER' | translate) + ' ' + (j + 1)
+                    "
+                  >
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+
+                <!-- Phone Number Value -->
+                <div formGroupName="phone_number">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>☎️ {{ "PHONE_NUMBER" | translate }} *</mat-label>
+                    <input
+                      matInput
+                      formControlName="value"
+                      [placeholder]="'PHONE_EXAMPLE' | translate"
+                      dir="ltr"
+                    />
+                    <mat-error
+                      *ngIf="
+                        phoneGroup
+                          .get('phone_number.value')
+                          ?.hasError('required')
+                      "
+                    >
+                      {{ "PHONE_NUMBER_REQUIRED" | translate }}
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        phoneGroup
+                          .get('phone_number.value')
+                          ?.hasError('pattern')
+                      "
+                    >
+                      {{ "INVALID_PHONE_FORMAT" | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <!-- Relationship -->
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>👥 {{ "RELATIONSHIP" | translate }} *</mat-label>
+                  <mat-select formControlName="relationship">
+                    <mat-option
+                      *ngFor="let option of relationshipOptions"
+                      [value]="option.value"
+                    >
+                      {{ option.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="phoneGroup.get('relationship')?.hasError('required')"
+                  >
+                    {{ "RELATIONSHIP_REQUIRED" | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </form>
@@ -133,7 +248,16 @@
     align="end"
     class="d-flex justify-content-between align-items-center m-3 dialog-footer"
   >
-    <button mat-button color="warn" (click)="onClose()">إلغاء</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()">حفظ</button>
+    <button mat-button color="warn" (click)="onClose()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="form.invalid && newChildren.length > 0"
+    >
+      {{ "SAVE" | translate }}
+    </button>
   </mat-dialog-actions>
 </div>
