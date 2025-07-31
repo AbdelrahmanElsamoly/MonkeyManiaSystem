@@ -1,0 +1,74 @@
+@import "../../../shared/styles/colors.scss";
+
+::ng-deep .mat-mdc-dialog-surface {
+  border-radius: 12px !important;
+  background: $primary-color !important;
+}
+
+.dialog-header {
+  font-family: "Noto Kufi Arabic", sans-serif !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $font-color !important;
+}
+
+.mat-icon {
+  color: $font-color !important;
+}
+
+.dialog-body {
+  font-family: "Noto Kufi Arabic", sans-serif !important;
+  display: flex;
+  color: $font-color !important;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-top: 1rem;
+
+  .form-label {
+    font-weight: 600;
+    color: $font-color;
+  }
+
+  .form-control,
+  .form-select {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+}
+
+.dialog-footer {
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+
+  button {
+    border-radius: 8px;
+    min-width: 90px;
+    font-weight: 500;
+  }
+}
+
+// ::ng-deep .mdc-notched-outline {
+//   background-color: white;
+// }
+.material-input {
+  background-color: white !important; /* White background */
+  color: black !important; /* Black text */
+  padding: 5px 20px;
+  border-radius: 8px;
+}
+
+.material-input::placeholder {
+  color: #555 !important; /* Dark gray placeholder */
+}
+
+.mat-form-field {
+  background-color: white; /* Optional: apply to the container */
+}
+
+.mat-form-field-outline {
+  border-color: #ccc; /* Optional: light gray outline */
+}

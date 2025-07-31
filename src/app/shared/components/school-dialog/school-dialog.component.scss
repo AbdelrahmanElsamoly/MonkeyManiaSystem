@@ -1,0 +1,52 @@
+@import "../../../shared/styles/colors.scss";
+
+::ng-deep .mat-mdc-dialog-surface {
+  border-radius: 12px !important;
+  background: $primary-color !important;
+}
+.dialog-header {
+  font-family: "Noto Kufi Arabic", sans-serif !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $font-color !important;
+}
+.mat-icon {
+  color: $font-color !important;
+}
+
+.dialog-body {
+  font-family: "Noto Kufi Arabic", sans-serif !important;
+
+  display: flex;
+  color: $font-color !important;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-top: 1rem;
+
+  .form-field {
+    width: 100%;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    input,
+    textarea {
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+  }
+}
+
+.dialog-footer {
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+
+  button {
+    border-radius: 8px;
+    min-width: 90px;
+    font-weight: 500;
+  }
+}

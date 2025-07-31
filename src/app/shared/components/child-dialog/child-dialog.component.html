@@ -1,0 +1,149 @@
+<div class="dialog-container p-3">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="dialog-header m-0">{{ "ADD_CHILD" | translate }} 🧒</h2>
+    <button mat-icon-button color="warn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Dialog Body -->
+  <div class="dialog-body" [formGroup]="childForm">
+    <!-- Row: Name & Birth Date -->
+    <div class="row g-3">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ "CHILD_NAME" | translate }}</mat-label>
+          <input
+            matInput
+            placeholder="{{ 'CHILD_NAME' | translate }}"
+            formControlName="name"
+          />
+          <mat-error *ngIf="childForm.get('name')?.hasError('required')">
+            {{ "FIELD_REQUIRED" | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ "BIRTH_DATE" | translate }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="birth_date"
+            placeholder="{{ 'BIRTH_DATE' | translate }}"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="childForm.get('birth_date')?.hasError('required')">
+            {{ "FIELD_REQUIRED" | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <mat-form-field appearance="outline" class="w-100 mt-3">
+      <mat-label>{{ "ADDRESS" | translate }}</mat-label>
+      <input
+        matInput
+        placeholder="{{ 'ADDRESS' | translate }}"
+        formControlName="address"
+      />
+      <mat-error *ngIf="childForm.get('address')?.hasError('required')">
+        {{ "FIELD_REQUIRED" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Notes -->
+    <mat-form-field appearance="outline" class="w-100 mt-3">
+      <mat-label>{{ "NOTES" | translate }}</mat-label>
+      <textarea matInput formControlName="notes" rows="2"></textarea>
+    </mat-form-field>
+
+    <!-- School Search -->
+    <mat-form-field appearance="outline" class="w-100 mt-3">
+      <mat-label>{{ "SCHOOLS" | translate }}</mat-label>
+      <input
+        matInput
+        placeholder="{{ 'SEARCH_SCHOOL' | translate }}"
+        [matAutocomplete]="auto"
+        formControlName="school"
+        (input)="filterSchools($event)"
+      />
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displaySchool">
+        <mat-option *ngFor="let s of filteredSchools" [value]="s">
+          {{ s.name }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="childForm.get('school')?.hasError('required')">
+        {{ "FIELD_REQUIRED" | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Phone Numbers -->
+    <div class="mt-4">
+      <h6 class="mb-2">{{ "PHONE_NUMBERS" | translate }}</h6>
+      <div formArrayName="child_phone_numbers_set">
+        <div
+          *ngFor="let phone of phoneNumbers.controls; let i = index"
+          [formGroupName]="i"
+          class="d-flex gap-2 align-items-center mb-2"
+        >
+          <mat-form-field appearance="outline" class="flex-grow-1">
+            <mat-label>{{ "PHONE_NUMBER" | translate }}</mat-label>
+            <input
+              matInput
+              placeholder="{{ 'PHONE_NUMBER' | translate }}"
+              formControlName="value"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>{{ "RELATIONSHIP" | translate }}</mat-label>
+            <mat-select formControlName="relationship">
+              <mat-option value="father">{{ "FATHER" | translate }}</mat-option>
+              <mat-option value="mother">{{ "MOTHER" | translate }}</mat-option>
+              <mat-option value="sibling">{{
+                "SIBLING" | translate
+              }}</mat-option>
+              <mat-option value="other">{{ "OTHER" | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removePhone(i)"
+            *ngIf="phoneNumbers.length > 1"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <button mat-stroked-button color="primary" (click)="addPhone()">
+        + {{ "ADD_PHONE" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-button color="warn" (click)="onClose()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="childForm.invalid"
+    >
+      {{ "SUBMIT" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

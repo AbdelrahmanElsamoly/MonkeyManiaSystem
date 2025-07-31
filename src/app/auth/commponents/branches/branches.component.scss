@@ -1,0 +1,89 @@
+@import "../../../shared/styles/colors.scss";
+
+.branch-container {
+  color: $font-color;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  min-height: 100vh;
+  width: 90%; /* Mobile default width */
+  padding: 16px;
+  box-sizing: border-box;
+
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+  .radio-group {
+    width: 100%;
+  }
+}
+
+.branch-item {
+  display: flex;
+  align-items: center;
+  background-color: $secondary-color;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.branch-item.mat-radio-checked {
+  border: 2px solid #3f51b5; /* Highlight selected */
+  background-color: #f0f4ff;
+}
+
+.branch-details {
+  color: $font-color;
+}
+
+.confi-btn {
+  background-color: $button-color;
+  color: $font-color;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  border: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* ✅ Disabled Button Style */
+.confi-btn:disabled {
+  background-color: lighten($button-color, 25%);
+  color: rgba(0, 0, 0, 0.4);
+  cursor: not-allowed;
+}
+
+/* ✅ Tablet Screens (min-width: 768px) */
+@media (min-width: 768px) {
+  .branch-container {
+    width: 70%;
+    .header .title {
+      font-size: 24px;
+    }
+    .confi-btn {
+      font-size: 18px;
+      padding: 10px 25px;
+    }
+  }
+}
+
+/* ✅ Desktop Screens (min-width: 992px) */
+@media (min-width: 992px) {
+  .branch-container {
+    width: 50%;
+  }
+}

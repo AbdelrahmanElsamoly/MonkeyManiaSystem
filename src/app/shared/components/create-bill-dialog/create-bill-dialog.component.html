@@ -1,0 +1,139 @@
+<div class="dialog-container p-3">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="dialog-header m-0">🧒 انشاء فاتورة</h2>
+    <button mat-icon-button color="warn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="dialog-body">
+    <!-- Existing Multi-select Child List -->
+    <mat-form-field style="width: 100%" appearance="outline">
+      <mat-label>{{ label }}</mat-label>
+
+      <div style="position: absolute">
+        {{ getChildNameById(selectedChildIds[0]) || "" }}
+        <span
+          *ngIf="selectedChildIds.length > 1"
+          class="example-additional-selection"
+        >
+          (+{{ selectedChildIds.length - 1 }}
+          {{ selectedChildIds.length === 2 ? "other" : "others" }})
+        </span>
+      </div>
+
+      <mat-select [formControl]="childrenControl" multiple>
+        <div style="margin-bottom: 5px">
+          <mat-chip
+            *ngFor="let id of selectedChildIds"
+            style="margin: 5px"
+            [removable]="true"
+            (removed)="removeChild(id)"
+          >
+            {{ getChildNameById(id) }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </div>
+
+        <mat-select-trigger></mat-select-trigger>
+
+        <mat-form-field style="width: 100%" appearance="outline">
+          <mat-label>بحث عن طفل</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchValue"
+            (ngModelChange)="onFilterChange($event)"
+            placeholder="بحث..."
+          />
+          <button
+            *ngIf="searchValue"
+            style="position: absolute; right: -10px; top: 5px"
+            mat-icon-button
+            (click)="clearFilter()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Removed "Select All" checkbox here -->
+
+        <mat-option *ngFor="let child of filteredChildren" [value]="child.id">
+          {{ child.name }}
+        </mat-option>
+
+        <div *ngIf="filteredChildren.length === 0" style="padding: 5px 10px">
+          لا توجد نتائج!
+        </div>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Add New Child Button -->
+    <button mat-raised-button color="primary" (click)="addNewChild()">
+      + إنشاء طفل جديد
+    </button>
+
+    <!-- Dynamic Child Form Array -->
+    <form [formGroup]="form">
+      <div formArrayName="new_children">
+        <div
+          *ngFor="let group of newChildren.controls; let i = index"
+          [formGroupName]="i"
+          class="p-3 border rounded mt-3"
+        >
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>اسم الطفل</mat-label>
+            <input matInput [formControlName]="'name'" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>تاريخ الميلاد</mat-label>
+            <input matInput [formControlName]="'birth_date'" type="date" />
+          </mat-form-field>
+
+          <!-- Phone Numbers -->
+          <div formArrayName="child_phone_numbers_set">
+            <div [formGroupName]="i">
+              <div [formGroupName]="'phone_number'">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>رقم الهاتف</mat-label>
+                  <input matInput formControlName="value" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>العلاقة</mat-label>
+                <mat-select formControlName="relationship">
+                  <mat-option value="father">أب</mat-option>
+                  <mat-option value="mother">أم</mat-option>
+                  <mat-option value="sibling">أخ / أخت</mat-option>
+                  <mat-option value="other">أخرى</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <button
+            mat-button
+            color="warn"
+            type="button"
+            (click)="removeNewChild(i)"
+            class="mt-2"
+          >
+            🗑️ حذف الطفل
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-button color="warn" (click)="onClose()">إلغاء</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">حفظ</button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,158 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div
+    class="dialog-header-wrapper d-flex justify-content-between align-items-center"
+  >
+    <h2 mat-dialog-title class="dialog-header">
+      {{
+        type === "general"
+          ? ("GENERAL_EXPENSE" | translate)
+          : ("MATERIAL_EXPENSE" | translate)
+      }}
+      💰
+    </h2>
+    <button mat-icon-button class="close-btn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <hr />
+
+  <!-- Body -->
+  <mat-dialog-content class="dialog-body">
+    <form #expenseForm="ngForm">
+      <!-- General Expense: Name -->
+      <div *ngIf="type === 'general'" class="mb-3">
+        <label class="form-label">{{ "NAME" | translate }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="expense.name"
+          name="name"
+          required
+          #name="ngModel"
+        />
+        <div *ngIf="name.invalid && name.touched" class="my-1 text-danger">
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Material Expense: Material -->
+      <div *ngIf="type === 'material'" class="mb-3">
+        <label class="form-label">{{ "MATERIAL" | translate }}</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            class="material-input"
+            type="text"
+            [(ngModel)]="expense.material"
+            [matAutocomplete]="auto"
+            (input)="filterMaterials($event)"
+            name="material"
+            required
+            #material="ngModel"
+          />
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            (optionSelected)="selectMaterial($event)"
+          >
+            <mat-option
+              *ngFor="let mat of filteredMaterials"
+              [value]="mat.name"
+            >
+              <div class="material-option">
+                <strong>{{ mat.name }}</strong>
+                <small class="d-block">
+                  {{ mat.measure_unit }} | {{ mat.available_units }} units
+                </small>
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <div
+          *ngIf="material.invalid && material.touched"
+          class="my-1 text-danger"
+        >
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Branch Dropdown (General Expense only) -->
+      <div *ngIf="type === 'general'" class="mb-3">
+        <label class="form-label">{{ "BRANCH" | translate }}</label>
+        <select
+          class="form-select"
+          [(ngModel)]="expense.branch"
+          name="branch"
+          required
+          #branch="ngModel"
+        >
+          <option value="" disabled>اختر الفرع</option>
+          <option *ngFor="let b of branches" [value]="b.id">
+            {{ b.name }}
+          </option>
+        </select>
+        <div *ngIf="branch.invalid && branch.touched" class="my-1 text-danger">
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Total Price -->
+      <div class="mb-3">
+        <label class="form-label">{{ "TOTAL_PRICE" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="expense.total_price"
+          name="total_price"
+          min="1"
+          required
+          #totalPrice="ngModel"
+        />
+        <div
+          *ngIf="totalPrice.invalid && totalPrice.touched"
+          class="my-1 text-danger"
+        >
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="mb-3">
+        <label class="form-label">{{ "QUANTITY" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="expense.quantity"
+          name="quantity"
+          min="1"
+          required
+          #quantity="ngModel"
+        />
+        <div
+          *ngIf="quantity.invalid && quantity.touched"
+          class="my-1 text-danger"
+        >
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-stroked-button color="warn" (click)="onClose()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="expenseForm.invalid"
+      (click)="onSave()"
+    >
+      {{ "SAVE" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

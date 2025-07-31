@@ -1,0 +1,68 @@
+<div class="table-wrapper">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of displayedColumns">
+          {{ column | translate }}
+        </th>
+        <th>{{ "ACTIONS" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of paginatedData">
+        <td
+          *ngFor="let column of displayedColumns"
+          (click)="itemClicked.emit(row)"
+        >
+          {{ row[column] }}
+        </td>
+        <td *ngIf="!isActiveBills">
+          <button (click)="editClicked.emit(row)">✏️</button>
+          <button (click)="delete(row)">🗑️</button>
+        </td>
+        <td *ngIf="isActiveBills">
+          <button [disabled]="!row?.isActive" (click)="editClicked.emit(row)">
+            💳
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <!-- Previous -->
+    <button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+    >
+      «
+    </button>
+
+    <!-- First page -->
+    <button *ngIf="startPage > 1" (click)="changePage(1)">1</button>
+    <span *ngIf="startPage > 2">...</span>
+
+    <!-- Dynamic visible pages -->
+    <button
+      *ngFor="let page of visiblePages"
+      (click)="changePage(page)"
+      [class.active]="currentPage === page"
+    >
+      {{ page }}
+    </button>
+
+    <!-- Last page -->
+    <span *ngIf="endPage < totalPages()" style="color: white">...</span>
+    <button *ngIf="endPage < totalPages()" (click)="changePage(totalPages())">
+      {{ totalPages() }}
+    </button>
+
+    <!-- Next -->
+    <button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages()"
+    >
+      »
+    </button>
+  </div>
+</div>

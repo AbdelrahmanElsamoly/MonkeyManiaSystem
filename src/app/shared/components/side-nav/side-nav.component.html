@@ -1,0 +1,226 @@
+<mat-nav-list>
+  <!-- Dashboard -->
+  <a
+    mat-list-item
+    class="d-flex justify-content-center"
+    routerLink="/dashboard/main"
+    routerLinkActive="active-link"
+  >
+    <mat-icon>dashboard</mat-icon>
+    <span *ngIf="!collapsed">{{ "DASHBOARD" | translate }}</span>
+  </a>
+
+  <!-- Sales -->
+  <a mat-list-item routerLink="/dashboard/sales" routerLinkActive="active-link">
+    <mat-icon>point_of_sale</mat-icon>
+    <span *ngIf="!collapsed">{{ "SALES" | translate }}</span>
+  </a>
+
+  <!-- Human -->
+  <mat-expansion-panel [hideToggle]="collapsed">
+    <mat-expansion-panel-header class="px-3">
+      <mat-panel-title>
+        <mat-icon>groups</mat-icon>
+        <span *ngIf="!collapsed">{{ "HUMAN" | translate }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-action-list>
+      <a
+        mat-list-item
+        routerLink="/dashboard/user"
+        routerLinkActive="active-link"
+      >
+        <mat-icon>person</mat-icon>
+        <span *ngIf="!collapsed">{{ "USER" | translate }}</span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="/dashboard/staff"
+        routerLinkActive="active-link"
+      >
+        <mat-icon>badge</mat-icon>
+        <span *ngIf="!collapsed">{{ "STAFF" | translate }}</span>
+      </a>
+      <!-- Children route not defined - disabling -->
+      <a
+        mat-list-item
+        routerLink="/dashboard/child"
+        routerLinkActive="active-link"
+      >
+        <mat-icon>child_care</mat-icon>
+        <span *ngIf="!collapsed">{{ "CHILDREN" | translate }}</span>
+      </a>
+    </mat-action-list>
+  </mat-expansion-panel>
+
+  <!-- Schools -->
+  <a
+    mat-list-item
+    routerLink="/dashboard/school"
+    routerLinkActive="active-link"
+  >
+    <mat-icon>school</mat-icon>
+    <span *ngIf="!collapsed">{{ "SCHOOLS" | translate }}</span>
+  </a>
+
+  <!-- Bills -->
+  <mat-expansion-panel [hideToggle]="collapsed">
+    <mat-expansion-panel-header class="px-3">
+      <mat-panel-title>
+        <mat-icon>receipt_long</mat-icon>
+        <span *ngIf="!collapsed">{{ "BILLS" | translate }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-action-list>
+      <!-- Nested Expansion Panel for Children Bills -->
+      <mat-expansion-panel class="nested-panel" [hideToggle]="collapsed">
+        <mat-expansion-panel-header class="px-1">
+          <mat-panel-title>
+            <mat-icon>child_friendly</mat-icon>
+            <span *ngIf="!collapsed">{{ "CHILDREN_BILLS" | translate }}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list>
+          <a
+            mat-list-item
+            routerLink="/dashboard/bills/children/active"
+            routerLinkActive="active-link"
+            *ngIf="!collapsed"
+          >
+            <mat-icon>check_circle</mat-icon>
+            <span>
+              {{ "ACTIVE_BILLS" | translate }}
+            </span>
+          </a>
+          <a
+            mat-list-item
+            routerLink="/dashboard/bills/children/all"
+            routerLinkActive="active-link"
+            *ngIf="!collapsed"
+          >
+            <mat-icon>receipt</mat-icon>
+            <span>
+              {{ "ALL_BILLS" | translate }}
+            </span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+
+      <!-- Regular Cafe Bills item -->
+      <mat-expansion-panel class="nested-panel" [hideToggle]="collapsed">
+        <mat-expansion-panel-header class="px-1">
+          <mat-panel-title>
+            <mat-icon>local_cafe</mat-icon>
+            <span *ngIf="!collapsed">{{ "CAFE_BILLS" | translate }}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list>
+          <a
+            mat-list-item
+            routerLink="/dashboard/bills/cafe/active"
+            routerLinkActive="active-link"
+            *ngIf="!collapsed"
+          >
+            <mat-icon>check_circle</mat-icon>
+            <span>
+              {{ "ACTIVE_BILLS" | translate }}
+            </span>
+          </a>
+          <a
+            mat-list-item
+            routerLink="/dashboard/bills/cafe/all"
+            routerLinkActive="active-link"
+            *ngIf="!collapsed"
+          >
+            <mat-icon>receipt</mat-icon>
+            <span>
+              {{ "ALL_BILLS" | translate }}
+            </span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-action-list>
+  </mat-expansion-panel>
+
+  <!-- Cafe Preferences -->
+  <mat-expansion-panel [hideToggle]="collapsed">
+    <mat-expansion-panel-header class="px-3">
+      <mat-panel-title>
+        <mat-icon>local_dining</mat-icon>
+        <span *ngIf="!collapsed">{{ "CAFE_PREFERENCES" | translate }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-action-list>
+      <!-- No routes defined for these - disabling all -->
+      <a mat-list-item disabled>
+        <mat-icon>inventory</mat-icon>
+        <span *ngIf="!collapsed">{{ "PRODUCTS" | translate }}</span>
+      </a>
+      <a mat-list-item disabled>
+        <mat-icon>inventory_2</mat-icon>
+        <span *ngIf="!collapsed">{{ "MATERIALS" | translate }}</span>
+      </a>
+      <a mat-list-item disabled>
+        <mat-icon>local_offer</mat-icon>
+        <span *ngIf="!collapsed">{{ "OFFERS" | translate }}</span>
+      </a>
+    </mat-action-list>
+  </mat-expansion-panel>
+
+  <!-- Kids Preferences -->
+  <mat-expansion-panel [hideToggle]="collapsed">
+    <mat-expansion-panel-header class="px-3">
+      <mat-panel-title>
+        <mat-icon>child_friendly</mat-icon>
+        <span *ngIf="!collapsed">{{ "KIDS_PREFERENCES" | translate }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-action-list>
+      <!-- No routes defined for these - disabling all -->
+      <a mat-list-item disabled>
+        <mat-icon>discount</mat-icon>
+        <span *ngIf="!collapsed">{{ "PROMOCODES" | translate }}</span>
+      </a>
+      <a mat-list-item disabled>
+        <mat-icon>subscriptions</mat-icon>
+        <span *ngIf="!collapsed">{{ "SUBSCRIPTIONS" | translate }}</span>
+      </a>
+      <a mat-list-item disabled>
+        <mat-icon>store</mat-icon>
+        <span *ngIf="!collapsed">{{ "BRANCHES" | translate }}</span>
+      </a>
+    </mat-action-list>
+  </mat-expansion-panel>
+
+  <!-- expense -->
+  <mat-expansion-panel [hideToggle]="collapsed">
+    <mat-expansion-panel-header class="px-3">
+      <mat-panel-title>
+        <mat-icon>account_balance_wallet</mat-icon>
+        <span *ngIf="!collapsed">{{ "EXPENSE" | translate }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-action-list>
+      <!-- No routes defined for these - disabling all -->
+      <a
+        mat-list-item
+        routerLinkActive="active-link"
+        routerLink="/dashboard/material/expense"
+      >
+        <mat-icon>inventory_2</mat-icon>
+        <span *ngIf="!collapsed">{{ "MATERIAL_EXPENSE" | translate }}</span>
+      </a>
+      <a
+        mat-list-item
+        routerLinkActive="active-link"
+        routerLink="/dashboard/general/expense"
+      >
+        <mat-icon>receipt_long</mat-icon>
+        <span *ngIf="!collapsed">{{ "GENERAL_EXPENSE" | translate }}</span>
+      </a>
+    </mat-action-list>
+  </mat-expansion-panel>
+</mat-nav-list>

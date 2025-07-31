@@ -1,0 +1,32 @@
+<!-- branch-selector.component.html -->
+<div class="branch-container">
+  <div class="w-100 my-2 d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="title">{{ "CHOOSE_BRANCH" | translate }} 🏰</h2>
+    </div>
+    <div>
+      <button
+        mat-raised-button
+        class="confi-btn"
+        (click)="onConfirm()"
+        [disabled]="!selectedBranchId"
+      >
+        {{ "CONFIRM" | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="w-100">
+    <mat-radio-group [(ngModel)]="selectedBranchId">
+      <mat-radio-button
+        *ngFor="let branch of branches"
+        [value]="branch.id"
+        class="branch-item"
+      >
+        <div class="branch-details">
+          <h3>🌿 {{ branch.name }}</h3>
+          <p>{{ branch.address }}</p>
+        </div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+</div>

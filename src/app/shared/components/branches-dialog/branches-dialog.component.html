@@ -1,0 +1,33 @@
+<div class="dialog-wrapper py-3 px-2">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h2 class="dialog-title">{{ "CHOOSE_BRANCH" | translate }}</h2>
+    <button mat-icon-button class="close-btn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content class="dialog-content">
+    <mat-radio-group [(ngModel)]="selectedBranchId" class="radio-group">
+      <mat-radio-button
+        *ngFor="let branch of branches"
+        [value]="branch.id"
+        class="branch-item"
+      >
+        <div class="branch-details">
+          <h3 class="branch-name">🛝 {{ branch.name }}</h3>
+          <p class="branch-address">{{ branch.address }}</p>
+        </div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center" class="dialog-actions">
+    <button
+      mat-raised-button
+      class="confirm-btn"
+      [disabled]="!selectedBranchId"
+      (click)="onConfirm()"
+    >
+      ✅ {{ "CONFIRM" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

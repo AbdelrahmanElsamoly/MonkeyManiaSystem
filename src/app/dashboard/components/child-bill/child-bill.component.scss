@@ -1,0 +1,43 @@
+@import "../../../shared/styles/colors.scss";
+
+.bill-container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: $secondary-color;
+  border-radius: 10px;
+  color: $font-color;
+}
+
+.bill-title {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: $font-color;
+}
+
+.bill-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.bill-row span {
+  font-weight: bold;
+  color: $font-color;
+}
+
+.loading {
+  text-align: center;
+  font-size: 16px;
+  color: $font-color;
+  margin-top: 20px;
+}

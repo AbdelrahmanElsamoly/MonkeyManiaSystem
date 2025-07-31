@@ -1,0 +1,40 @@
+@import "../../../shared/styles/colors.scss";
+
+.school-profile-card {
+  background: $secondary-color;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  max-width: 600px;
+  margin: 100px auto;
+  //   margin: 2rem auto;
+  //   direction: rtl;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: $font-color;
+  }
+
+  .field {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #eee;
+
+    .label {
+      font-weight: bold;
+      font-size: 14px;
+      color: $font-color;
+    }
+
+    .value {
+      color: $font-color;
+      font-size: 14px;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}

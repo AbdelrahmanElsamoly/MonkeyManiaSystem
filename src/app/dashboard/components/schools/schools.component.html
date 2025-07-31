@@ -1,0 +1,29 @@
+<div class="school-container">
+  <h1>{{ "SCHOOLS" | translate }} ... 🏫</h1>
+  <div *ngIf="isloadign" class="loader-wrapper">
+    <app-loader></app-loader>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="searchSchools(searchTerm)"
+      placeholder="ابحث عن مدرسة... 🔍"
+      class="search-input mt-4"
+    />
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <button class="dialog-button my-2" (click)="openSchoolDialog()">
+        + {{ "ADD_SCHOOL" | translate }}
+      </button>
+      <app-csv-uploader (csvFile)="schoolBulkUpLoad($event)"></app-csv-uploader>
+    </div>
+  </div>
+
+  <app-data-table
+    [displayedColumns]="['NAME', 'ADDRESS', 'CREATED_BY']"
+    (editClicked)="editSchool($event)"
+    (itemClicked)="goToSchoolProfilePage($event.ID)"
+    [data]="myTableData"
+  ></app-data-table>
+</div>

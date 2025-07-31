@@ -1,0 +1,42 @@
+@import "../../styles/colors.scss";
+
+mat-icon {
+  color: $font-color;
+}
+span {
+  color: $font-color;
+  margin: 0px 4px;
+}
+mat-expansion-panel {
+  background-color: $secondary-color;
+}
+::ng-deep .mat-expansion-indicator::after {
+  color: $font-color; // Change this to your desired color
+}
+
+a[mat-list-item],
+mat-expansion-panel-header mat-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px; // spacing between icon and text
+  color: $font-color !important;
+}
+
+a[mat-list-item] mat-icon,
+mat-expansion-panel-header mat-icon {
+  font-size: 20px;
+  vertical-align: middle;
+  color: $font-color !important;
+}
+.active-link {
+  background-color: rgba(47, 189, 111, 0.1); // light blue background
+  span,
+  mat-icon {
+    color: #fbbf24;
+  }
+  border-left: 4px solid #4caf65;
+  font-weight: bold;
+}
+::ng-deep .mat-expansion-panel-body {
+  padding: 8px !important;
+}

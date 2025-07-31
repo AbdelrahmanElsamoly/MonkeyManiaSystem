@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-center my-4">
+  <app-print-btn></app-print-btn>
+</div>
+
+<div class="bill-container" *ngIf="bill; else loading">
+  <h1 class="bill-title">🧾 {{ "BILL_DETAILS" | translate }}</h1>
+
+  <div class="bill-card">
+    <!-- Children Count -->
+    <div class="bill-row" *ngIf="bill.children?.length">
+      <span>👨‍👩‍👧 {{ "CHILDREN_COUNT" | translate }}:</span>
+      {{ bill.children.length }}
+    </div>
+
+    <!-- Children Info -->
+    <div *ngFor="let child of bill.children" class="bill-row">
+      <div style="width: 100%">
+        <div>
+          <strong>👶 {{ child.name }}</strong>
+        </div>
+        <div *ngFor="let phone of child.phone_numbers">
+          📞 {{ phone.phone_number }} <small>({{ phone.relationship }})</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spent Time -->
+    <div class="bill-row">
+      <span>⏱️ {{ "SPENT_TIME" | translate }}:</span>
+      {{ getSpentTimeFormatted(bill.spent_time) }}
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="bill-row"><span>💳 Visa:</span> {{ bill.visa }} EGP</div>
+    <div class="bill-row"><span>💵 Cash:</span> {{ bill.cash }} EGP</div>
+    <div class="bill-row">
+      <span>📲 Instapay:</span> {{ bill.instapay }} EGP
+    </div>
+
+    <!-- Subscription -->
+    <div class="bill-row">
+      <span>📝 {{ "IS_SUBSCRIPTION" | translate }}:</span>
+      {{ bill.is_subscription ? ("YES" | translate) : ("NO" | translate) }}
+    </div>
+
+    <!-- Discount -->
+    <div class="bill-row">
+      <span>🏷️ {{ "DISCOUNT" | translate }}:</span>
+      {{ bill.discount_value }} {{ bill.discount_type || "" }}
+    </div>
+
+    <!-- Money Unbalance -->
+    <div class="bill-row">
+      <span>⚖️ {{ "REST" | translate }}:</span>
+      {{ bill.money_unbalance }} EGP
+    </div>
+
+    <!-- Finished Time -->
+    <div class="bill-row">
+      <span>✅ {{ "ENTER_AT" | translate }}:</span>
+      {{ bill.created | date : "short" }}
+    </div>
+    <div class="bill-row">
+      <span>✅ {{ "EXIT_AT" | translate }}:</span>
+      {{ bill.finished | date : "short" }}
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading">⏳ {{ "LOADING" | translate }}</p>
+</ng-template>

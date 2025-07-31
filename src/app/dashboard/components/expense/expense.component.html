@@ -1,0 +1,59 @@
+<div class="d-flex justify-content-center my-4">
+  <app-print-btn></app-print-btn>
+</div>
+
+<div class="expense-container" *ngIf="expense; else loading">
+  <h1 class="expense-title">
+    📄 {{ "EXPENSE_DETAILS" | translate }} ({{ type | titlecase }})
+  </h1>
+  <div class="expense-card">
+    <div class="expense-row">
+      <span>🆔 {{ "ID" | translate }}:</span> {{ expense.id }}
+    </div>
+
+    <!-- Show name for general expense -->
+    <div class="expense-row" *ngIf="type === 'general'">
+      <span>🏷️ {{ "NAME" | translate }}:</span> {{ expense.name }}
+    </div>
+
+    <!-- Show material for material expense -->
+    <div class="expense-row" *ngIf="type === 'material'">
+      <span>🛠️ {{ "MATERIAL" | translate }}:</span>
+      {{ expense.material }}
+    </div>
+
+    <div class="expense-row">
+      <span>💰 {{ "UNIT_PRICE" | translate }}:</span>
+      {{ expense.unit_price }} EGP
+    </div>
+    <div class="expense-row">
+      <span>📦 {{ "TOTAL_PRICE" | translate }}:</span>
+      {{ expense.total_price }} EGP
+    </div>
+    <div class="expense-row">
+      <span>🔢 {{ "QUANTITY" | translate }}:</span> {{ expense.quantity }}
+    </div>
+
+    <!-- Show measure_unit only for material expense -->
+    <div class="expense-row" *ngIf="type === 'material'">
+      <span>⚖️ {{ "MEASURE_UNIT" | translate }}:</span>
+      {{ expense.measure_unit }}
+    </div>
+
+    <div class="expense-row">
+      <span>🏢 {{ "BRANCH" | translate }}:</span> {{ expense.branch }}
+    </div>
+    <div class="expense-row">
+      <span>📅 {{ "CREATED" | translate }}:</span>
+      {{ expense.created | date : "short" }}
+    </div>
+    <div class="expense-row">
+      <span>✏️ {{ "UPDATED" | translate }}:</span>
+      {{ expense.updated | date : "short" }}
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading">⏳ {{ "LOADING" | translate }}</p>
+</ng-template>

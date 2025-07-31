@@ -1,0 +1,81 @@
+<div class="dialog-container p-3">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="dialog-header m-0">{{ "CLOSE_BILL" | translate }} 💳</h2>
+    <button mat-icon-button color="warn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="text-center my-3">
+    <h5>{{ "TOTAL_PRICE" | translate }}: {{ data.total_price }} EGP</h5>
+  </div>
+  <div class="text-center mb-3">
+    <h5>
+      {{ "SPENT_TIME" | translate }}:
+      {{ getSpentTimeFormatted(data.spent_time) }}
+    </h5>
+  </div>
+  <!-- Dialog Body -->
+  <div class="dialog-body" [formGroup]="form">
+    <div class="row g-3">
+      <!-- Instapay -->
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Instapay</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="instapay"
+            (input)="updateRest()"
+          />
+        </mat-form-field>
+      </div>
+
+      <!-- Cash -->
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Cash</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="cash"
+            (input)="updateRest()"
+          />
+        </mat-form-field>
+      </div>
+
+      <!-- Visa -->
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Visa</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="visa"
+            (input)="updateRest()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Rest display -->
+    <div class="text-center mt-3">
+      <h5 [ngStyle]="{ color: rest >= 0 ? 'green' : 'red' }">
+        {{ "REMAINING" | translate }}: {{ rest }} EGP
+      </h5>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-button color="warn" (click)="onClose()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="submit()">
+      {{ "SUBMIT" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,30 @@
+<div class="main-page">
+  <h1 class="my-4">{{ "DASHBOARD" | translate }} ... 📊</h1>
+  <owl-carousel-o [options]="customOptions" [dir]="'rtl'">
+    <ng-template
+      carouselSlide
+      class="widget-container"
+      *ngFor="let item of data; let first = first; let last = last"
+    >
+      <div
+        class="widget-card slide d-flex align-items-center justify-content-between p-3"
+        [ngClass]="{
+          'first-item': first,
+          'last-item': last
+        }"
+      >
+        <div>
+          <div class="fw-bold">{{ item.title | translate }}</div>
+          <div class="fw-bold">{{ item.value }}</div>
+          <div class="small">{{ item.subtext }}</div>
+        </div>
+        <div
+          class="icon-circle mb-2 d-flex align-items-center justify-content-center"
+          [ngStyle]="{ 'background-color': item.color }"
+        >
+          {{ item.icon }}
+        </div>
+      </div>
+    </ng-template>
+  </owl-carousel-o>
+</div>

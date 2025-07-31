@@ -1,0 +1,38 @@
+<div *ngIf="isloading" class="loader-wrapper">
+  <app-loader></app-loader>
+</div>
+
+<div *ngIf="!isloading">
+  <div class="d-flex justify-content-center mt-4">
+    <app-print-btn></app-print-btn>
+  </div>
+
+  <div class="school-profile-card">
+    <h2>{{ schoolDate.name }} 🏫</h2>
+
+    <div class="field">
+      <span class="label">{{ "ADDRESS" | translate }} :📍</span>
+      <span class="value">{{ schoolDate.address }}</span>
+    </div>
+
+    <div class="field">
+      <span class="label">{{ "CREATED_BY" | translate }} : 👤</span>
+      <span class="value">{{ schoolDate.created_by }}</span>
+    </div>
+
+    <div class="field">
+      <span class="label">{{ "NOTES" | translate }} : 📝</span>
+      <span class="value">{{ schoolDate.notes }}</span>
+    </div>
+
+    <div class="field">
+      <span class="label">{{ "CREATED_DATE" | translate }} : 📅</span>
+      <span class="value">{{ schoolDate.created | date : "medium" }}</span>
+    </div>
+
+    <div class="field">
+      <span class="label">{{ "LAST_UPDATED" | translate }} : 🔄</span>
+      <span class="value">{{ schoolDate.updated | date : "medium" }}</span>
+    </div>
+  </div>
+</div>

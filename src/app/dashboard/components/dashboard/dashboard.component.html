@@ -1,0 +1,90 @@
+<mat-sidenav-container class="sidenav-container d-flex">
+  <!-- Sidebar (hidden on mobile) -->
+  <mat-sidenav
+    *ngIf="!isMobile"
+    [mode]="'side'"
+    [opened]="true"
+    [class.collapsed]="sidebarCollapsed"
+    class="sidenav"
+  >
+    <div class="toggle-button">
+      <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon color="accent">menu</mat-icon>
+      </button>
+    </div>
+
+    <img
+      src="../../../../assets/png/logo-01.png"
+      *ngIf="!sidebarCollapsed"
+      alt=""
+    />
+
+    <hr />
+
+    <div class="sidenav-content-wrapper mb-5">
+      <app-side-nav [collapsed]="sidebarCollapsed"></app-side-nav>
+    </div>
+
+    <div class="logout-fixed-wrapper">
+      <hr />
+      <button (click)="logOUt()" mat-button class="logout-button">
+        <mat-icon color="warn">logout</mat-icon>
+        <span *ngIf="!sidebarCollapsed">{{ "LOGOUT" | translate }}</span>
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content [class.expanded]="sidebarCollapsed">
+    <!-- ✅ Toolbar ALWAYS visible -->
+    <mat-toolbar class="top-toolbar">
+      <img src="../../../../assets/png/avatar.png" alt="" />
+      <span class="welcome-text">
+        {{ "WELCOME" | translate }} , {{ userInfo.username }} !
+      </span>
+
+      <span class="spacer"></span>
+
+      <!-- Desktop items -->
+      <div class="d-flex align-items-center" *ngIf="!isMobile && branch">
+        <p class="m-0">🌿 {{ "BRANCH" | translate }}</p>
+        <button
+          class="branch-btn mx-2 d-flex align-items-center"
+          (click)="openBranchDialog()"
+        >
+          <mat-icon>arrow_drop_down</mat-icon>
+          {{ branch.name }}
+        </button>
+      </div>
+
+      <span class="spacer" *ngIf="!isMobile"></span>
+
+      <h5 class="mx-1" *ngIf="!isMobile">
+        📅 {{ currentDate | date : "fullDate" }}
+      </h5>
+      <h5 *ngIf="!isMobile">
+        {{ clockEmoji }} {{ currentDate | date : "shortTime" }}
+      </h5>
+
+      <!-- ✅ Mobile hamburger -->
+      <button *ngIf="isMobile" mat-icon-button (click)="toggleMobileMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- ✅ Mobile dropdown nav -->
+    <div *ngIf="showMobileMenu && isMobile" class="mobile-nav">
+      <app-side-nav [collapsed]="false"></app-side-nav>
+      <button class="branch-btn mt-2" (click)="openBranchDialog()">
+        🌿 {{ branch.name }}
+      </button>
+      <button class="logout-button-mobile" (click)="logOUt()">
+        <mat-icon color="warn">logout</mat-icon> {{ "LOGOUT" | translate }}
+      </button>
+    </div>
+
+    <div class="m-5">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

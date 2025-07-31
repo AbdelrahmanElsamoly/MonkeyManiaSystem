@@ -1,0 +1,26 @@
+<div class="csv-upload-container">
+  <h5>تحميل ملف CSV</h5>
+  <input
+    #fileInput
+    type="file"
+    class="w-75"
+    accept=".csv"
+    (change)="onFileSelect($event)"
+  />
+
+  <div *ngIf="fileName" class="file-info">
+    <p>
+      Selected File: {{ fileName }}
+      <button class="remove-btn" (click)="removeFile(fileInput)">✖</button>
+    </p>
+    <button
+      (click)="uploadFile()"
+      class="upload-btn"
+      [disabled]="!selectedFile"
+    >
+      Upload
+    </button>
+  </div>
+
+  <div *ngIf="uploadError" class="error">{{ uploadError }}</div>
+</div>

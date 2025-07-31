@@ -1,0 +1,25 @@
+<mat-form-field appearance="fill" class="branch-dropdown">
+  <button
+    *ngIf="selectedValues[0] !== 'all'"
+    mat-icon-button
+    matSuffix
+    aria-label="Clear"
+    (click)="clearSelection()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-label>اختر فرع ... 🏰</mat-label>
+
+  <mat-select
+    [multiple]="true"
+    [(value)]="selectedValues"
+    (selectionChange)="onSelectionChange($event)"
+  >
+    <!-- Select All Option -->
+
+    <!-- Individual Options -->
+    <mat-option *ngFor="let option of options" [value]="option.id">
+      {{ option.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

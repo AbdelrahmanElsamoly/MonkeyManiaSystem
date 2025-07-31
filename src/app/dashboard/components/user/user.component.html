@@ -1,0 +1,20 @@
+<h1>{{ "USER" | translate }} ... 🧑‍💼</h1>
+<div class="d-flex flex-column justify-content-between align-items-start">
+  <input
+    type="text"
+    [(ngModel)]="searchTerm"
+    (input)="searchUsers(searchTerm)"
+    placeholder="ابحث عن مستخدم... 🔍"
+    class="search-input mt-4"
+  />
+  <app-branch-multi-select
+    (selectedBranchesChange)="onBranchSelectionChange(searchTerm, $event)"
+  ></app-branch-multi-select>
+</div>
+<div>
+  <app-data-table
+    [displayedColumns]="['NAME', 'PHONE_NUMBERS', 'BRANCH', 'STATUS', 'ROLE']"
+    [data]="tableData"
+    (itemClicked)="goToProfilePage($event.ID)"
+  ></app-data-table>
+</div>

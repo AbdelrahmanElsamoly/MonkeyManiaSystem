@@ -1,0 +1,205 @@
+@import "../../../shared/styles/colors.scss";
+
+.sidenav-container {
+  font-size: 12px;
+  height: 100vh;
+  overflow: hidden;
+  background: $primary-color;
+}
+
+mat-sidenav {
+  background: $secondary-color;
+  color: $font-color;
+  height: 100%;
+  overflow: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sidenav {
+  width: 260px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  position: relative;
+
+  &.collapsed {
+    width: 75px;
+  }
+}
+
+img {
+  width: 200px;
+}
+
+.toggle-button {
+  display: flex;
+  justify-content: flex-end;
+  padding: 17px;
+}
+
+.mat-sidenav-content {
+  background: $primary-color;
+  height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0px !important;
+}
+
+// ✅ Header styles
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  // background: darken($primary-color, 5%);
+  color: $font-color;
+  border-bottom: 1px solid lighten($font-color, 10%);
+
+  .welcome-message {
+    font-size: px;
+    font-weight: 500;
+  }
+
+  .user-img img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.content-scrollable {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.logout-fixed-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: $secondary-color;
+  padding: 8px 0;
+
+  hr {
+    margin: 0;
+    border-color: lighten($font-color, 30%);
+  }
+
+  .logout-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $font-color;
+    background-color: transparent;
+    padding: 20px 16px;
+
+    mat-icon {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background-color: darken($secondary-color, 5%);
+    }
+  }
+}
+
+mat-sidenav {
+  ::ng-deep .mat-drawer-inner-container {
+    height: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  ::ng-deep .mat-drawer-inner-container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.top-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 0 16px;
+  height: 64px;
+  width: 100%;
+  background: $primary-color;
+  color: $font-color;
+  p {
+    font-size: 16px;
+  }
+  img {
+    width: 40px;
+  }
+  .welcome-text {
+    margin: 0 20px;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-image {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+.branch-btn {
+  background-color: $secondary-color;
+  color: $font-color;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+}
+/* Hide sidebar on mobile */
+@media (max-width: 992px) {
+  mat-sidenav {
+    display: none;
+  }
+}
+
+.mobile-nav {
+  background: $secondary-color;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+
+  button {
+    margin: 8px 0;
+  }
+
+  .logout-button-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: $font-color;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+  }
+}
+
+@media print {
+  mat-toolbar {
+    display: none !important;
+  }
+}

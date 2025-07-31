@@ -1,0 +1,9 @@
+@import "../../../shared/styles/colors.scss";
+
+.card {
+  background-color: $secondary-color;
+  color: $font-color;
+  div {
+    font-size: 16px;
+  }
+}

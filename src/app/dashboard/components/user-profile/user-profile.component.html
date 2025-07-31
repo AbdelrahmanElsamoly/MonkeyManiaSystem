@@ -1,0 +1,60 @@
+<div class="card shadow-lg p-4 mt-5 rounded">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ userData.username || ("NO_DATA" | translate) }} 👤</h2>
+    <span
+      class="badge"
+      [class.bg-success]="userData.is_active"
+      [class.bg-danger]="!userData.is_active"
+    >
+      {{
+        userData.is_active
+          ? ("ACTIVE" | translate) + " ✅"
+          : ("INACTIVE" | translate) + " ❌"
+      }}
+    </span>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3 d-flex">
+      <strong> {{ "PHONE_NUMBER" | translate }} 📞:</strong>
+      <div class="mx-1">
+        {{ userData.phone_number || ("NO_DATA" | translate) }}
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex">
+      <strong>{{ "EMAIL" | translate }} ✉️:</strong>
+      <div class="mx-1">{{ userData.email || ("NO_DATA" | translate) }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex">
+      <strong>{{ "ROLE" | translate }} 🧑‍💼:</strong>
+      <div class="mx-1">{{ userData.role || ("NO_DATA" | translate) }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex">
+      <strong>{{ "BRANCH" | translate }} 🏰:</strong>
+      <div>{{ userData.branch || ("NO_DATA" | translate) }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex">
+      <strong>{{ "CREATED_DATE" | translate }} 📅:</strong>
+      <div>{{ userData.created | date : "fullDate" }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex">
+      <strong>{{ "LAST_UPDATED" | translate }} 🔄:</strong>
+      <div>{{ userData.updated | date : "fullDate" }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex" *ngIf="userData.last_login">
+      <strong>{{ "LAST_LOGIN" | translate }} 🕒:</strong>
+      <div>{{ userData.last_login | date : "short" }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex" *ngIf="userData.last_logout">
+      <strong>{{ "LAST_LOGOUT" | translate }} 🚪:</strong>
+      <div>{{ userData.last_logout | date : "short" }}</div>
+    </div>
+  </div>
+</div>

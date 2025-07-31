@@ -1,1 +1,58 @@
+@use "@angular/material" as mat;
+@import "../src/app/shared/styles/colors.scss";
+@include mat.core();
+
+$monkey-mania-system-primary: mat.define-palette(mat.$indigo-palette);
+$monkey-mania-system-accent: mat.define-palette(
+  mat.$pink-palette,
+  A200,
+  A100,
+  A400
+);
+
+// The warn palette is optional (defaults to red).
+$monkey-mania-system-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$monkey-mania-system-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $monkey-mania-system-primary,
+      accent: $monkey-mania-system-accent,
+      warn: $monkey-mania-system-warn,
+    ),
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($monkey-mania-system-theme);
+
 /* You can add global styles to this file, and also import other style files */
+@import "ngx-toastr/toastr";
+
+body[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+body {
+  margin: 0px !important;
+  background: $primary-color !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Noto Kufi Arabic", sans-serif !important;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+:lang(en) {
+  font-family: "Montserrat", sans-serif !important;
+}
