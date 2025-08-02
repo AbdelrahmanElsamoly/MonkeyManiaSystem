@@ -59,7 +59,6 @@ export class ChildrenComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Child created successfully!');
         this.getChildrenData();
       }
     });
@@ -74,7 +73,6 @@ export class ChildrenComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Child created successfully!');
         this.getChildrenData();
       }
     });

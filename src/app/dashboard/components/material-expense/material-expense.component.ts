@@ -101,7 +101,6 @@ export class MaterialExpenseComponent implements OnInit {
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
     };
-    console.log(this.params);
     this.getMaterialExpense(this.type, this.params);
   }
   onBranchSelectionChange(selected: any) {
@@ -138,13 +137,11 @@ export class MaterialExpenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Dialog closed successfully, refreshing data...');
         this.getMaterialExpense(this.type, this.params);
       }
     });
   }
   editExpens(expense: any) {
-    console.log(expense);
     const body = {
       material: expense.MATERIAL,
       total_price: expense.TOTAL_PRICE,

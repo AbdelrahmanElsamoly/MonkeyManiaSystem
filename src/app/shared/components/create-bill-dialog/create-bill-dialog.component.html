@@ -78,6 +78,17 @@
       </mat-select>
     </mat-form-field>
 
+    <!--promo code  -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ "PROMO_CODE" | translate }}</mat-label>
+      <input
+        matInput
+        placeholder="{{ 'ENTER_PROMO_CODE' | translate }}"
+        [formControl]="discount"
+      />
+      <mat-icon matSuffix>local_offer</mat-icon>
+    </mat-form-field>
+
     <!-- Add New Child Button -->
     <div class="mb-3">
       <button mat-raised-button color="primary" (click)="addNewChild()">

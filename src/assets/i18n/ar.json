@@ -138,5 +138,13 @@
   "REMOVE_PHONE_NUMBER": "حذف رقم الهاتف",
   "REMOVE_CHILD": "حذف الطفل",
   "CHOOSE_CHILDREN_PLACEHOLDER": "اختر الأطفال...",
-  "MORE_SELECTED": "أخرى"
+  "MORE_SELECTED": "أخرى",
+  "APPLY_PROMO_CODE": "تطبيق كود الخصم",
+  "PROMO_CODE": "كود الخصم",
+  "ENTER_PROMO_CODE": "أدخل كود الخصم",
+  "APPLY_PROMO": "تطبيق الخصم",
+  "PROMO_CODE_TOO_SHORT": "كود الخصم قصير جداً",
+  "APPLYING_PROMO_CODE": "جاري تطبيق كود الخصم...",
+  "HALF_HOUR_PRICE": "سعر نصف ساعة",
+  "HOUR_PRICE": "سعر الساعة"
 }

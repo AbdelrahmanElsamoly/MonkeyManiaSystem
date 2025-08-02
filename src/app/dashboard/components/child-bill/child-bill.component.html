@@ -55,6 +55,15 @@
       {{ bill.money_unbalance }} EGP
     </div>
 
+    <div class="bill-row">
+      <span>🕒 {{ "HOUR_PRICE" | translate }}:</span>
+      {{ bill.hour_price }}
+    </div>
+    <div class="bill-row">
+      <span>🕒 {{ "HALF_HOUR_PRICE" | translate }}:</span>
+      {{ bill.half_hour_price }}
+    </div>
+
     <!-- Finished Time -->
     <div class="bill-row">
       <span>✅ {{ "ENTER_AT" | translate }}:</span>

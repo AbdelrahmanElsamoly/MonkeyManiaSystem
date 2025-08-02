@@ -58,7 +58,6 @@ export class ExpenseDialogComponent implements OnInit {
         this.getMaterials();
         this.selectedMaterialName = this.expense.material;
         this.selectedMaterialId = this.data.materialId;
-        console.log(this.selectedMaterialId);
       }
     }
   }

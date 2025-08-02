@@ -51,7 +51,6 @@ export class UserComponent {
     });
   }
   searchUsers(searchQuery: string) {
-    console.log(this.selectedBranch);
     this.getUsers(searchQuery, this.selectedBranch);
   }
   onBranchSelectionChange(searchQuery: string, selected: number[]) {

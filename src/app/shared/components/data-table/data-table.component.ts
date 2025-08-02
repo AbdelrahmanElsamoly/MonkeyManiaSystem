@@ -17,6 +17,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   @Input() displayedColumns: string[] = [];
   @Input() data: any[] = [];
   @Output() editClicked = new EventEmitter<any>();
+  @Output() promoClicked = new EventEmitter<any>();
   @Output() itemClicked = new EventEmitter<any>();
   @Input() isActiveBills: boolean = false;
   @Input() isActive: boolean = true;

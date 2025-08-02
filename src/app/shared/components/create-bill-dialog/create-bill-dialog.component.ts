@@ -28,6 +28,7 @@ interface PhoneNumber {
 export class CreateBillDialogComponent implements OnInit {
   // Form Controls
   childrenControl = new FormControl<number[]>([]);
+  discount = new FormControl<string>('');
   form!: FormGroup;
 
   // Data Properties
@@ -231,12 +232,15 @@ export class CreateBillDialogComponent implements OnInit {
   private getPayload() {
     const children =
       this.selectedChildIds.length > 0 ? this.selectedChildIds : undefined;
+    const discount = this.discount.value;
     const newChildren = this.buildNewChildrenPayload();
     const branchId = this.getBranchId();
+    console.log('this.discount.value', this.discount.value);
 
     return {
       ...(children && { children }),
       ...(newChildren.length > 0 && { new_children: newChildren }),
+      ...(discount ? { discount } : {}),
       branch: branchId,
     };
   }
@@ -274,7 +278,6 @@ export class CreateBillDialogComponent implements OnInit {
     }
 
     const payload = this.getPayload();
-    console.log('Submitting payload:', payload);
 
     this.sharedService.createBill(payload).subscribe({
       next: (res: any) => {

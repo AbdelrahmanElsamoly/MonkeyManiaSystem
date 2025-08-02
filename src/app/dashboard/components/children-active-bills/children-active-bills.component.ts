@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CloseBillDialogComponent } from 'src/app/shared/components/close-bill-dialog/close-bill-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { CreateBillDialogComponent } from 'src/app/shared/components/create-bill-dialog/create-bill-dialog.component';
+import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-dialog/promo-code-dialog.component';
 
 @Component({
   selector: 'app-children-active-bills',
@@ -55,7 +56,6 @@ export class ChildrenActiveBillsComponent implements OnInit {
   getAllBills(type: string = '/active/', params: any) {
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.billsRes = data.map((item: any) => {
           const firstChild = item.children[0];
           const firstPhone = firstChild?.phone_numbers?.[0]?.phone_number ?? '';
@@ -66,6 +66,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
             BRANCH: item.branch,
             BILLS_ID: item.id,
             isActive: item.is_active,
+            DISCOUNT_VALUE: Number(item.discount_value),
           };
         });
       },
@@ -106,7 +107,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
     };
-    console.log(this.params);
+
     this.getAllBills(this.type, this.params);
   }
   onBranchSelectionChange(selected: any) {
@@ -165,6 +166,21 @@ export class ChildrenActiveBillsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.getAllBills(this.type, this.params);
+      }
+    });
+  }
+  openPromoDialog(bill: any): void {
+    const dialogRef = this.dialog.open(PromoCodeDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: { billId: bill.BILLS_ID },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success) {
+        // Handle success - maybe refresh the bill data, show success message, etc.
+        this.getAllBills(this.type, this.params);
+      } else {
       }
     });
   }

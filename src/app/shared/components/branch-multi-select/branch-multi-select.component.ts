@@ -24,7 +24,6 @@ export class BranchMultiSelectComponent implements OnInit {
     if (this.selectedValues.length == 0) {
       this.selectedValues = ['all'];
       this.selectedBranchesChange.emit(this.selectedValues);
-      console.log(this.selectedBranchesChange);
     } else {
       const value = event.value;
       this.selectedValues = value;

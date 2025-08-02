@@ -87,7 +87,6 @@ export class SchoolsComponent implements OnInit {
     this.router.navigate(['/dashboard/school', schoolId]);
   }
   schoolBulkUpLoad(csvFile: any) {
-    console.log(csvFile);
     this.dashboardService.uploadBulkSchool(csvFile).subscribe((res: any) => {
       this.toaster.success(res.message);
     });

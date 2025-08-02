@@ -37,7 +37,8 @@ import { CreateBillDialogComponent } from './components/create-bill-dialog/creat
 import { MapSelectedChildrenPipe } from './pipes/map-selected-children.pipe';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
-
+import { PromoCodeDialogComponent } from './components/promo-code-dialog/promo-code-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -58,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CloseBillDialogComponent,
     CreateBillDialogComponent,
     MapSelectedChildrenPipe,
+    PromoCodeDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -66,6 +68,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatSidenavModule,
     MatToolbarModule,
+    MatProgressSpinnerModule,
     MatIconModule,
     MatAutocompleteModule,
     MatTableModule,
@@ -103,6 +106,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CsvUploaderComponent,
     ChildDialogComponent,
     CloseBillDialogComponent,
+    PromoCodeDialogComponent,
   ],
 })
 export class SharedModule {}

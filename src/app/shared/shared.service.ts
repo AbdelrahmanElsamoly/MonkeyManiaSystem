@@ -25,4 +25,9 @@ export class SharedService {
   createBill(body: any) {
     return this.http.post(`${this.baseUrl}/bill/create/`, body);
   }
+  ApplyPromoCode(billId: number, discount: string) {
+    return this.http.patch(`${this.baseUrl}/bill/${billId}/apply_discount/`, {
+      discount,
+    });
+  }
 }

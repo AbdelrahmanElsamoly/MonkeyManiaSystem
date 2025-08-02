@@ -24,6 +24,12 @@
           <button [disabled]="!row?.isActive" (click)="editClicked.emit(row)">
             💳
           </button>
+          <button (click)="promoClicked.emit(row)">🎫</button>
+
+          <span *ngIf="row?.DISCOUNT_VALUE" class="have_discount">
+            💸
+            {{ row.DISCOUNT_VALUE }}
+          </span>
         </td>
       </tr>
     </tbody>

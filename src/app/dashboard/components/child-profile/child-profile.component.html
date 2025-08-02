@@ -4,71 +4,71 @@
   </div>
 
   <div class="school-profile-card">
-    <h2>{{ childData.name }} 👶</h2>
+    <h2>{{ childData?.name }} 👶</h2>
 
     <div class="field">
       <span class="label">{{ "BIRTH_DATE" | translate }} : 🎂</span>
-      <span class="value">{{ childData.birth_date | date }}</span>
+      <span class="value">{{ childData?.birth_date | date }}</span>
     </div>
 
     <div class="field">
       <span class="label">{{ "AGE" | translate }} : 📏</span>
       <span class="value">
-        {{ childData.age.years }}y {{ childData.age.months }}m
-        {{ childData.age.days }}d
+        {{ childData?.age.years }}y {{ childData?.age.months }}m
+        {{ childData?.age.days }}d
       </span>
     </div>
 
     <div class="field">
       <span class="label">{{ "ADDRESS" | translate }} : 📍</span>
-      <span class="value">{{ childData.address }}</span>
+      <span class="value">{{ childData?.address }}</span>
     </div>
     <div
       class="field d-flex justify-content-between"
-      *ngIf="childData.child_phone_numbers_set.length"
+      *ngIf="childData?.child_phone_numbers_set.length"
     >
       <span class="label">{{ "PHONE_NUMBERS" | translate }} : 📞</span>
       <ul class="value p-0 d-flex flex-column align-items-end">
-        <li *ngFor="let phone of childData.child_phone_numbers_set">
+        <li *ngFor="let phone of childData?.child_phone_numbers_set">
           {{ phone.phone_number }} ({{ phone.relationship }})
         </li>
       </ul>
     </div>
     <div class="field">
       <span class="label">{{ "SCHOOL_NAME" | translate }} : 🏫</span>
-      <span class="value">{{ childData.school }}</span>
+      <span class="value">{{ childData?.school }}</span>
     </div>
     <div class="field">
       <span class="label">{{ "STATUS" | translate }} : 📌</span>
       <span
         class="value"
         [ngClass]="{
-          active: childData.is_active,
-          inactive: !childData.is_active
+          active: childData?.is_active,
+          inactive: !childData?.is_active
         }"
       >
-        {{ childData.is_active ? "Active" : "Inactive" }}
+        {{ childData?.is_active ? "Active" : "Inactive" }}
       </span>
     </div>
 
     <div class="field">
       <span class="label">{{ "SPECIAL_NEEDS" | translate }} : ♿</span>
-      <span class="value">{{ childData.special_needs ? "Yes" : "No" }}</span>
+      <span class="value">{{ childData?.special_needs ? "Yes" : "No" }}</span>
     </div>
 
     <div class="field">
       <span class="label">{{ "NOTES" | translate }} : 📝</span>
-      <span class="value">{{ childData.notes || "No notes" }}</span>
+      <span class="value">{{ childData?.notes || "No notes" }}</span>
     </div>
 
     <div class="field">
       <span class="label">{{ "CREATED_DATE" | translate }} : 📅</span>
-      <span class="value">{{ childData.created | date : "medium" }}</span>
+      <span class="value">{{ childData?.created | date : "medium" }}</span>
     </div>
 
     <div class="field">
       <span class="label">{{ "LAST_UPDATED" | translate }} : 🔄</span>
-      <span class="value">{{ childData.updated | date : "medium" }}</span>
+      <span class="value">{{ childData?.updated | date : "medium" }}</span>
     </div>
   </div>
 </div>

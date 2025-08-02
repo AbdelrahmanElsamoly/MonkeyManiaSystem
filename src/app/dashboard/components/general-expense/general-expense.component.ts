@@ -52,7 +52,6 @@ export class GeneralExpenseComponent implements OnInit {
   getGeneralExpense(type: string = 'general_expense', params: any) {
     this.dashboardService.getExpenses(type, params).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.expenseRes = data.map((item: any) => ({
           Name: item.name,
           TOTAL_PRICE: item.total_price,
@@ -71,7 +70,6 @@ export class GeneralExpenseComponent implements OnInit {
       total_price: expense.TOTAL_PRICE,
       quantity: expense.QUANTITY,
     };
-    console.log(body);
     const dialogRef = this.dialog.open(ExpenseDialogComponent, {
       width: '500px',
       data: {
@@ -123,7 +121,6 @@ export class GeneralExpenseComponent implements OnInit {
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
     };
-    console.log(this.params);
     this.getGeneralExpense(this.type, this.params);
   }
   onBranchSelectionChange(selected: any) {
@@ -160,7 +157,6 @@ export class GeneralExpenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Dialog closed successfully, refreshing data...');
         this.getGeneralExpense(this.type, this.params); // Refresh your list
       }
     });

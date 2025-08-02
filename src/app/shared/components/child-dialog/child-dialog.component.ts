@@ -34,7 +34,6 @@ export class ChildDialogComponent implements OnInit {
 
   ngOnInit() {
     this.getSchools();
-    console.log(this.data);
     if (this.data) {
       this.isUpdateMode = true; // ✅ Switch to Update mode
       this.patchChildData(this.data.childData);
@@ -77,7 +76,7 @@ export class ChildDialogComponent implements OnInit {
       address: child.address,
       notes: child.notes,
       school: child.school
-        ? this.schools.find((s) => s.id === child.school) || null
+        ? this.schools.find((s) => s.id === child.school_id) || null
         : null,
     });
 
