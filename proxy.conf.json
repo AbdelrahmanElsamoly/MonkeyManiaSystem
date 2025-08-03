@@ -1,0 +1,20 @@
+{
+  "/api/*": {
+    "target": "https://new.monkey-mania.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/token/*": {
+    "target": "https://new.monkey-mania.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/auth/*": {
+    "target": "https://new.monkey-mania.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
