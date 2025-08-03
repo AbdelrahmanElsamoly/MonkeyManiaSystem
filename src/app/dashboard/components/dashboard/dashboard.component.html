@@ -46,7 +46,7 @@
       <span class="spacer"></span>
 
       <!-- Desktop items -->
-      <div class="d-flex align-items-center" *ngIf="!isMobile && branch">
+      <div class="d-flex align-items-center" *ngIf="!isMobile && branch.name">
         <p class="m-0">🌿 {{ "BRANCH" | translate }}</p>
         <button
           class="branch-btn mx-2 d-flex align-items-center"

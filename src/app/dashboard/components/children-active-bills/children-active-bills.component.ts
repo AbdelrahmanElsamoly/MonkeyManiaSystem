@@ -21,6 +21,8 @@ export class ChildrenActiveBillsComponent implements OnInit {
   type: string = '/active/';
   selectedBranchIds: any[] = [];
   searchQuery: string = '';
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+
   params: {
     searchQuery: string;
     branchIds: any[];
@@ -62,7 +64,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
           return {
             NAME: firstChild?.name,
             PHONE_NUMBER: firstPhone,
-            SPENT_TIME: item.spent_time,
+            SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
             BRANCH: item.branch,
             BILLS_ID: item.id,
             isActive: item.is_active,
@@ -77,7 +79,16 @@ export class ChildrenActiveBillsComponent implements OnInit {
     this.selectedDateRange.start = date;
     this.checkAndTrigger();
   }
+  getSpentTimeFormatted(minutes: number): string {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
 
+    const hoursPart = hours > 0 ? `${hours} ساعة` : '';
+    const minutesPart = remainingMinutes > 0 ? `${remainingMinutes} دقيقة` : '';
+
+    if (hoursPart && minutesPart) return `${hoursPart} و${minutesPart}`;
+    return hoursPart || minutesPart || '0 دقيقة';
+  }
   onEndDateChange(date: Date): void {
     this.selectedDateRange.end = date;
     this.checkAndTrigger();

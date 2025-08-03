@@ -10,6 +10,7 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { loginService } from 'src/app/auth/login.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -25,12 +26,34 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    // Skip interceptor for asset requests and local resources
+    const isAssetRequest =
+      req.url.includes('/assets/') ||
+      req.url.startsWith('assets/') ||
+      req.url.endsWith('.json') ||
+      req.url.endsWith('.css') ||
+      req.url.endsWith('.js') ||
+      req.url.endsWith('.html');
+
+    if (isAssetRequest) {
+      return next.handle(req);
+    }
+
     const token = this.authService.getAccessToken();
 
     let headers = req.headers.set('accept-language', 'ar');
     if (token) headers = headers.set('Authorization', `Bearer ${token}`);
 
-    const clonedReq = req.clone({ headers });
+    // Only modify URL for API requests
+    let url = req.url;
+    if (!url.startsWith('http')) {
+      url = environment.apiUrl + url.replace(/^\//, '');
+    }
+
+    const clonedReq = req.clone({
+      headers,
+      url,
+    });
 
     return next.handle(clonedReq).pipe(
       catchError((error) => {

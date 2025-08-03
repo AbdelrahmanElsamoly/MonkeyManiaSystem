@@ -15,6 +15,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 })
 export class SideNavComponent implements AfterViewInit {
   @Input() collapsed = false;
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 
   @ViewChildren(MatExpansionPanel) panels!: QueryList<MatExpansionPanel>;
   constructor(private translate: TranslateService) {

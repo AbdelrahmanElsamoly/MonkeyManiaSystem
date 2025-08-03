@@ -11,6 +11,8 @@ import { ExpenseDialogComponent } from 'src/app/shared/components/expense-dialog
   styleUrls: ['./general-expense.component.scss'],
 })
 export class GeneralExpenseComponent implements OnInit {
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
     end: null,
@@ -151,7 +153,7 @@ export class GeneralExpenseComponent implements OnInit {
   }
   openExpenseDialog(type: 'general' | 'material') {
     const dialogRef = this.dialog.open(ExpenseDialogComponent, {
-      width: '400px',
+      width: '500px',
       data: { type }, // Pass type to dialog
     });
 

@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent {
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+
   displayedColumns = [
     this.translate.instant('NAME'),
     this.translate.instant('PHONE_NUMBERS'),

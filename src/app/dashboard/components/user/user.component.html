@@ -8,6 +8,7 @@
     class="search-input mt-4"
   />
   <app-branch-multi-select
+    *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner'"
     (selectedBranchesChange)="onBranchSelectionChange(searchTerm, $event)"
   ></app-branch-multi-select>
 </div>

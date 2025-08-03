@@ -1,7 +1,7 @@
 <div class="expense-container mt-4">
+  <h3>{{ "ALL_ACTIVE_CHILD_BILLS" | translate }} ... 🟢</h3>
   <div class="d-flex justify-content-between align-items-center">
     <div class="d-flex flex-column justify-content-between">
-      <h3>{{ "ALL_ACTIVE_CHILD_BILLS" | translate }} ... 🟢</h3>
       <input
         type="text"
         placeholder="ابحث عن نفقة... 🔍"
@@ -9,7 +9,10 @@
         [(ngModel)]="searchQuery"
         (input)="searchExpense(searchQuery)"
       />
-      <div class="d-flex justify-content-start align-items-center mt-4">
+      <div
+        class="d-flex justify-content-start align-items-center mt-4"
+        *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner'"
+      >
         <app-branch-multi-select
           (selectedBranchesChange)="onBranchSelectionChange($event)"
         ></app-branch-multi-select>

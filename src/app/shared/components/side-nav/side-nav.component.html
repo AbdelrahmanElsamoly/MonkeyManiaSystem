@@ -26,6 +26,7 @@
     </mat-expansion-panel-header>
     <mat-action-list>
       <a
+        *ngIf="userInfo.role == 'admin' || userInfo.role == 'owner'"
         mat-list-item
         routerLink="/dashboard/user"
         routerLinkActive="active-link"
@@ -95,10 +96,13 @@
             </span>
           </a>
           <a
+            *ngIf="
+              (userInfo.role == 'admin' || userInfo.role == 'owner') &&
+              !collapsed
+            "
             mat-list-item
             routerLink="/dashboard/bills/children/all"
             routerLinkActive="active-link"
-            *ngIf="!collapsed"
           >
             <mat-icon>receipt</mat-icon>
             <span>
@@ -130,10 +134,13 @@
             </span>
           </a>
           <a
+            *ngIf="
+              (userInfo.role == 'admin' || userInfo.role == 'owner') &&
+              !collapsed
+            "
             mat-list-item
             routerLink="/dashboard/bills/cafe/all"
             routerLinkActive="active-link"
-            *ngIf="!collapsed"
           >
             <mat-icon>receipt</mat-icon>
             <span>
@@ -196,7 +203,10 @@
   </mat-expansion-panel>
 
   <!-- expense -->
-  <mat-expansion-panel [hideToggle]="collapsed">
+  <mat-expansion-panel
+    *ngIf="userInfo.role == 'admin' || userInfo.role == 'owner'"
+    [hideToggle]="collapsed"
+  >
     <mat-expansion-panel-header class="px-3">
       <mat-panel-title>
         <mat-icon>account_balance_wallet</mat-icon>

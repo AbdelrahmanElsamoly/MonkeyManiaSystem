@@ -4,7 +4,9 @@
 
 <div class="bill-container" *ngIf="bill; else loading">
   <h1 class="bill-title">🧾 {{ "BILL_DETAILS" | translate }}</h1>
-
+  <h6 *ngIf="!bill.is_allowed_age" class="text-danger bill-title">
+    {{ "COMPANION_REQUIRED" | translate }}
+  </h6>
   <div class="bill-card">
     <!-- Children Count -->
     <div class="bill-row" *ngIf="bill.children?.length">
@@ -31,9 +33,13 @@
     </div>
 
     <!-- Payment Methods -->
-    <div class="bill-row"><span>💳 Visa:</span> {{ bill.visa }} EGP</div>
-    <div class="bill-row"><span>💵 Cash:</span> {{ bill.cash }} EGP</div>
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="bill.visa > 0">
+      <span>💳 Visa:</span> {{ bill.visa }} EGP
+    </div>
+    <div class="bill-row" *ngIf="bill.cash > 0">
+      <span>💵 Cash:</span> {{ bill.cash }} EGP
+    </div>
+    <div class="bill-row" *ngIf="bill.instapay > 0">
       <span>📲 Instapay:</span> {{ bill.instapay }} EGP
     </div>
 
@@ -44,13 +50,13 @@
     </div>
 
     <!-- Discount -->
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="bill.discount_value > 0">
       <span>🏷️ {{ "DISCOUNT" | translate }}:</span>
       {{ bill.discount_value }} {{ bill.discount_type || "" }}
     </div>
 
     <!-- Money Unbalance -->
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="bill.money_unbalance > 0">
       <span>⚖️ {{ "REST" | translate }}:</span>
       {{ bill.money_unbalance }} EGP
     </div>
@@ -69,7 +75,7 @@
       <span>✅ {{ "ENTER_AT" | translate }}:</span>
       {{ bill.created | date : "short" }}
     </div>
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="bill.finished">
       <span>✅ {{ "EXIT_AT" | translate }}:</span>
       {{ bill.finished | date : "short" }}
     </div>

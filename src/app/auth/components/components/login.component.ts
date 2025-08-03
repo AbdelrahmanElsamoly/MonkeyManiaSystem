@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
+          console.log(error);
           this.toaster.error(error.error.message);
         }
       );

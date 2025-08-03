@@ -14,6 +14,8 @@ import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-d
   styleUrls: ['./children-bills.component.scss'],
 })
 export class ChildrenBillsComponent implements OnInit {
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
     end: null,
@@ -62,17 +64,26 @@ export class ChildrenBillsComponent implements OnInit {
           return {
             NAME: firstChild?.name,
             PHONE_NUMBER: firstPhone,
-            SPENT_TIME: item.spent_time,
+            SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
             BRANCH: item.branch,
             BILLS_ID: item.id,
             isActive: item.is_active,
-            DISCOUNT_VALUE: item.discount_value,
+            DISCOUNT_VALUE: Number(item.discount_value),
           };
         });
       },
     });
   }
+  getSpentTimeFormatted(minutes: number): string {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
 
+    const hoursPart = hours > 0 ? `${hours} ساعة` : '';
+    const minutesPart = remainingMinutes > 0 ? `${remainingMinutes} دقيقة` : '';
+
+    if (hoursPart && minutesPart) return `${hoursPart} و${minutesPart}`;
+    return hoursPart || minutesPart || '0 دقيقة';
+  }
   onStartDateChange(date: Date): void {
     this.selectedDateRange.start = date;
     this.checkAndTrigger();

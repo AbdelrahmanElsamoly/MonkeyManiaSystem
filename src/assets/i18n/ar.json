@@ -146,5 +146,6 @@
   "PROMO_CODE_TOO_SHORT": "كود الخصم قصير جداً",
   "APPLYING_PROMO_CODE": "جاري تطبيق كود الخصم...",
   "HALF_HOUR_PRICE": "سعر نصف ساعة",
-  "HOUR_PRICE": "سعر الساعة"
+  "HOUR_PRICE": "سعر الساعة",
+  "COMPANION_REQUIRED": "يلزم وجود مرافق"
 }

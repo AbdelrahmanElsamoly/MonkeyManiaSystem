@@ -6,8 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class DashboardService {
-  baseUrl = 'https://monkey-mania-production.up.railway.app';
-
   constructor(private http: HttpClient) {}
 
   // schools Api
@@ -17,37 +15,34 @@ export class DashboardService {
       params = { params: { search: searchQuery } };
     }
 
-    return this.http.get(`${this.baseUrl}/school/all/`, params);
+    return this.http.get(`school/all/`, params);
   }
 
   createSchool(schoolData: any) {
-    return this.http.post(`${this.baseUrl}/school/create/`, schoolData);
+    return this.http.post(`school/create/`, schoolData);
   }
 
   updateSchool(schoolId: string, schoolData: any) {
-    return this.http.put(
-      `${this.baseUrl}/school/${schoolId}/update/`,
-      schoolData
-    );
+    return this.http.put(`school/${schoolId}/update/`, schoolData);
   }
   getSchoolById(schoolId: string) {
-    return this.http.get(`${this.baseUrl}/school/${schoolId}/`);
+    return this.http.get(`school/${schoolId}/`);
   }
 
   uploadBulkSchool(file: any) {
-    return this.http.post(`${this.baseUrl}/school/bulk_create/`, file);
+    return this.http.post(`school/bulk_create/`, file);
   }
   // mainpAge Api
   getStatistics(branchId: any) {
     let params = {};
     if (branchId) {
       params = new HttpParams().set('branch_id', branchId);
-      return this.http.get(`${this.baseUrl}/dashboard/statistics`, { params });
+      return this.http.get(`dashboard/statistics`, { params });
     } else if (branchId == null) {
-      return this.http.get(`${this.baseUrl}/dashboard/statistics`);
+      return this.http.get(`dashboard/statistics`);
     }
     // Default return to handle all code paths
-    return this.http.get(`${this.baseUrl}/dashboard/statistics`);
+    return this.http.get(`dashboard/statistics`);
   }
 
   // children Api
@@ -57,18 +52,18 @@ export class DashboardService {
       params = { params: { search: searchQuery } };
     }
 
-    return this.http.get(`${this.baseUrl}/child/all/`, params);
+    return this.http.get(`child/all/`, params);
   }
   getChildById(childId: any) {
-    return this.http.get(`${this.baseUrl}/child/${childId}/`);
+    return this.http.get(`child/${childId}/`);
   }
 
   createChild(body: any) {
-    return this.http.post(`${this.baseUrl}/child/create/`, body);
+    return this.http.post(`child/create/`, body);
   }
 
   updateChild(childId: any, body: any) {
-    return this.http.put(`${this.baseUrl}/child/${childId}/update/`, body);
+    return this.http.put(`child/${childId}/update/`, body);
   }
   // user Api
   getUsers(searchQuery: string = '', branchIds: any[] = []): Observable<any> {
@@ -88,10 +83,10 @@ export class DashboardService {
       });
     }
 
-    return this.http.get(`${this.baseUrl}/user/all/`, { params });
+    return this.http.get(`user/all/`, { params });
   }
   getUserById(userId: any) {
-    return this.http.get(`${this.baseUrl}/user/${userId}/`);
+    return this.http.get(`user/${userId}/`);
   }
 
   // Expense
@@ -112,34 +107,31 @@ export class DashboardService {
       params = params.set('start_date', paramsOj.startDate);
       params = params.set('end_date', paramsOj.endDate);
     }
-    return this.http.get(`${this.baseUrl}/${type}/all/`, { params });
+    return this.http.get(`${type}/all/`, { params });
   }
 
   getMaterialExpenseById(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/material_expense/${id}/`);
+    return this.http.get(`material_expense/${id}/`);
   }
 
   getGeneralExpenseById(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/general_expense/${id}/`);
+    return this.http.get(`general_expense/${id}/`);
   }
 
   createGeneralExpense(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/general_expense/create/`, data);
+    return this.http.post(`general_expense/create/`, data);
   }
 
   createMaterialExpense(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/material_expense/create/`, data);
+    return this.http.post(`material_expense/create/`, data);
   }
 
   updateGeneralExpense(id: number, body: any) {
-    return this.http.put(`${this.baseUrl}/general_expense/${id}/update/`, body);
+    return this.http.put(`general_expense/${id}/update/`, body);
   }
 
   updateMaterialExpense(id: number, body: any) {
-    return this.http.put(
-      `${this.baseUrl}/material_expense/${id}/update/`,
-      body
-    );
+    return this.http.put(`material_expense/${id}/update/`, body);
   }
 
   // bills Api
@@ -160,12 +152,12 @@ export class DashboardService {
       params = params.set('start_date', paramsOj.startDate);
       params = params.set('end_date', paramsOj.endDate);
     }
-    return this.http.get(`${this.baseUrl}/bill${type}all/`, { params });
+    return this.http.get(`bill${type}all/`, { params });
   }
   getChildBillById(billId: any) {
-    return this.http.get(`${this.baseUrl}/bill/${billId}/`);
+    return this.http.get(`bill/${billId}/`);
   }
   closeBill(id: any, body: any) {
-    return this.http.patch(`${this.baseUrl}/bill/${id}/close/`, body);
+    return this.http.patch(`bill/${id}/close/`, body);
   }
 }

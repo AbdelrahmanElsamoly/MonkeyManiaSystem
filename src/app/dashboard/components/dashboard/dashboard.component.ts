@@ -59,6 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.isMobile = result.matches;
         if (!this.isMobile) this.showMobileMenu = false;
       });
+    console.log(this.branch);
   }
 
   toggleSidebar(): void {

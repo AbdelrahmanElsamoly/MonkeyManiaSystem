@@ -11,6 +11,7 @@
       />
       <div class="d-flex justify-content-start align-items-center mt-4">
         <app-branch-multi-select
+          *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner'"
           (selectedBranchesChange)="onBranchSelectionChange($event)"
         ></app-branch-multi-select>
 

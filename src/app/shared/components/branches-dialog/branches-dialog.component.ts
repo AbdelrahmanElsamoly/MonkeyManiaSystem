@@ -12,7 +12,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export class BranchesDialogComponent implements OnInit {
   branches: any[] = []; // Will come from API or dialog data
   selectedBranchId: number | null = null;
-
+  branchInfo = JSON.parse(localStorage.getItem('branch') || '{}');
   constructor(
     private sharedService: SharedService,
     private translate: TranslateService,
@@ -27,6 +27,7 @@ export class BranchesDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBranches();
+    this.selectedBranchId = this.branchInfo.id || null;
   }
 
   getBranches() {

@@ -8,27 +8,23 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root',
 })
 export class loginService {
-  private baseUrl = 'https://monkey-mania-production.up.railway.app';
-
   constructor(private http: HttpClient, private router: Router) {}
 
   login(body: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/token/obtain/`, body);
+    return this.http.post(`token/obtain/`, body);
   }
 
   refreshToken(): Observable<any> {
     const refresh = this.getRefreshToken();
-    return this.http.post(`${this.baseUrl}/token/refresh/`, { refresh });
+    return this.http.post(`token/refresh/`, { refresh });
   }
 
   logout(): void {
     const refresh = this.getRefreshToken();
     if (refresh) {
-      this.http
-        .post(`${this.baseUrl}/token/blacklist/`, { refresh })
-        .subscribe({
-          complete: () => this.clearSession(),
-        });
+      this.http.post(`token/blacklist/`, { refresh }).subscribe({
+        complete: () => this.clearSession(),
+      });
     } else {
       this.clearSession();
     }
@@ -68,6 +64,6 @@ export class loginService {
 
   // get branches
   getBranches() {
-    return this.http.get(`${this.baseUrl}/branch/all/`);
+    return this.http.get(`branch/all/`);
   }
 }
