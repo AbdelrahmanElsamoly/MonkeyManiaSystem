@@ -26,4 +26,7 @@ export class SharedService {
       discount,
     });
   }
+  getBillDetails(billId: number) {
+    return this.http.get(`product_bill/${billId}/`);
+  }
 }

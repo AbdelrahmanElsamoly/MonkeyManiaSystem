@@ -22,23 +22,34 @@ export class UserComponent {
   tableData: any[] = [];
   isLoading: boolean = false;
   selectedBranch: any;
+
+  // ✅ Added for server pagination
+  totalUsers: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+
   constructor(
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private router: Router
   ) {}
+
   ngOnInit() {
-    if (this.tableData) {
-      this.getUsers();
-    }
+    this.getUsers();
   }
 
-  getUsers(searchQuery: string = '', branchIds: number[] = []) {
+  // ✅ Updated to request paginated data from API
+  getUsers(
+    searchQuery: string = '',
+    branchIds: number[] = [],
+    page: number = 1
+  ) {
     this.isLoading = true;
-    this.dashboardService.getUsers(searchQuery, branchIds).subscribe({
-      next: (data: any) => {
+    this.dashboardService.getUsers(searchQuery, branchIds, page).subscribe({
+      next: (res: any) => {
         this.isLoading = false;
-        this.tableData = data.map((user: any) => ({
+
+        this.tableData = res.results.map((user: any) => ({
           NAME: user.username,
           PHONE_NUMBERS: user.phone_number,
           BRANCH: user.branch,
@@ -46,20 +57,32 @@ export class UserComponent {
           ROLE: user.role,
           ID: user.id,
         }));
+
+        this.totalUsers = res.count;
+        this.currentPage = page;
       },
       error: (error) => {
-        console.error('Error fetching schools:', error);
+        console.error('Error fetching users:', error);
+        this.isLoading = false;
       },
     });
   }
+
   searchUsers(searchQuery: string) {
-    this.getUsers(searchQuery, this.selectedBranch);
+    this.getUsers(searchQuery, this.selectedBranch, 1);
   }
+
   onBranchSelectionChange(searchQuery: string, selected: number[]) {
     this.selectedBranch = selected;
-    this.getUsers(searchQuery, selected);
+    this.getUsers(searchQuery, selected, 1);
   }
+
   goToProfilePage(userId: any) {
     this.router.navigate(['/dashboard/user', userId]);
+  }
+
+  // ✅ Called when DataTable emits a page change
+  onPageChange(page: number) {
+    this.getUsers(this.searchTerm, this.selectedBranch, page);
   }
 }

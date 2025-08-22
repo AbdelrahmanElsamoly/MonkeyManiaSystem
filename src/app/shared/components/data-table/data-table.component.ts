@@ -21,24 +21,42 @@ export class DataTableComponent implements OnInit, OnChanges {
   @Output() itemClicked = new EventEmitter<any>();
   @Input() isActiveBills: boolean = false;
   @Input() isActive: boolean = true;
+
+  // ✅ Server pagination inputs
+  @Input() paginationType: 'local' | 'server' = 'local';
+  @Input() totalItems: number = 0;
+  @Output() pageChange = new EventEmitter<number>();
+
   filteredData: any[] = [];
-  pageSize = 7;
-  currentPage = 1;
+  pageSize = 10;
+  @Input() currentPage: number = 1; // ✅ Controlled by parent in server mode
   searchQuery = '';
 
-  // ✅ Pagination controls
+  // Pagination controls
   visiblePages: number[] = [];
-  maxVisible = 10; // Max pages to show
+  maxVisible = 10;
   startPage = 1;
   endPage = 10;
 
   ngOnInit(): void {
-    this.applyFilter();
+    if (this.paginationType === 'local') {
+      this.applyFilter();
+    } else {
+      this.filteredData = this.data;
+      this.updatePagination();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['data'] || changes['searchQuery']) {
+    if (
+      this.paginationType === 'local' &&
+      (changes['data'] || changes['searchQuery'])
+    ) {
       this.applyFilter();
+    } else if (this.paginationType === 'server' && changes['data']) {
+      // In server mode, just update the data without resetting page
+      this.filteredData = this.data;
+      this.updatePagination();
     }
   }
 
@@ -49,23 +67,38 @@ export class DataTableComponent implements OnInit, OnChanges {
         String(value).toLowerCase().includes(query)
       )
     );
-    this.currentPage = 1;
+
+    if (this.paginationType === 'local') {
+      this.currentPage = 1; // ✅ Only reset page in local mode
+    }
+
     this.updatePagination();
   }
 
   get paginatedData() {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredData.slice(start, start + this.pageSize);
+    if (this.paginationType === 'local') {
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.filteredData.slice(start, start + this.pageSize);
+    }
+    return this.filteredData;
   }
 
   totalPages(): number {
+    if (this.paginationType === 'server') {
+      return Math.ceil(this.totalItems / this.pageSize);
+    }
     return Math.ceil(this.filteredData.length / this.pageSize);
   }
 
   changePage(page: number) {
     if (page < 1 || page > this.totalPages()) return;
-    this.currentPage = page;
-    this.updatePagination();
+
+    if (this.paginationType === 'server') {
+      this.pageChange.emit(page); // Let parent update currentPage
+    } else {
+      this.currentPage = page;
+      this.updatePagination();
+    }
   }
 
   updatePagination() {
@@ -93,7 +126,6 @@ export class DataTableComponent implements OnInit, OnChanges {
     );
   }
 
-  // ✅ Emit Events
   edit(row: any) {
     this.editClicked.emit(row);
   }

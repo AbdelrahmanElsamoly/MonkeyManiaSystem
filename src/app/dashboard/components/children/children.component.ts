@@ -17,7 +17,9 @@ export class ChildrenComponent implements OnInit {
     this.translate.instant('PHONE_NUMBER'),
     this.translate.instant('STATUS'),
   ];
-
+  totalChildren: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
   searchTerm: string = '';
   myTableData = [];
   isloadign: boolean = false;
@@ -31,11 +33,13 @@ export class ChildrenComponent implements OnInit {
   ngOnInit(): void {
     this.getChildrenData();
   }
-  getChildrenData(searchQuery: string = '') {
-    this.dashboardService.getChild(searchQuery).subscribe({
-      next: (data: any) => {
+  getChildrenData(searchQuery: string = '', page: number = 1) {
+    this.isloadign = true;
+    this.dashboardService.getChild(searchQuery, page).subscribe({
+      next: (res: any) => {
         this.isloadign = false;
-        this.myTableData = data.map((child: any) => ({
+
+        this.myTableData = res.results.map((child: any) => ({
           CHILD_NAME: child.name,
           AGE: `${child.age.years}Y ${child.age.months}M ${child.age.days}D`,
           PHONE_NUMBER: child.child_phone_numbers_set[0]?.phone_number || 'N/A',
@@ -43,12 +47,17 @@ export class ChildrenComponent implements OnInit {
           ID: child.id,
           CHILD: child,
         }));
+
+        this.totalChildren = res.count; // ✅ needed for DataTable totalItems
+        this.currentPage = page; // ✅ keep current page in sync
       },
       error: (error) => {
-        console.error('Error fetching schools:', error);
+        console.error('Error fetching children:', error);
+        this.isloadign = false;
       },
     });
   }
+
   goToChildProfilePge(childId: any) {
     this.router.navigate(['/dashboard/child', childId]);
   }

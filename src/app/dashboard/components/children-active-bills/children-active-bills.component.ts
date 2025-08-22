@@ -20,6 +20,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
   };
   type: string = '/active/';
   selectedBranchIds: any[] = [];
+  page = 1;
   searchQuery: string = '';
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 

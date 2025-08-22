@@ -4,7 +4,7 @@
     <div class="d-flex flex-column justify-content-between">
       <input
         type="text"
-        placeholder="ابحث عن نفقة... 🔍"
+        placeholder="ابحث عن فاتورة... 🔍"
         class="search-input mt-4"
         [(ngModel)]="searchQuery"
         (input)="searchExpense(searchQuery)"
@@ -17,7 +17,7 @@
           (selectedBranchesChange)="onBranchSelectionChange($event)"
         ></app-branch-multi-select>
 
-        <mat-form-field appearance="fill" class="mx-3">
+        <!-- <mat-form-field appearance="fill" class="mx-3">
           <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
 
           <mat-date-range-input [rangePicker]="picker">
@@ -38,7 +38,7 @@
             [for]="picker"
           ></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
+        </mat-form-field> -->
       </div>
     </div>
     <div>

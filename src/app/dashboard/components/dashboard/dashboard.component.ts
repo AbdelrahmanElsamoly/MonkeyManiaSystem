@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BranchesDialogComponent } from 'src/app/shared/components/branches-dialog/branches-dialog.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,12 +17,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   branch = JSON.parse(localStorage.getItem('branch') || '{}');
   currentDate = new Date();
   intervalId: any;
-
-  // ✅ New for mobile view
-  isMobile = false;
-  showMobileMenu = false;
-  private bpSub!: Subscription;
-
   clockEmoji = '🕒';
   private clockEmojis = [
     '🕐',
@@ -37,43 +32,46 @@ export class DashboardComponent implements OnInit, OnDestroy {
     '🕚',
     '🕛',
   ];
+
+  isMobile = false; // ✅ detect mobile
+  showMobileMenu = false; // ✅ toggle mobile nav
   private emojiIndex = 0;
+
+  private breakpointSub!: Subscription;
+
   constructor(
     private authService: loginService,
     private dialog: MatDialog,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.intervalId = setInterval(() => {
       this.currentDate = new Date();
     }, 60000);
+
+    // ✅ Responsive detection
     setInterval(() => {
       this.emojiIndex = (this.emojiIndex + 1) % this.clockEmojis.length;
       this.clockEmoji = this.clockEmojis[this.emojiIndex];
     }, 1000);
-    // ✅ Detect mobile
-    this.bpSub = this.breakpointObserver
-      .observe(['(max-width: 992px)'])
-      .subscribe((result) => {
-        this.isMobile = result.matches;
-        if (!this.isMobile) this.showMobileMenu = false;
-      });
-    console.log(this.branch);
   }
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 
-  toggleMobileMenu(): void {
+  toggleMobileMenu() {
     this.showMobileMenu = !this.showMobileMenu;
   }
 
   logOUt() {
     this.authService.logout();
   }
-
+  makeOrder() {
+    this.router.navigate(['/dashboard/order']);
+  }
   openBranchDialog() {
     const dialogRef = this.dialog.open(BranchesDialogComponent, {
       width: '500px',
@@ -87,6 +85,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
-    if (this.bpSub) this.bpSub.unsubscribe();
+    if (this.breakpointSub) this.breakpointSub.unsubscribe();
   }
 }

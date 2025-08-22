@@ -50,6 +50,11 @@
 <app-data-table
   [displayedColumns]="['Name', 'TOTAL_PRICE', 'QUANTITY', 'BRANCH']"
   [data]="expenseRes"
+  [paginationType]="'server'"
+  [totalItems]="totalItems"
+  [currentPage]="currentPage"
+  (pageChange)="pageChanged($event)"
   (editClicked)="editExpense($event)"
   (itemClicked)="goToExpenseProfile($event)"
-></app-data-table>
+>
+</app-data-table>

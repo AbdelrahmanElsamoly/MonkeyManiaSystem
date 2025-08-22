@@ -46,6 +46,7 @@ import { ChildrenActiveBillsComponent } from './components/children-active-bills
 import { CafeBillsComponent } from './components/cafe-bills/cafe-bills.component';
 import { CafeActiveBillsComponent } from './components/cafe-active-bills/cafe-active-bills.component';
 import { ChildBillComponent } from './components/child-bill/child-bill.component';
+import { CofeOrderComponent } from './components/cofe-order/cofe-order.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -72,6 +73,7 @@ registerLocaleData(localeAr);
     CafeBillsComponent,
     CafeActiveBillsComponent,
     ChildBillComponent,
+    CofeOrderComponent,
   ],
   imports: [
     CommonModule,

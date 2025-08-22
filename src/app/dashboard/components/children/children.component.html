@@ -16,4 +16,8 @@
   [data]="myTableData"
   (itemClicked)="goToChildProfilePge($event.ID)"
   (editClicked)="editChild($event)"
+  [paginationType]="'server'"
+  [totalItems]="totalChildren"
+  (pageChange)="getChildrenData(searchTerm, $event)"
+  [currentPage]="currentPage"
 ></app-data-table>

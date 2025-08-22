@@ -46,13 +46,13 @@ export class DashboardService {
   }
 
   // children Api
-  getChild(searchQuery: string = '') {
-    let params = {};
+  getChild(searchQuery: string = '', page: number) {
+    let params = new HttpParams().set('page', page);
     if (searchQuery) {
-      params = { params: { search: searchQuery } };
+      params = params.set('search', searchQuery);
     }
 
-    return this.http.get(`child/all/`, params);
+    return this.http.get(`child/all/`, { params });
   }
   getChildById(childId: any) {
     return this.http.get(`child/${childId}/`);
@@ -66,9 +66,13 @@ export class DashboardService {
     return this.http.put(`child/${childId}/update/`, body);
   }
   // user Api
-  getUsers(searchQuery: string = '', branchIds: any[] = []): Observable<any> {
+  getUsers(
+    searchQuery: string = '',
+    branchIds: any[] = [],
+    page: number
+  ): Observable<any> {
     let params = new HttpParams();
-
+    params = params.set('page', page);
     if (searchQuery) {
       params = params.set('search', searchQuery);
     }
@@ -92,7 +96,9 @@ export class DashboardService {
   // Expense
   getExpenses(type: any, paramsOj: any) {
     let params = new HttpParams();
-
+    if (paramsOj.page) {
+      params = params.set('page', paramsOj.page);
+    }
     if (paramsOj.searchQuery) {
       params = params.set('search', paramsOj.searchQuery);
     }
@@ -137,6 +143,9 @@ export class DashboardService {
   // bills Api
   getChildrenBills(type: any, paramsOj: any) {
     let params = new HttpParams();
+    if (paramsOj.page) {
+      params = params.set('page', paramsOj.page);
+    }
 
     if (paramsOj.searchQuery) {
       params = params.set('search', paramsOj.searchQuery);
@@ -159,5 +168,72 @@ export class DashboardService {
   }
   closeBill(id: any, body: any) {
     return this.http.patch(`bill/${id}/close/`, body);
+  }
+
+  // Cafe Order APIs
+  getActiveBills(branchId: number): Observable<any> {
+    const params = new HttpParams().set('branch_id', branchId.toString());
+    return this.http.get(`bill/active/all`, { params });
+  }
+
+  getLayer1Products(branchId: number): Observable<any> {
+    const params = new HttpParams().set('branch_id', branchId.toString());
+    return this.http.get(`branch_product/layer1`, { params });
+  }
+
+  getLayer2Products(branchId: number, layer1: string): Observable<any> {
+    const params = new HttpParams()
+      .set('branch_id', branchId.toString())
+      .set('layer1', layer1);
+    return this.http.get(`branch_product/layer2`, { params });
+  }
+
+  getFinalProducts(
+    branchId: number,
+    layer1: string,
+    layer2: string
+  ): Observable<any> {
+    const params = new HttpParams()
+      .set('branch_id', branchId.toString())
+      .set('layer1', layer1)
+      .set('layer2', layer2);
+    return this.http.get(`branch_product/all`, { params });
+  }
+
+  createProductBill(orderData: any): Observable<any> {
+    return this.http.post(`product_bill/create/`, orderData);
+  }
+
+  // cafe Bills Api
+  getCafeBill(type: any, paramsOj: any) {
+    let params = new HttpParams();
+    if (paramsOj.page) {
+      params = params.set('page', paramsOj.page);
+    }
+
+    if (paramsOj.searchQuery) {
+      params = params.set('search', paramsOj.searchQuery);
+    }
+    if (!paramsOj.branchIds || paramsOj.branchIds.length === 0) {
+      params = params.set('branch_id', 'all');
+    } else {
+      paramsOj.branchIds.forEach((id: any) => {
+        params = params.append('branch_id', id.toString());
+      });
+    }
+    if (paramsOj.startDate && paramsOj.endDate) {
+      params = params.set('start_date', paramsOj.startDate);
+      params = params.set('end_date', paramsOj.endDate);
+    }
+    return this.http.get(`product_bill${type}all/`, { params });
+  }
+
+  getBillDetails(billId: number) {
+    return this.http.get(`/product_bill/${billId}/`);
+  }
+
+  // Update bill
+  updateBill(billId: number, payload: any) {
+    return this.http.patch(`/product_bill/${billId}/update/`, payload);
   }
 }

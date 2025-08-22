@@ -73,6 +73,8 @@ export class CreateBillDialogComponent implements OnInit {
   private setupChildrenControlSubscription(): void {
     this.childrenControl.valueChanges.subscribe((value: number[] | null) => {
       this.selectedChildIds = value || [];
+      // Update filtered children when selections change
+      this.updateFilteredChildren();
     });
   }
 
@@ -158,11 +160,37 @@ export class CreateBillDialogComponent implements OnInit {
     return child?.name || '';
   }
 
+  private updateFilteredChildren(): void {
+    const search = this.searchValue.toLowerCase();
+
+    if (!search.trim()) {
+      this.filteredChildren = [...this.itemList];
+      return;
+    }
+
+    // Create array for filtered results
+    const filteredResults: Child[] = [];
+
+    // First, add children that match the search
+    const matchingChildren = this.itemList.filter((child) =>
+      child.name.toLowerCase().includes(search)
+    );
+    filteredResults.push(...matchingChildren);
+
+    // Then, add selected children that don't match the search (so they remain visible)
+    const selectedNonMatchingChildren = this.itemList.filter(
+      (child) =>
+        this.selectedChildIds.includes(child.id) &&
+        !child.name.toLowerCase().includes(search)
+    );
+    filteredResults.push(...selectedNonMatchingChildren);
+
+    this.filteredChildren = filteredResults;
+  }
+
   onFilterChange(search: string): void {
     this.searchValue = search;
-    this.filteredChildren = this.itemList.filter((child) =>
-      child.name.toLowerCase().includes(search.toLowerCase())
-    );
+    this.updateFilteredChildren();
   }
 
   clearFilter(): void {
@@ -210,6 +238,9 @@ export class CreateBillDialogComponent implements OnInit {
   removeChild(id: number): void {
     const updated = this.selectedChildIds.filter((i) => i !== id);
     this.childrenControl.setValue(updated);
+
+    // Re-apply the current filter to update the displayed list
+    this.updateFilteredChildren();
   }
 
   // Form Validation

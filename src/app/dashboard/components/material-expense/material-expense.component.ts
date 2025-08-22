@@ -13,28 +13,19 @@ import { ExpenseDialogComponent } from 'src/app/shared/components/expense-dialog
 export class MaterialExpenseComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 
-  selectedDateRange: { start: Date | null; end: Date | null } = {
-    start: null,
-    end: null,
-  };
-  type: string = 'material_expense';
+  selectedDateRange = { start: null as Date | null, end: null as Date | null };
+  type = 'material_expense';
   selectedBranchIds: any[] = [];
-  searchQuery: string = '';
-  params: {
-    searchQuery: string;
-    branchIds: any[];
-    startDate: Date | string | null;
-    endDate: Date | string | null;
-  } = {
-    searchQuery: this.searchQuery,
-    branchIds: this.selectedBranchIds,
-    startDate: this.selectedDateRange.start
-      ? this.formatDateForAPI(this.selectedDateRange.start)
-      : null,
-    endDate: this.selectedDateRange.end
-      ? this.formatDateForAPI(this.selectedDateRange.end)
-      : null,
+  searchQuery = '';
+
+  params: any = {
+    searchQuery: '',
+    branchIds: [],
+    startDate: null,
+    endDate: null,
+    page: 1,
   };
+
   displayedColumns = [
     this.translate.instant('MATERIAL'),
     this.translate.instant('TOTAL_PRICE'),
@@ -42,20 +33,27 @@ export class MaterialExpenseComponent implements OnInit {
     this.translate.instant('BRANCH'),
     this.translate.instant('MEASURE_UNIT'),
   ];
+
   expenseRes: any[] = [];
+  totalItems = 0;
+  currentPage = 1;
+
   constructor(
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private router: Router,
     private dialog: MatDialog
   ) {}
+
   ngOnInit(): void {
     this.getMaterialExpense(this.type, this.params);
   }
+
   getMaterialExpense(type: string = 'material_expense', params: any) {
     this.dashboardService.getExpenses(type, params).subscribe({
-      next: (data: any) => {
-        this.expenseRes = data.map((item: any) => ({
+      next: (res: any) => {
+        // Expecting API to return: { results: [...], count: number }
+        this.expenseRes = res.results.map((item: any) => ({
           MATERIAL: item.material,
           TOTAL_PRICE: item.total_price,
           QUANTITY: item.quantity,
@@ -65,8 +63,15 @@ export class MaterialExpenseComponent implements OnInit {
           BRANCH_ID: item.branch_id,
           MATERIAL_ID: item.material_id,
         }));
+        this.totalItems = res.count;
+        this.currentPage = params.page;
       },
     });
+  }
+
+  pageChanged(page: number) {
+    this.params.page = page;
+    this.getMaterialExpense(this.type, this.params);
   }
 
   onStartDateChange(date: Date): void {
@@ -81,42 +86,24 @@ export class MaterialExpenseComponent implements OnInit {
 
   checkAndTrigger(): void {
     const { start, end } = this.selectedDateRange;
-
     if (start && end) {
-      this.params = {
-        searchQuery: this.searchQuery,
-        branchIds: this.selectedBranchIds,
-        startDate: this.formatDateForAPI(start),
-        endDate: this.formatDateForAPI(end),
-      };
+      this.params.startDate = this.formatDateForAPI(start);
+      this.params.endDate = this.formatDateForAPI(end);
+      this.params.page = 1;
       this.getMaterialExpense(this.type, this.params);
     }
   }
+
   searchExpense(searchQuery: string) {
-    this.params = {
-      searchQuery: searchQuery,
-      branchIds: this.selectedBranchIds,
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : null,
-    };
+    this.params.searchQuery = searchQuery;
+    this.params.page = 1;
     this.getMaterialExpense(this.type, this.params);
   }
+
   onBranchSelectionChange(selected: any) {
     this.selectedBranchIds = selected;
-    this.params = {
-      searchQuery: this.searchQuery,
-      branchIds: this.selectedBranchIds,
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : null,
-    };
+    this.params.branchIds = selected;
+    this.params.page = 1;
     this.getMaterialExpense(this.type, this.params);
   }
 
@@ -126,15 +113,17 @@ export class MaterialExpenseComponent implements OnInit {
     const day = ('0' + date.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
   }
+
   goToExpenseProfile(expense: any) {
     this.router.navigate(['/dashboard/expense', expense.ID], {
       queryParams: { type: 'material' },
     });
   }
+
   openExpenseDialog(type: 'general' | 'material') {
     const dialogRef = this.dialog.open(ExpenseDialogComponent, {
       width: '500px',
-      data: { type }, // Pass type to dialog
+      data: { type },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -143,7 +132,8 @@ export class MaterialExpenseComponent implements OnInit {
       }
     });
   }
-  editExpens(expense: any) {
+
+  editExpense(expense: any) {
     const body = {
       material: expense.MATERIAL,
       total_price: expense.TOTAL_PRICE,
@@ -153,8 +143,8 @@ export class MaterialExpenseComponent implements OnInit {
       width: '500px',
       data: {
         type: 'material',
-        isEdit: true, // Edit mode flag
-        expense: body, // Pass existing expense data
+        isEdit: true,
+        expense: body,
         id: expense.ID,
         materialId: expense.MATERIAL_ID,
       },
@@ -162,7 +152,7 @@ export class MaterialExpenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.getMaterialExpense(this.type, this.params); // reload after update
+        this.getMaterialExpense(this.type, this.params);
       }
     });
   }

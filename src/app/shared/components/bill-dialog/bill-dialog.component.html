@@ -1,0 +1,170 @@
+<div class="dialog-container p-3">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="dialog-header m-0">{{ "BILL_DETAILS" | translate }} 🧾✨</h2>
+    <button mat-icon-button color="warn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p class="mt-2">⏳ {{ "LOADING" | translate }}...</p>
+  </div>
+
+  <!-- Dialog Body -->
+  <div class="dialog-body" *ngIf="!isLoading && billData">
+    <!-- Bill Info -->
+    <div class="bill-info-card mb-4 p-3 rounded">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="info-item">
+            <label class="small">🔢 {{ "BILL_NUMBER" | translate }}</label>
+            <div class="fw-bold">#{{ billData.bill_number }}</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info-item">
+            <label class="small">🪑 {{ "TABLE_NUMBER" | translate }}</label>
+            <div class="fw-bold">{{ billData.table_number }}</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info-item">
+            <label class="small">📦 {{ "TAKE_AWAY" | translate }}</label>
+            <div class="fw-bold">
+              {{
+                billData.take_away
+                  ? "✅ " + ("YES" | translate)
+                  : "❌ " + ("NO" | translate)
+              }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info-item">
+            <label class="small">💰 {{ "TOTAL_PRICE" | translate }}</label>
+            <div class="fw-bold text-success">
+              💵
+              {{ getTotalBillPrice() | currency : "EGP" : "symbol" : "1.2-2" }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+      <h5 class="mb-3">🛍️ {{ "PRODUCTS" | translate }}</h5>
+
+      <div class="products-list">
+        <div
+          *ngFor="let product of products; let i = index"
+          class="product-card mb-3 p-3 rounded d-flex align-items-center"
+        >
+          <!-- Product Image -->
+          <div class="product-image me-3">
+            <img
+              src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=100&h=100&fit=crop"
+              alt="Product"
+            />
+          </div>
+
+          <!-- Product Info -->
+          <div class="product-info flex-grow-1 me-3">
+            <h6 class="product-name mb-1">🍽️ {{ product.name }}</h6>
+            <p class="product-price mb-1">
+              💲
+              {{ product.unit_price | currency : "EGP" : "symbol" : "1.2-2" }}
+
+              {{ "PER_UNIT" | translate }}
+            </p>
+            <p class="mb-1 small">
+              📦 {{ "ORDERED_QUANTITY" | translate }}:
+              <strong>{{ product.ordered_quantity }}</strong>
+            </p>
+            <p class="product-notes mb-0 small" *ngIf="product.notes">
+              <mat-icon class="small-icon me-1">note</mat-icon>
+              📝 {{ product.notes }}
+            </p>
+          </div>
+
+          <!-- Counter Controls -->
+          <div class="quantity-controls d-flex align-items-center">
+            <button
+              (click)="decreaseCounter(i)"
+              [disabled]="isDecreaseDisabled(i)"
+              class="quantity-btn"
+            >
+              ➖
+            </button>
+
+            <input
+              type="number"
+              class="quantity-display"
+              [value]="product.counter"
+              (input)="onCounterChange(i, $event)"
+              min="0"
+              [max]="product.ordered_quantity"
+              style="
+                width: 60px;
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 4px;
+              "
+            />
+
+            <button
+              (click)="increaseCounter(i)"
+              [disabled]="isIncreaseDisabled(i)"
+              class="quantity-btn"
+            >
+              ➕
+            </button>
+          </div>
+
+          <!-- Product Total -->
+          <div class="product-total ms-3 text-end">
+            <div class="fw-bold text-success">
+              💰
+              {{ product.total_price | currency : "EGP" : "symbol" : "1.2-2" }}
+            </div>
+            <div class="small">{{ "TOTAL" | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Products Message -->
+    <div *ngIf="products.length === 0" class="text-center py-4">
+      <mat-icon class="large-icon mb-2">shopping_cart_off</mat-icon>
+      <p class="">🛒❌ {{ "NO_PRODUCTS_FOUND" | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+    *ngIf="!isLoading"
+  >
+    <button mat-button color="warn" (click)="onClose()">
+      ❌ {{ "CANCEL" | translate }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="isUpdating || products.length === 0 || !hasChanges()"
+    >
+      <mat-spinner diameter="16" class="me-2" *ngIf="isUpdating"></mat-spinner>
+      {{
+        isUpdating
+          ? "🔄 " + ("UPDATING" | translate)
+          : "✅ " + ("UPDATE_BILL" | translate)
+      }}
+    </button>
+  </mat-dialog-actions>
+</div>

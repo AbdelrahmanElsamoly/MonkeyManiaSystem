@@ -1,0 +1,117 @@
+<!-- Action Buttons (Hidden on Print) -->
+<div class="bill-actions no-print">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="printBill()"
+    [disabled]="loading"
+  >
+    🖨️ {{ "PRINT" | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    (click)="goBack()"
+    [disabled]="loading"
+  >
+    ← {{ "BACK" | translate }}
+  </button>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <div class="loading-spinner">⏳ {{ "LOADING" | translate }}</div>
+</div>
+
+<!-- Bill Content -->
+<div class="bill-container" *ngIf="!loading && productBillData && billData">
+  <!-- Logo -->
+  <div class="text-center">
+    <img
+      src="../../../../assets/png/logo-01.png"
+      style="width: 200px"
+      alt="logo"
+      class="logo"
+    />
+  </div>
+
+  <!-- Bill Title -->
+  <h2 class="bill-title">
+    <div class="">
+      <span>{{ "BILL" | translate }} #{{ productBillData.bill_number }} </span>
+    </div>
+  </h2>
+
+  <!-- Bill Details -->
+  <div class="bill-card">
+    <!-- Bill Number -->
+
+    <!-- Table Number -->
+    <div class="bill-row">
+      <span>{{ "TABLE_NUMBER" | translate }} :</span>
+      {{ productBillData.table_number }}
+    </div>
+
+    <div class="bill-row">
+      <span>{{ "TOTAL" | translate }} :</span>
+      {{ productBillData.total_price }} EGP
+    </div>
+    <!-- Take Away Status -->
+    <div class="bill-row" *ngIf="productBillData.take_away">
+      <span>TAKE AWAY:</span>
+      YES
+    </div>
+
+    <!-- Branch -->
+    <div class="bill-row">
+      <span>{{ "BRANCH" | translate }} :</span>
+      {{ billData.branch }}
+    </div>
+
+    <!-- Children Names -->
+    <div class="bill-row">
+      <span>{{ "CHILD_NAME" | translate }} :</span>
+      {{ billData.first_child }}
+    </div>
+
+    <!-- Created Date -->
+    <div class="bill-row">
+      <span>{{ "CREATED" | translate }}:</span>
+      {{ productBillData.created | date : "short" }}
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <br />
+  <div class="products-section" *ngIf="productBillData.products?.length">
+    <h3 class="section-title">{{ "PRODUCTS" | translate }}</h3>
+    <table class="children-table">
+      <thead>
+        <tr>
+          <th>{{ "PRODUCTS" | translate }}</th>
+          <th>{{ "QUANTITY" | translate }}</th>
+          <th>{{ "NOTES" | translate }}</th>
+          <th>{{ "PRICE" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of productBillData.products">
+          <td>{{ product.name }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.notes || "--" }}</td>
+          <td>{{ product.total_price }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Total Price -->
+
+  <!-- Error State -->
+  <div
+    *ngIf="!loading && (!productBillData || !billData)"
+    class="error-container"
+  >
+    <p>❌ {{ "ERROR_LOADING_BILL" | translate }}</p>
+  </div>
+</div>

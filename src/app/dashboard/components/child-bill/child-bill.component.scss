@@ -8,7 +8,10 @@
   border-radius: 10px;
   color: $font-color;
 }
-
+.bill-footer {
+  display: none;
+  color: $primary-color;
+}
 .bill-title {
   text-align: center;
   font-size: 20px;
@@ -35,9 +38,114 @@
   color: $font-color;
 }
 
-.loading {
-  text-align: center;
-  font-size: 16px;
-  color: $font-color;
-  margin-top: 20px;
+/* ✅ Table Styling */
+.children-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.children-table th,
+.children-table td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: right;
+  font-size: 14px;
+}
+
+.children-table th {
+  background-color: $secondary-color;
+  font-weight: bold;
+}
+
+/* ✅ Print Styling for XP-80 */
+@media print {
+  .bill-title::after,
+  .bill-row span::after,
+  th::before {
+    content: none !important;
+  }
+  @page {
+    // size: 55mm 200mm;
+    margin: -50px -30px !important;
+  }
+
+  html,
+  body {
+    width: 60mm;
+    height: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none;
+  }
+
+  .bill-container {
+    width: 60mm !important;
+    max-width: 80mm;
+    margin: -25px;
+    padding: 0;
+    font-family: monospace;
+    font-size: 10px !important;
+    color: black !important;
+    background: white;
+    box-shadow: none !important;
+  }
+
+  .bill-title {
+    text-align: center;
+    color: black;
+    font-weight: bolder;
+    font-size: 12px !important;
+    margin: 10px 0;
+  }
+
+  .bill-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 10px !important;
+    font-weight: bold;
+    width: 100%;
+    span {
+      color: #000;
+    }
+  }
+
+  /* Table Styling for Print */
+  .children-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8px !important;
+  }
+
+  .children-table th,
+  .children-table td {
+    border: 1px solid #000;
+    padding: 2px;
+    font-size: 10px !important;
+    text-align: right;
+    font-weight: bold;
+  }
+
+  .children-table th {
+    font-weight: bold;
+    background: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+  .bill-footer {
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+
+    p {
+      font-size: 10px !important;
+      color: #000 !important;
+    }
+  }
 }

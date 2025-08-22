@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://new.monkey-mania.com/', // replace with your real API base URL
+  apiUrl: 'https://monkey-mania-production.up.railway.app/', // replace with your real API base URL
 };

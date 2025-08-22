@@ -17,5 +17,8 @@
     [displayedColumns]="['NAME', 'PHONE_NUMBERS', 'BRANCH', 'STATUS', 'ROLE']"
     [data]="tableData"
     (itemClicked)="goToProfilePage($event.ID)"
+    [paginationType]="'server'"
+    [totalItems]="totalUsers"
+    (pageChange)="onPageChange($event)"
   ></app-data-table>
 </div>

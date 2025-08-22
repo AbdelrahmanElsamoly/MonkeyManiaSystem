@@ -56,6 +56,10 @@
     'MEASURE_UNIT'
   ]"
   [data]="expenseRes"
-  (editClicked)="editExpens($event)"
+  (editClicked)="editExpense($event)"
   (itemClicked)="goToExpenseProfile($event)"
+  [paginationType]="'server'"
+  [totalItems]="totalItems"
+  [currentPage]="currentPage"
+  (pageChange)="pageChanged($event)"
 ></app-data-table>

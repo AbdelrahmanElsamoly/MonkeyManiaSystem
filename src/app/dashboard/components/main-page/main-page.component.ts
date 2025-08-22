@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-page',
@@ -10,12 +11,15 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class MainPageComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  branch = JSON.parse(localStorage.getItem('branch') || '{}');
+
   mainPageData: any = {};
   data: any;
 
   constructor(
     private dashboardService: DashboardService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -24,7 +28,9 @@ export class MainPageComponent implements OnInit {
 
   getStatstics() {
     this.dashboardService
-      .getStatistics(this.userInfo.branch)
+      .getStatistics(
+        this.userInfo.branch ? this.userInfo.branch : this.branch.id
+      )
       .subscribe((res: any) => {
         this.data = [
           {
@@ -47,7 +53,7 @@ export class MainPageComponent implements OnInit {
           },
           {
             title: 'TODAYS_CAFE_SALES',
-            value: `US$ ${(res.cafe_sales ?? 0).toFixed(2)}`,
+            value: `US$ ${(res.todays_cafe_sales ?? 0).toFixed(2)}`,
             subtext: `${this.translate.instant('CAFE_SALES_DIFF')} : ${
               res.cafe_diff ?? 0
             }`,

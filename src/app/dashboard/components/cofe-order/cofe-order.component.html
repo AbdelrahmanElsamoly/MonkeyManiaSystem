@@ -1,0 +1,312 @@
+<div class="order-container">
+  <div class="header">
+    <h4>{{ "CREATE_NEW_ORDER" | translate }} ... 🆕</h4>
+  </div>
+
+  <!-- Fixed Fields -->
+  <div class="fixed-fields">
+    <div class="field-group">
+      <label>🔍 {{ "SEARCH_CHILD_BILL" | translate }}</label>
+      <div class="search-container">
+        <input
+          type="text"
+          [placeholder]="'SEARCH_BY_CHILD_NAME' | translate"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchInput($event)"
+          class="search-input"
+        />
+
+        <div class="dropdown" *ngIf="searchResults.length > 0 && showDropdown">
+          <div
+            *ngFor="let bill of searchResults"
+            class="dropdown-item"
+            (click)="selectBill(bill)"
+          >
+            <div class="bill-info">
+              <strong
+                >📋 {{ "BILL_DETAILS" | translate }} #{{ bill.id }}</strong
+              >
+              <div class="children-names">
+                <span *ngFor="let child of bill.children; let last = last">
+                  👶 {{ child.name }}<span *ngIf="!last">, </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>✅ {{ "SELECTED_BILL" | translate }}</label>
+      <div class="selected-bill" *ngIf="selectedBill">
+        <strong
+          >📋 {{ "BILL_DETAILS" | translate }} #{{ selectedBill.id }}</strong
+        >
+        - {{ selectedBill.children_count }} 👶 {{ "CHILDREN" | translate }}
+        <span class="total"
+          >💰 {{ "TOTAL" | translate }}: {{ selectedBill.total_price }}
+          {{ "EGP" | translate }}</span
+        >
+      </div>
+      <div class="no-selection" *ngIf="!selectedBill">
+        ❌ {{ "NO_BILL_SELECTED" | translate }}
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label for="tableNumber">🪑 {{ "TABLE_NUMBER" | translate }}</label>
+      <input
+        type="number"
+        id="tableNumber"
+        [(ngModel)]="tableNumber"
+        [placeholder]="'ENTER_TABLE_NUMBER' | translate"
+        class="table-input"
+      />
+    </div>
+
+    <div class="field-group checkbox-group">
+      <label class="checkbox-label">
+        <input type="checkbox" [(ngModel)]="takeAway" />
+        <span class="checkmark"></span>
+        📦 {{ "TAKE_AWAY" | translate }}
+      </label>
+    </div>
+  </div>
+
+  <!-- Product Selection -->
+  <div class="product-selection" *ngIf="selectedBill">
+    <!-- Layer 1 Selection -->
+    <div class="layer-selection" *ngIf="currentStep === 1">
+      <h3>📖 {{ "MENU" | translate }}</h3>
+      <div class="menu-grid">
+        <div
+          *ngFor="let category of layer1Options"
+          class="menu-item"
+          (click)="selectLayer1(category)"
+        >
+          <img
+            [src]="getFoodImage(category)"
+            [alt]="category"
+            class="food-image"
+          />
+          <div class="item-label">{{ category | titlecase }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layer 2 Selection -->
+    <div class="layer-selection" *ngIf="currentStep === 2">
+      <h3>{{ selectedLayer1 | titlecase }}</h3>
+      <div class="menu-grid">
+        <div
+          *ngFor="let subcategory of layer2Options"
+          class="menu-item"
+          (click)="selectLayer2(subcategory)"
+        >
+          <img
+            [src]="getFoodImage(subcategory)"
+            [alt]="subcategory"
+            class="food-image"
+          />
+          <div class="item-label">{{ subcategory | titlecase }}</div>
+        </div>
+      </div>
+      <button class="back-btn" (click)="goBack()">
+        <i class="back-icon">⬅️</i> {{ "BACK_TO" | translate }}
+        {{ "MENU" | translate }}
+      </button>
+    </div>
+
+    <!-- Layer 3 Selection (Products) -->
+    <div class="layer-selection" *ngIf="currentStep === 3">
+      <h3>{{ selectedLayer2 | titlecase }}</h3>
+      <div class="products-grid">
+        <div
+          *ngFor="let product of finalProducts"
+          class="product-item"
+          (click)="selectProduct(product)"
+        >
+          <img
+            [src]="getFoodImage(product.layer3)"
+            [alt]="product.name"
+            class="food-image"
+          />
+          <div class="product-info">
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">
+              💰 {{ product.price }} {{ "EGP" | translate }}
+            </div>
+            <div class="product-availability">
+              <span
+                class="availability-badge"
+                [class.low-stock]="
+                  product.available_units <= product.warning_units
+                "
+              >
+                ✅ {{ "AVAILABLE" | translate }}: {{ product.available_units }}
+                {{ "UNITS" | translate }}
+              </span>
+            </div>
+          </div>
+          <div class="add-overlay">
+            <span class="plus-icon">➕</span>
+          </div>
+        </div>
+      </div>
+      <button class="back-btn" (click)="goBack()">
+        <i class="back-icon">⬅️</i> {{ "BACK_TO" | translate }}
+        {{ selectedLayer1 | titlecase }}
+      </button>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div
+      class="modal-overlay"
+      *ngIf="showProductModal"
+      (click)="closeProductModal()"
+    >
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>
+            🛒 {{ "ADD_TO_ORDER" | translate }} {{ selectedProduct?.name }}
+          </h3>
+          <button class="close-btn" (click)="closeProductModal()">❌</button>
+        </div>
+        <div class="modal-body">
+          <img
+            [src]="getFoodImage(selectedProduct?.layer3 || '')"
+            [alt]="selectedProduct?.name"
+            class="modal-food-image"
+          />
+          <div class="product-details">
+            <p class="price">
+              <strong
+                >💰 {{ selectedProduct?.price }} {{ "EGP" | translate }}</strong
+              >
+            </p>
+            <p class="availability">
+              ✅ {{ "AVAILABLE" | translate }}:
+              {{ selectedProduct?.available_units }} {{ "UNITS" | translate }}
+            </p>
+
+            <div class="quantity-selector">
+              <label>🔢 {{ "QUANTITY" | translate }}:</label>
+              <div class="quantity-controls">
+                <button
+                  class="qty-btn"
+                  (click)="decreaseQuantity()"
+                  [disabled]="currentQuantity <= 1"
+                >
+                  ➖
+                </button>
+                <input
+                  type="number"
+                  [(ngModel)]="currentQuantity"
+                  min="1"
+                  [max]="selectedProduct?.available_units || ''"
+                  class="qty-input"
+                />
+                <button
+                  class="qty-btn"
+                  (click)="increaseQuantity()"
+                  [disabled]="
+                    currentQuantity >= (selectedProduct?.available_units || 0)
+                  "
+                >
+                  ➕
+                </button>
+              </div>
+            </div>
+
+            <div class="notes-section">
+              <label>📝 {{ "SPECIAL_NOTES" | translate }}:</label>
+              <textarea
+                [(ngModel)]="currentNotes"
+                [placeholder]="'EXTRA_SAUCE_NO_ONIONS' | translate"
+                rows="3"
+                class="notes-textarea"
+              >
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="cancel-btn" (click)="closeProductModal()">
+            ❌ {{ "CANCEL" | translate }}
+          </button>
+          <button class="add-btn" (click)="addToOrder()">
+            ➕ {{ "ADD_TO_ORDER" | translate }} -
+            {{ (+(selectedProduct?.price || 0) * currentQuantity).toFixed(2) }}
+            {{ "EGP" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Order Summary -->
+  <div class="order-summary" *ngIf="orderItems.length > 0">
+    <h3>🛒 {{ "CURRENT_ORDER" | translate }}</h3>
+    <div class="order-items">
+      <div *ngFor="let item of orderItems; let i = index" class="order-item">
+        <img
+          [src]="getFoodImage(item.product?.layer3 || '')"
+          [alt]="item.product?.name"
+          class="item-image"
+        />
+        <div class="item-details">
+          <div class="item-name">{{ item.product?.name }}</div>
+          <div class="item-meta">
+            <span class="item-quantity"
+              >🔢 {{ "QTY" | translate }}: {{ item.quantity }}</span
+            >
+            <span class="item-price"
+              >💰
+              {{ (+(item.product?.price || 0) * item.quantity).toFixed(2) }}
+              {{ "EGP" | translate }}</span
+            >
+          </div>
+          <div class="item-notes">
+            📝 {{ "NOTES" | translate }}:
+            {{ item.notes || ("NO_NOTES" | translate) }}
+          </div>
+        </div>
+        <button class="remove-btn" (click)="removeFromOrder(i)">❌</button>
+      </div>
+    </div>
+    <div class="order-total">
+      <strong
+        >💰 {{ "TOTAL" | translate }}: {{ getOrderTotal().toFixed(2) }}
+        {{ "EGP" | translate }}</strong
+      >
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button
+      class="continue-btn"
+      *ngIf="orderItems.length > 0 && currentStep === 3"
+      (click)="continueOrdering()"
+    >
+      ➕ {{ "ADD_MORE_ITEMS" | translate }}
+    </button>
+    <button
+      class="submit-btn"
+      *ngIf="orderItems.length > 0"
+      (click)="submitOrder()"
+      [disabled]=""
+    >
+      ✅ {{ "SUBMIT_ORDER" | translate }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>⏳ {{ "PROCESSING_ORDER" | translate }}</p>
+    </div>
+  </div>
+</div>

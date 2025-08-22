@@ -21,7 +21,7 @@
       <!-- Instapay -->
       <div class="col-md-4">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Instapay</mat-label>
+          <mat-label>Instapay📲</mat-label>
           <input
             type="number"
             matInput
@@ -34,7 +34,7 @@
       <!-- Cash -->
       <div class="col-md-4">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Cash</mat-label>
+          <mat-label>Cash💵</mat-label>
           <input
             type="number"
             matInput
@@ -47,7 +47,7 @@
       <!-- Visa -->
       <div class="col-md-4">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Visa</mat-label>
+          <mat-label>Visa💳</mat-label>
           <input
             type="number"
             matInput
@@ -74,7 +74,12 @@
     <button mat-button color="warn" (click)="onClose()">
       {{ "CANCEL" | translate }}
     </button>
-    <button mat-raised-button color="primary" (click)="submit()">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="rest < 0"
+      (click)="submit()"
+    >
       {{ "SUBMIT" | translate }}
     </button>
   </mat-dialog-actions>

@@ -21,6 +21,8 @@ export class ChildrenBillsComponent implements OnInit {
     end: null,
   };
   type: string = '/';
+  totalItems = 0;
+  currentPage = 1;
   selectedBranchIds: any[] = [];
   searchQuery: string = '';
   params: {
@@ -28,6 +30,7 @@ export class ChildrenBillsComponent implements OnInit {
     branchIds: any[];
     startDate: Date | string | null;
     endDate: Date | string | null;
+    page: number;
   } = {
     searchQuery: this.searchQuery,
     branchIds: this.selectedBranchIds,
@@ -37,6 +40,7 @@ export class ChildrenBillsComponent implements OnInit {
     endDate: this.selectedDateRange.end
       ? this.formatDateForAPI(this.selectedDateRange.end)
       : null,
+    page: 1,
   };
   displayedColumns = [
     this.translate.instant('NAME'),
@@ -58,7 +62,7 @@ export class ChildrenBillsComponent implements OnInit {
   getAllBills(type: string = '/', params: any) {
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
-        this.billsRes = data.map((item: any) => {
+        this.billsRes = data.results.map((item: any) => {
           const firstChild = item.children[0];
           const firstPhone = firstChild?.phone_numbers?.[0]?.phone_number ?? '';
           return {
@@ -71,6 +75,8 @@ export class ChildrenBillsComponent implements OnInit {
             DISCOUNT_VALUE: Number(item.discount_value),
           };
         });
+        this.totalItems = data.count;
+        this.currentPage = params.page;
       },
     });
   }
@@ -103,6 +109,7 @@ export class ChildrenBillsComponent implements OnInit {
         branchIds: this.selectedBranchIds,
         startDate: this.formatDateForAPI(start),
         endDate: this.formatDateForAPI(end),
+        page: 1,
       };
       this.getAllBills(this.type, this.params);
     }
@@ -117,6 +124,7 @@ export class ChildrenBillsComponent implements OnInit {
       endDate: this.selectedDateRange.end
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
+      page: 1,
     };
 
     this.getAllBills(this.type, this.params);
@@ -132,6 +140,7 @@ export class ChildrenBillsComponent implements OnInit {
       endDate: this.selectedDateRange.end
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
+      page: 1,
     };
     this.getAllBills(this.type, this.params);
   }
@@ -165,6 +174,11 @@ export class ChildrenBillsComponent implements OnInit {
           }
         });
       });
+  }
+
+  pageChanged(page: number) {
+    this.params.page = page;
+    this.getAllBills(this.type, this.params);
   }
   openCreateBillDialog(): void {
     const dialogRef = this.dialog.open(CreateBillDialogComponent, {

@@ -1,0 +1,276 @@
+@import "../../../shared/styles/colors.scss";
+
+/* Action Buttons */
+.bill-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 500px;
+  padding: 0 20px;
+
+  button {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.loading-container {
+  .loading-spinner {
+    color: $font-color;
+  }
+}
+
+.error-container {
+  color: #f44336;
+}
+
+/* Bill Container */
+.bill-container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: $secondary-color;
+  border-radius: 10px;
+  color: $font-color;
+
+  .logo {
+    max-width: 200px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+}
+
+.bill-title {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: $font-color;
+  font-weight: bold;
+}
+
+.section-title {
+  font-size: 16px;
+  margin: 20px 0 10px 0;
+  font-weight: bold;
+  color: $font-color;
+}
+
+/* Bill details rows */
+.bill-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 14px;
+
+  span {
+    font-weight: bold;
+    color: $font-color;
+  }
+}
+
+/* Total section */
+.total-section {
+  border: 2px solid $primary-color;
+  background-color: rgba($primary-color, 0.05);
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 15px;
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+
+    span,
+    strong {
+      color: $primary-color;
+    }
+  }
+}
+
+/* Table Styling */
+.children-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+
+  th,
+  td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: right;
+    font-size: 14px;
+  }
+
+  th {
+    background-color: $secondary-color;
+    font-weight: bold;
+  }
+}
+
+/* Footer */
+.bill-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid $primary-color;
+
+  p {
+    margin: 4px 0;
+    font-weight: bold;
+    font-size: 14px;
+  }
+}
+
+/* Print Styling for XP-80 */
+@media print {
+  /* Hide non-printable elements */
+  .no-print,
+  .bill-actions,
+  .loading-container,
+  .error-container {
+    display: none !important;
+  }
+
+  .bill-title::after,
+  .bill-row span::after,
+  th::before {
+    content: none !important;
+  }
+
+  @page {
+    // size: 55mm 200mm;
+    margin: -50px -30px !important;
+  }
+
+  html,
+  body {
+    width: 60mm;
+    height: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none;
+    color: #000 !important;
+  }
+
+  .bill-container {
+    width: 60mm !important;
+    max-width: 80mm;
+    margin: -25px;
+    padding: 0;
+    font-family: monospace;
+    font-size: 10px !important;
+    color: black !important;
+    background: white;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .logo {
+    width: 50mm !important;
+    margin: 0 auto 3mm auto !important;
+  }
+
+  .bill-title {
+    text-align: center;
+    color: black;
+    font-weight: bolder;
+    font-size: 12px !important;
+    margin: 10px 0;
+  }
+
+  .section-title {
+    font-size: 10px !important;
+    margin: 5px 0;
+    text-align: center;
+    color: #000;
+  }
+
+  .bill-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 10px !important;
+    font-weight: bold;
+    width: 100%;
+    background: none !important;
+
+    span {
+      color: #000 !important;
+    }
+  }
+
+  .total-section {
+    border: 1px solid #000 !important;
+    background: none !important;
+    padding: 5px;
+    margin: 5px 0;
+
+    .total-row {
+      font-size: 12px !important;
+
+      span,
+      strong {
+        color: #000 !important;
+      }
+    }
+  }
+
+  /* Table Styling for Print */
+  .children-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8px !important;
+    margin: 5px 0;
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 2px;
+      font-size: 10px !important;
+      text-align: right;
+      font-weight: bold;
+      color: #000 !important;
+    }
+
+    th {
+      font-weight: bold;
+      font-size: 8px !important;
+      background: none !important;
+    }
+  }
+
+  .bill-footer {
+    border-top: 1px solid #000;
+    margin-top: 10px;
+    padding: 5px 0;
+
+    p {
+      font-size: 10px !important;
+      color: #000 !important;
+    }
+  }
+}

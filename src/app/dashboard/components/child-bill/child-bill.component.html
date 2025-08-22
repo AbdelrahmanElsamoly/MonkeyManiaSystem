@@ -1,87 +1,189 @@
-<div class="d-flex justify-content-center my-4">
+<div class="d-flex justify-content-center my-4 no-print">
   <app-print-btn></app-print-btn>
 </div>
 
-<div class="bill-container" *ngIf="bill; else loading">
-  <h1 class="bill-title">🧾 {{ "BILL_DETAILS" | translate }}</h1>
-  <h6 *ngIf="!bill.is_allowed_age" class="text-danger bill-title">
+<!-- ✅ Old Design when bill is active -->
+<div class="bill-container" *ngIf="bill && bill.is_active; else closedBill">
+  <div class="text-center">
+    <img
+      src="../../../../assets/png/logo-01.png"
+      style="width: 200px"
+      alt="logo"
+    />
+  </div>
+  <h6 *ngIf="!bill.is_allowed_age" class="bill-title">
     {{ "COMPANION_REQUIRED" | translate }}
   </h6>
+
   <div class="bill-card">
     <!-- Children Count -->
     <div class="bill-row" *ngIf="bill.children?.length">
-      <span>👨‍👩‍👧 {{ "CHILDREN_COUNT" | translate }}:</span>
+      <span>{{ "CHILDREN_COUNT" | translate }}:</span>
       {{ bill.children.length }}
     </div>
 
-    <!-- Children Info -->
-    <div *ngFor="let child of bill.children" class="bill-row">
-      <div style="width: 100%">
-        <div>
-          <strong>👶 {{ child.name }}</strong>
-        </div>
-        <div *ngFor="let phone of child.phone_numbers">
-          📞 {{ phone.phone_number }} <small>({{ phone.relationship }})</small>
-        </div>
-      </div>
-    </div>
-
-    <!-- Spent Time -->
-    <div class="bill-row">
-      <span>⏱️ {{ "SPENT_TIME" | translate }}:</span>
-      {{ getSpentTimeFormatted(bill.spent_time) }}
-    </div>
+    <!-- Children Info in Table -->
+    <table class="children-table" *ngIf="bill.children?.length">
+      <thead>
+        <tr>
+          <th>{{ "CHILD_NAME" | translate }}</th>
+          <th>{{ "PHONE_NUMBER" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let child of bill.children">
+          <td>{{ child.name }}</td>
+          <td>
+            <div *ngFor="let phone of child.phone_numbers">
+              {{ phone.phone_number }} ({{ phone.relationship }})
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- Payment Methods -->
     <div class="bill-row" *ngIf="bill.visa > 0">
-      <span>💳 Visa:</span> {{ bill.visa }} EGP
+      <span>Visa:</span> {{ bill.visa }} EGP
     </div>
     <div class="bill-row" *ngIf="bill.cash > 0">
-      <span>💵 Cash:</span> {{ bill.cash }} EGP
+      <span>Cash:</span> {{ bill.cash }} EGP
     </div>
     <div class="bill-row" *ngIf="bill.instapay > 0">
-      <span>📲 Instapay:</span> {{ bill.instapay }} EGP
-    </div>
-
-    <!-- Subscription -->
-    <div class="bill-row">
-      <span>📝 {{ "IS_SUBSCRIPTION" | translate }}:</span>
-      {{ bill.is_subscription ? ("YES" | translate) : ("NO" | translate) }}
-    </div>
-
-    <!-- Discount -->
-    <div class="bill-row" *ngIf="bill.discount_value > 0">
-      <span>🏷️ {{ "DISCOUNT" | translate }}:</span>
-      {{ bill.discount_value }} {{ bill.discount_type || "" }}
-    </div>
-
-    <!-- Money Unbalance -->
-    <div class="bill-row" *ngIf="bill.money_unbalance > 0">
-      <span>⚖️ {{ "REST" | translate }}:</span>
-      {{ bill.money_unbalance }} EGP
+      <span>Instapay:</span> {{ bill.instapay }} EGP
     </div>
 
     <div class="bill-row">
-      <span>🕒 {{ "HOUR_PRICE" | translate }}:</span>
+      <span>{{ "HOUR_PRICE" | translate }}:</span>
       {{ bill.hour_price }}
     </div>
     <div class="bill-row">
-      <span>🕒 {{ "HALF_HOUR_PRICE" | translate }}:</span>
+      <span>{{ "HALF_HOUR_PRICE" | translate }}:</span>
       {{ bill.half_hour_price }}
     </div>
 
-    <!-- Finished Time -->
+    <!-- Times -->
     <div class="bill-row">
-      <span>✅ {{ "ENTER_AT" | translate }}:</span>
+      <span>{{ "ENTER_AT" | translate }}:</span>
       {{ bill.created | date : "short" }}
     </div>
-    <div class="bill-row" *ngIf="bill.finished">
-      <span>✅ {{ "EXIT_AT" | translate }}:</span>
-      {{ bill.finished | date : "short" }}
+
+    <div class="bill-row">
+      <span>{{ "BRANCH" | translate }}:</span>
+      {{ bill.branch }}
     </div>
+  </div>
+  <div
+    class="bill-footer mt-4 bill-row"
+    style="color: #1f2937"
+    *ngIf="bill.is_active"
+  >
+    <br />
+    <p>{{ "WARN" | translate }}</p>
   </div>
 </div>
 
+<!-- ✅ New Design for Closed Bill -->
+<ng-template #closedBill>
+  <div class="bill-container" *ngIf="bill">
+    <div class="text-center">
+      <img
+        src="../../../../assets/png/logo-01.png"
+        style="width: 200px"
+        alt="logo"
+      />
+    </div>
+
+    <!-- Total Price -->
+    <h2 class="bill-title">
+      {{ "TOTAL_PRICE" | translate }}: {{ bill.total_price }} EGP
+    </h2>
+
+    <!-- Children Table -->
+    <table class="children-table" *ngIf="bill.children?.length">
+      <thead>
+        <tr>
+          <th>{{ "CHILD_NAME" | translate }}</th>
+          <th>{{ "PHONE_NUMBER" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let child of bill.children">
+          <td>{{ child.name }}</td>
+          <td>
+            <div *ngFor="let phone of child.phone_numbers">
+              {{ phone.phone_number }} ({{ phone.relationship }})
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Time Price -->
+    <div class="bill-row">
+      <span>{{ "TIME_PRICE" | translate }}:</span>
+      {{ bill.time_price }} EGP
+    </div>
+
+    <!-- Products Table -->
+    <table class="children-table" *ngIf="bill.product_bills_set?.length">
+      <thead>
+        <tr>
+          <th>{{ "PRODUCTS" | translate }}</th>
+          <th>{{ "QTY" | translate }}</th>
+          <th>{{ "PRICE" | translate }}</th>
+          <th>{{ "TOTAL" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of bill.product_bills_set">
+          <td>{{ product.name }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.unit_price }}</td>
+          <td>{{ product.total_price }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Products Price -->
+    <div class="bill-row" *ngIf="bill.products_price > 0">
+      <span>{{ "PRODUCTS_PRICE" | translate }}:</span>
+      {{ bill.products_price }} EGP
+    </div>
+
+    <!-- Payments -->
+    <div class="bill-row" *ngIf="bill.cash > 0">
+      <span>Cash:</span> {{ bill.cash }} EGP
+    </div>
+    <div class="bill-row" *ngIf="bill.visa > 0">
+      <span>Visa:</span> {{ bill.visa }} EGP
+    </div>
+    <div class="bill-row" *ngIf="bill.instapay > 0">
+      <span>Instapay:</span> {{ bill.instapay }} EGP
+    </div>
+
+    <!-- Times -->
+    <div class="bill-row">
+      <span>{{ "ENTER_AT" | translate }}:</span>
+      {{ bill.created | date : "short" }}
+    </div>
+    <div class="bill-row" *ngIf="bill.finished">
+      <span>{{ "EXIT_AT" | translate }}:</span>
+      {{ bill.finished | date : "short" }}
+    </div>
+    <div class="bill-row">
+      <span>{{ "BRANCH" | translate }}:</span>
+      {{ bill.branch }}
+    </div>
+  </div>
+
+  <div class="bill-footer mt-4 bill-row" *ngIf="!bill.is_active">
+    <br />
+    <p>{{ "THANKS" | translate }}</p>
+    <p>{{ "VISIT" | translate }}</p>
+  </div>
+</ng-template>
+
 <ng-template #loading>
-  <p class="loading">⏳ {{ "LOADING" | translate }}</p>
+  <p class="loading">{{ "LOADING" | translate }}</p>
 </ng-template>
