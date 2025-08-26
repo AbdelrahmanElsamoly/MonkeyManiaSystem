@@ -1,0 +1,538 @@
+/* From Uiverse.io by Praashoo7 */
+/* Design Inspired by one of Stefan Devai's Design on Dribble */
+/* SCALED VERSION - Increased dimensions by 1.5x */
+
+.main_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45em; /* increased from 30em */
+  height: 45em; /* increased from 30em */
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7.5em; /* increased from 5em */
+}
+
+.antenna {
+  width: 7.5em; /* increased from 5em */
+  height: 7.5em; /* increased from 5em */
+  border-radius: 50%;
+  border: 3px solid black; /* increased from 2px */
+  background-color: #f27405;
+  margin-bottom: -9em; /* increased from -6em */
+  margin-left: 0em;
+  z-index: -1;
+}
+.antenna_shadow {
+  position: absolute;
+  background-color: transparent;
+  width: 75px; /* increased from 50px */
+  height: 84px; /* increased from 56px */
+  margin-left: 2.52em; /* increased from 1.68em */
+  border-radius: 45%;
+  transform: rotate(140deg);
+  border: 6px solid transparent; /* increased from 4px */
+  box-shadow: inset 0px 24px #a85103, inset 0px 24px 1px 1px #a85103; /* increased from 16px */
+  -moz-box-shadow: inset 0px 24px #a85103, inset 0px 24px 1px 1px #a85103;
+}
+.antenna::after {
+  content: "";
+  position: absolute;
+  margin-top: -14.1em; /* increased from -9.4em */
+  margin-left: 0.6em; /* increased from 0.4em */
+  transform: rotate(-25deg);
+  width: 1.5em; /* increased from 1em */
+  height: 0.75em; /* increased from 0.5em */
+  border-radius: 50%;
+  background-color: #f69e50;
+}
+.antenna::before {
+  content: "";
+  position: absolute;
+  margin-top: 0.3em; /* increased from 0.2em */
+  margin-left: 1.875em; /* increased from 1.25em */
+  transform: rotate(-20deg);
+  width: 2.25em; /* increased from 1.5em */
+  height: 1.2em; /* increased from 0.8em */
+  border-radius: 50%;
+  background-color: #f69e50;
+}
+.a1 {
+  position: relative;
+  top: -102%;
+  left: -130%;
+  width: 18em; /* increased from 12em */
+  height: 8.25em; /* increased from 5.5em */
+  border-radius: 75px; /* increased from 50px */
+  background-image: linear-gradient(
+    #171717,
+    #171717,
+    #353535,
+    #353535,
+    #171717
+  );
+  transform: rotate(-29deg);
+  clip-path: polygon(50% 0%, 49% 100%, 52% 100%);
+}
+.a1d {
+  position: relative;
+  top: -211%;
+  left: -35%;
+  transform: rotate(45deg);
+  width: 0.75em; /* increased from 0.5em */
+  height: 0.75em; /* increased from 0.5em */
+  border-radius: 50%;
+  border: 3px solid black; /* increased from 2px */
+  background-color: #979797;
+  z-index: 99;
+}
+.a2 {
+  position: relative;
+  top: -210%;
+  left: -10%;
+  width: 18em; /* increased from 12em */
+  height: 6em; /* increased from 4em */
+  border-radius: 75px; /* increased from 50px */
+  background-color: #171717;
+  background-image: linear-gradient(
+    #171717,
+    #171717,
+    #353535,
+    #353535,
+    #171717
+  );
+  margin-right: 7.5em; /* increased from 5em */
+  clip-path: polygon(
+    47% 0,
+    47% 0,
+    34% 34%,
+    54% 25%,
+    32% 100%,
+    29% 96%,
+    49% 32%,
+    30% 38%
+  );
+  transform: rotate(-8deg);
+}
+.a2d {
+  position: relative;
+  top: -294%;
+  left: 94%;
+  width: 0.75em; /* increased from 0.5em */
+  height: 0.75em; /* increased from 0.5em */
+  border-radius: 50%;
+  border: 3px solid black; /* increased from 2px */
+  background-color: #979797;
+  z-index: 99;
+}
+
+.notfound_text {
+  background-color: black;
+  padding-left: 0.45em; /* increased from 0.3em */
+  padding-right: 0.45em; /* increased from 0.3em */
+  font-size: 1.125em; /* increased from 0.75em */
+  color: white;
+  letter-spacing: 0;
+  border-radius: 7.5px; /* increased from 5px */
+  z-index: 10;
+}
+.tv {
+  width: 25.5em; /* increased from 17em */
+  height: 13.5em; /* increased from 9em */
+  margin-top: 4.5em; /* increased from 3em */
+  border-radius: 22.5px; /* increased from 15px */
+  background-color: #d36604;
+  display: flex;
+  justify-content: center;
+  border: 3px solid #1d0e01; /* increased from 2px */
+  box-shadow: inset 0.3em 0.3em #e69635; /* increased from 0.2em */
+}
+.tv::after {
+  content: "";
+  position: absolute;
+  width: 25.5em; /* increased from 17em */
+  height: 13.5em; /* increased from 9em */
+  border-radius: 22.5px; /* increased from 15px */
+  background: repeating-radial-gradient(#d36604 0 0.0001%, #00000070 0 0.0002%)
+      50% 0/3750px 3750px,
+    /* increased from 2500px */
+      repeating-conic-gradient(#d36604 0 0.0001%, #00000070 0 0.0002%) 60% 60%/3750px
+      3750px; /* increased from 2500px */
+  background-blend-mode: difference;
+  opacity: 0.09;
+}
+.curve_svg {
+  position: absolute;
+  margin-top: 0.375em; /* increased from 0.25em */
+  margin-left: -0.375em; /* increased from -0.25em */
+  height: 18px; /* increased from 12px */
+  width: 18px; /* increased from 12px */
+}
+.display_div {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  border-radius: 22.5px; /* increased from 15px */
+  box-shadow: 5.25px 5.25px 0px #e69635; /* increased from 3.5px */
+}
+.screen_out {
+  width: auto;
+  height: auto;
+  border-radius: 15px; /* increased from 10px */
+}
+.screen_out1 {
+  width: 16.5em; /* increased from 11em */
+  height: 11.625em; /* increased from 7.75em */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px; /* increased from 10px */
+}
+.screen {
+  width: 18.5em; /* increased from 13em */
+  height: 10em; /* increased from 7.85em */
+  font-family: Montserrat;
+  border: 3px solid #1d0e01; /* increased from 2px */
+  background: repeating-radial-gradient(#000 0 0.0001%, #ffffff 0 0.0002%) 50% 0/3750px
+      3750px,
+    /* increased from 2500px */
+      repeating-conic-gradient(#000 0 0.0001%, #ffffff 0 0.0002%) 60% 60%/3750px
+      3750px; /* increased from 2500px */
+  background-blend-mode: difference;
+  animation: b 0.2s infinite alternate;
+  border-radius: 15px; /* increased from 10px */
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #252525;
+  letter-spacing: 0.225em; /* increased from 0.15em */
+  text-align: center;
+  font-size: 1.2em; /* added for better text scaling */
+}
+
+.screenM {
+  width: 19.5em; /* increased from 13em */
+  height: 11.775em; /* increased from 7.85em */
+  position: relative;
+  font-family: Montserrat;
+  background: linear-gradient(
+    to right,
+    #002fc6 0%,
+    #002bb2 14.2857142857%,
+    #3a3a3a 14.2857142857%,
+    #303030 28.5714285714%,
+    #ff0afe 28.5714285714%,
+    #f500f4 42.8571428571%,
+    #6c6c6c 42.8571428571%,
+    #626262 57.1428571429%,
+    #0affd9 57.1428571429%,
+    #00f5ce 71.4285714286%,
+    #3a3a3a 71.4285714286%,
+    #303030 85.7142857143%,
+    white 85.7142857143%,
+    #fafafa 100%
+  );
+  border-radius: 15px; /* increased from 10px */
+  border: 3px solid black; /* increased from 2px */
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #252525;
+  letter-spacing: 0.225em; /* increased from 0.15em */
+  text-align: center;
+  font-size: 1.2em; /* added for better text scaling */
+  overflow: hidden;
+}
+.screenM:before,
+.screenM:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+}
+.screenM:before {
+  top: 0;
+  height: 68.4782608696%;
+  background: linear-gradient(
+    to right,
+    white 0%,
+    #fafafa 14.2857142857%,
+    #ffe60a 14.2857142857%,
+    #f5dc00 28.5714285714%,
+    #0affd9 28.5714285714%,
+    #00f5ce 42.8571428571%,
+    #10ea00 42.8571428571%,
+    #0ed600 57.1428571429%,
+    #ff0afe 57.1428571429%,
+    #f500f4 71.4285714286%,
+    #ed0014 71.4285714286%,
+    #d90012 85.7142857143%,
+    #002fc6 85.7142857143%,
+    #002bb2 100%
+  );
+}
+.screenM:after {
+  bottom: 0;
+  height: 21.7391304348%;
+  background: linear-gradient(
+    to right,
+    #006c6b 0%,
+    #005857 16.6666666667%,
+    white 16.6666666667%,
+    #fafafa 33.3333333333%,
+    #001b75 33.3333333333%,
+    #001761 50%,
+    #6c6c6c 50%,
+    #626262 66.6666666667%,
+    #929292 66.6666666667%,
+    #888888 83.3333333333%,
+    #3a3a3a 83.3333333333%,
+    #303030 100%
+  );
+}
+
+@keyframes b {
+  100% {
+    background-position: 50% 0, 60% 50%;
+  }
+}
+
+.lines {
+  display: flex;
+  column-gap: 0.15em; /* increased from 0.1em */
+  align-self: flex-end;
+}
+.line1,
+.line3 {
+  width: 3px; /* increased from 2px */
+  height: 0.75em; /* increased from 0.5em */
+  background-color: black;
+  border-radius: 37.5px 37.5px 0px 0px; /* increased from 25px */
+  margin-top: 0.75em; /* increased from 0.5em */
+}
+.line2 {
+  flex-grow: 1;
+  width: 3px; /* increased from 2px */
+  height: 1.5em; /* increased from 1em */
+  background-color: black;
+  border-radius: 37.5px 37.5px 0px 0px; /* increased from 25px */
+}
+
+.buttons_div {
+  width: 6.375em; /* increased from 4.25em */
+  align-self: center;
+  height: 12em; /* increased from 8em */
+  background-color: #e69635;
+  border: 3px solid #1d0e01; /* increased from 2px */
+  padding: 0.9em; /* increased from 0.6em */
+  border-radius: 15px; /* increased from 10px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 1.125em; /* increased from 0.75em */
+  box-shadow: 4.5px 4.5px 0px #e69635; /* increased from 3px */
+}
+.b1 {
+  width: 2.475em; /* increased from 1.65em */
+  height: 2.475em; /* increased from 1.65em */
+  border-radius: 50%;
+  background-color: #7f5934;
+  border: 3px solid black; /* increased from 2px */
+  box-shadow: inset 3px 3px 1.5px #b49577, -3px 0px #513721,
+    -3px 0px 0px 1.5px black; /* increased from 2px and 1px */
+}
+.b1::before {
+  content: "";
+  position: absolute;
+  margin-top: 1.5em; /* increased from 1em */
+  margin-left: 0.75em; /* increased from 0.5em */
+  transform: rotate(47deg);
+  border-radius: 7.5px; /* increased from 5px */
+  width: 0.15em; /* increased from 0.1em */
+  height: 0.6em; /* increased from 0.4em */
+  background-color: #000000;
+}
+.b1::after {
+  content: "";
+  position: absolute;
+  margin-top: 1.35em; /* increased from 0.9em */
+  margin-left: 1.2em; /* increased from 0.8em */
+  transform: rotate(47deg);
+  border-radius: 7.5px; /* increased from 5px */
+  width: 0.15em; /* increased from 0.1em */
+  height: 0.825em; /* increased from 0.55em */
+  background-color: #000000;
+}
+.b1 div {
+  content: "";
+  position: absolute;
+  margin-top: -0.15em; /* increased from -0.1em */
+  margin-left: 0.975em; /* increased from 0.65em */
+  transform: rotate(45deg);
+  width: 0.225em; /* increased from 0.15em */
+  height: 2.25em; /* increased from 1.5em */
+  background-color: #000000;
+}
+.b2 {
+  width: 2.475em; /* increased from 1.65em */
+  height: 2.475em; /* increased from 1.65em */
+  border-radius: 50%;
+  background-color: #7f5934;
+  border: 3px solid black; /* increased from 2px */
+  box-shadow: inset 3px 3px 1.5px #b49577, -3px 0px #513721,
+    -3px 0px 0px 1.5px black; /* increased from 2px and 1px */
+}
+.b2::before {
+  content: "";
+  position: absolute;
+  margin-top: 1.575em; /* increased from 1.05em */
+  margin-left: 1.2em; /* increased from 0.8em */
+  transform: rotate(-45deg);
+  border-radius: 7.5px; /* increased from 5px */
+  width: 0.225em; /* increased from 0.15em */
+  height: 0.6em; /* increased from 0.4em */
+  background-color: #000000;
+}
+.b2::after {
+  content: "";
+  position: absolute;
+  margin-top: -0.15em; /* increased from -0.1em */
+  margin-left: 0.975em; /* increased from 0.65em */
+  transform: rotate(-45deg);
+  width: 0.225em; /* increased from 0.15em */
+  height: 2.25em; /* increased from 1.5em */
+  background-color: #000000;
+}
+.speakers {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.75em; /* increased from 0.5em */
+}
+.speakers .g1 {
+  display: flex;
+  column-gap: 0.375em; /* increased from 0.25em */
+}
+.speakers .g1 .g11,
+.g12,
+.g13 {
+  width: 0.975em; /* increased from 0.65em */
+  height: 0.975em; /* increased from 0.65em */
+  border-radius: 50%;
+  background-color: #7f5934;
+  border: 3px solid black; /* increased from 2px */
+  box-shadow: inset 1.875px 1.875px 1.5px #b49577; /* increased from 1.25px and 1px */
+}
+.speakers .g {
+  width: auto;
+  height: 3px; /* increased from 2px */
+  background-color: #171717;
+}
+
+.bottom {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 13.05em; /* increased from 8.7em */
+}
+.base1 {
+  height: 1.5em; /* increased from 1em */
+  width: 3em; /* increased from 2em */
+  border: 3px solid #171717; /* increased from 2px */
+  background-color: #4d4d4d;
+  margin-top: -0.225em; /* increased from -0.15em */
+  z-index: -1;
+}
+.base2 {
+  height: 1.5em; /* increased from 1em */
+  width: 3em; /* increased from 2em */
+  border: 3px solid #171717; /* increased from 2px */
+  background-color: #4d4d4d;
+  margin-top: -0.225em; /* increased from -0.15em */
+  z-index: -1;
+}
+.base3 {
+  position: absolute;
+  height: 0.225em; /* increased from 0.15em */
+  width: 26.25em; /* increased from 17.5em */
+  background-color: #171717;
+  margin-top: 1.2em; /* increased from 0.8em */
+}
+
+.text_404 {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  column-gap: 9em; /* increased from 6em */
+  z-index: -5;
+  margin-bottom: 3em; /* increased from 2em */
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  font-family: Montserrat;
+}
+.text_4041 {
+  transform: scaleY(36.75) scaleX(13.5); /* increased from 24.5 and 9 */
+}
+.text_4042 {
+  transform: scaleY(36.75) scaleX(13.5); /* increased from 24.5 and 9 */
+}
+.text_4043 {
+  transform: scaleY(36.75) scaleX(13.5); /* increased from 24.5 and 9 */
+}
+
+@media only screen and (max-width: 495px) {
+  .text_404 {
+    column-gap: 9em; /* increased from 6em */
+  }
+}
+@media only screen and (max-width: 395px) {
+  .text_404 {
+    column-gap: 6em; /* increased from 4em */
+  }
+  .text_4041 {
+    transform: scaleY(37.5) scaleX(12); /* increased from 25 and 8 */
+  }
+  .text_4042 {
+    transform: scaleY(37.5) scaleX(12); /* increased from 25 and 8 */
+  }
+  .text_4043 {
+    transform: scaleY(37.5) scaleX(12); /* increased from 25 and 8 */
+  }
+}
+
+@media (max-width: 275px), (max-height: 520px) {
+  .main {
+    position: relative;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .screenM {
+    display: flex;
+  }
+  .screen {
+    display: none;
+  }
+}
+@media only screen and (min-width: 1025px) {
+  .screen {
+    display: flex;
+  }
+  .screenM {
+    display: none;
+  }
+}

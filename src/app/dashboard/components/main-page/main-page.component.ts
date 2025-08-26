@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 export class MainPageComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   branch = JSON.parse(localStorage.getItem('branch') || '{}');
-
   mainPageData: any = {};
   data: any;
 
@@ -39,7 +38,7 @@ export class MainPageComponent implements OnInit {
             subtext: `${this.translate.instant(
               'TODAYS_SUBSCRIPTIONS_COUNT'
             )} : ${res.subscriptions_count ?? 0}`,
-            icon: '💳',
+            icon: '🎫',
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple gradient
           },
           {
@@ -78,12 +77,33 @@ export class MainPageComponent implements OnInit {
           },
           {
             title: 'TODAYS_STAFF_WITHDRAWS_TOTAL',
-            value: `US$ ${(res.staff_withdraw_total ?? 0).toFixed(2)}`,
+            value: `US$ ${(res.todays_staff_withdraws_total ?? 0).toFixed(2)}`,
             subtext: `${this.translate.instant(
               'TODAYS_STAFF_REQUESTED_WITHDRAW_COUNT'
-            )} : ${res.staff_withdraw_count ?? 0}`,
+            )} : ${res.todays_staff_requested_withdraw_count ?? 0}`,
+            icon: '💼',
+            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple gradient
+          },
+          {
+            title: 'TODAYS_CASH',
+            value: `US$ ${(res.todays_cash ?? 0).toFixed(2)}`,
+            subtext: `${this.translate.instant('CASH_PAYMENTS')}`,
             icon: '💵',
             gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', // Mint to pink gradient
+          },
+          {
+            title: 'TODAYS_VISA',
+            value: `US$ ${(res.todays_visa ?? 0).toFixed(2)}`,
+            subtext: `${this.translate.instant('VISA_PAYMENTS')}`,
+            icon: '💳',
+            gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', // Peach gradient
+          },
+          {
+            title: 'TODAYS_INSTAPAY',
+            value: `US$ ${(res.todays_instapay ?? 0).toFixed(2)}`,
+            subtext: `${this.translate.instant('INSTAPAY_PAYMENTS')}`,
+            icon: '📱',
+            gradient: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)', // Light blue gradient
           },
         ];
       });
