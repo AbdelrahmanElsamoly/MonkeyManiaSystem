@@ -212,3 +212,22 @@ mat-sidenav {
       0 0 0 80px rgba(255, 255, 255, 0);
   }
 }
+
+@media print {
+  mat-sidenav,
+  .sidenav,
+  .top-toolbar {
+    display: none !important;
+  }
+
+  .mat-sidenav-content {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  body,
+  html {
+    overflow: visible !important;
+    background: #fff !important;
+  }
+}
