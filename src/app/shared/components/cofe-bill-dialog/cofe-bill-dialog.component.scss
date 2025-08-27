@@ -274,3 +274,35 @@
     }
   }
 }
+
+/* Tablet Print Specific Fixes - More precise targeting */
+@media print and (pointer: coarse) and (hover: none) and (min-width: 768px) and (max-width: 1024px) {
+  /* This specifically targets tablets with touch interface */
+  @page {
+    margin: 0 !important;
+    size: auto;
+  }
+
+  html,
+  body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .bill-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    box-sizing: border-box;
+  }
+}
+
+/* iOS/Android Tablet specific fix */
+@media print and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+  .bill-container {
+    margin-right: 0 !important;
+    padding-right: 5px !important;
+  }
+}

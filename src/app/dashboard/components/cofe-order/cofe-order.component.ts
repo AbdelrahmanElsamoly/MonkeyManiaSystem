@@ -490,7 +490,7 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
           this.productsCache.clear();
 
           // Open the bill dialog with the returned product bill ID
-          this.openBillDialog(response.bill_number);
+          this.openBillDialog(response.id);
 
           this.resetForm();
           this.loading = false;
