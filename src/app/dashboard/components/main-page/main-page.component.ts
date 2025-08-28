@@ -34,18 +34,18 @@ export class MainPageComponent implements OnInit {
         this.data = [
           {
             title: 'TODAYS_SUBSCRIPTIONS_SALES',
-            value: `US$ ${(res.subscriptions_sales ?? 0).toFixed(2)}`,
+            value: `US$ ${(res.todays_subscriptions_sales ?? 0).toFixed(2)}`,
             subtext: `${this.translate.instant(
               'TODAYS_SUBSCRIPTIONS_COUNT'
-            )} : ${res.subscriptions_count ?? 0}`,
+            )} : ${res.todays_subscriptions_count ?? 0}`,
             icon: '🎫',
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple gradient
           },
           {
             title: 'TODAYS_CHILDREN_COUNT',
-            value: res.children_today ?? 0,
+            value: res.todays_children_count ?? 0,
             subtext: `${this.translate.instant('CHILDREN_COUNT_DIFF')} : ${
-              res.children_diff ?? 0
+              res.children_count_difference_from_yesterday
             }`,
             icon: '👶',
             gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', // Pink to coral gradient
@@ -54,23 +54,23 @@ export class MainPageComponent implements OnInit {
             title: 'TODAYS_CAFE_SALES',
             value: `US$ ${(res.todays_cafe_sales ?? 0).toFixed(2)}`,
             subtext: `${this.translate.instant('CAFE_SALES_DIFF')} : ${
-              res.cafe_diff ?? 0
+              res.cafe_sales_difference_from_yesterday ?? 0
             }`,
             icon: '☕',
             gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', // Blue to cyan gradient
           },
           {
             title: 'TODAYS_KIDS_SALES',
-            value: `US$ ${(res.kids_sales ?? 0).toFixed(2)}`,
+            value: `US$ ${(res.todays_kids_sales ?? 0).toFixed(2)}`,
             subtext: `${this.translate.instant('KIDS_SALES_DIFF')} : ${
-              res.kids_diff ?? 0
+              res.kids_sales_difference_from_yesterday ?? 0
             }`,
             icon: '🧒',
             gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', // Green to teal gradient
           },
           {
             title: 'TODAYS_MONEY_UNBALANCE',
-            value: `US$ ${(res.money_unbalance ?? 0).toFixed(2)}`,
+            value: `US$ ${res.todays_money_unbalance}`,
             subtext: `قيمة غير متوازنة`,
             icon: '📉',
             gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', // Pink to yellow gradient

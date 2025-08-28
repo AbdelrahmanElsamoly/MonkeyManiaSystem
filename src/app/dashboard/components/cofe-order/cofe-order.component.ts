@@ -58,7 +58,6 @@ interface ActiveBill {
 }
 
 interface Product {
-  id: number;
   layer1: string;
   layer2: string;
   layer3: string;
@@ -82,12 +81,14 @@ interface Product {
   created_by_id: number;
   product_id: number;
   branch_id: number;
+  id: number;
 }
 
 interface OrderItem {
   product_type: string;
   product_id: number;
   quantity: number;
+  id: number;
   notes: string;
   product?: Product;
 }
@@ -401,6 +402,7 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
       const orderItem: OrderItem = {
         product_type: 'product',
         product_id: this.selectedProduct.product_id,
+        id: this.selectedProduct.id,
         quantity: this.currentQuantity,
         notes: this.currentNotes ? this.currentNotes : '--',
         product: this.selectedProduct,
@@ -467,7 +469,7 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
     const orderPayload = {
       products: this.orderItems.map((item) => ({
         product_type: item.product_type,
-        product_id: item.product_id,
+        product_id: item.id,
         quantity: item.quantity,
         notes: item.notes,
       })),
