@@ -3,12 +3,9 @@ import { DashboardService } from '../../dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { CloseBillDialogComponent } from 'src/app/shared/components/close-bill-dialog/close-bill-dialog.component';
 import { ToastrService } from 'ngx-toastr';
-import { CreateBillDialogComponent } from 'src/app/shared/components/create-bill-dialog/create-bill-dialog.component';
 import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-dialog/promo-code-dialog.component';
 import { BillDialogComponent } from 'src/app/shared/components/bill-dialog/bill-dialog.component';
-import { CofeBillDialogComponent } from 'src/app/shared/components/cofe-bill-dialog/cofe-bill-dialog.component';
 
 @Component({
   selector: 'app-cafe-active-bills',
@@ -197,21 +194,6 @@ export class CafeActiveBillsComponent implements OnInit {
   pageChanged(page: number) {
     this.params.page = page;
     this.getAllBills(this.type, this.params);
-  }
-
-  openCreateBillDialog(): void {
-    const dialogRef = this.dialog.open(CreateBillDialogComponent, {
-      width: '500px',
-      data: {
-        type: 'cafe', // Pass the bill type to distinguish from child bills
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.getAllBills(this.type, this.params);
-      }
-    });
   }
 
   openPromoDialog(bill: any): void {

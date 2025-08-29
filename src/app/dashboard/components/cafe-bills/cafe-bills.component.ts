@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { CreateBillDialogComponent } from 'src/app/shared/components/create-bill-dialog/create-bill-dialog.component';
 import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-dialog/promo-code-dialog.component';
 import { BillDialogComponent } from 'src/app/shared/components/bill-dialog/bill-dialog.component';
 
@@ -230,21 +229,6 @@ export class CafeBillsComponent implements OnInit {
   pageChanged(page: number) {
     this.params.page = page;
     this.getAllBills(this.type, this.params);
-  }
-
-  openCreateBillDialog(): void {
-    const dialogRef = this.dialog.open(CreateBillDialogComponent, {
-      width: '500px',
-      data: {
-        type: 'cafe', // Pass the bill type to distinguish from child bills
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.getAllBills(this.type, this.params);
-      }
-    });
   }
 
   openPromoDialog(bill: any): void {

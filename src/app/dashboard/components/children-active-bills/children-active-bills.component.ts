@@ -63,8 +63,8 @@ export class ChildrenActiveBillsComponent implements OnInit {
           const firstChild = item.children[0];
           const firstPhone = firstChild?.phone_numbers?.[0]?.phone_number ?? '';
           return {
-            NAME: firstChild?.name,
-            PHONE_NUMBER: firstPhone,
+            NAME: item?.first_child,
+            PHONE_NUMBER: item?.first_phone,
             SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
             BRANCH: item.branch,
             BILLS_ID: item.id,
@@ -169,7 +169,11 @@ export class ChildrenActiveBillsComponent implements OnInit {
   }
   openCreateBillDialog(): void {
     const dialogRef = this.dialog.open(CreateBillDialogComponent, {
-      width: '500px',
+      width: '90vw', // Much wider - 90% of viewport width
+      maxWidth: '1200px', // Maximum width limit
+      height: 'auto',
+      maxHeight: '90vh',
+      disableClose: true, // Prevents closing when clicking outside
       data: {
         // you can pass data here if needed
       },

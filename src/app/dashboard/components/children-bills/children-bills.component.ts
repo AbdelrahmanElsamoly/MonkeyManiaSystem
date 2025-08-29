@@ -63,11 +63,9 @@ export class ChildrenBillsComponent implements OnInit {
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
         this.billsRes = data.results.map((item: any) => {
-          const firstChild = item.children[0];
-          const firstPhone = firstChild?.phone_numbers?.[0]?.phone_number ?? '';
           return {
-            NAME: firstChild?.name,
-            PHONE_NUMBER: firstPhone,
+            NAME: item?.first_child,
+            PHONE_NUMBER: item?.first_phone,
             SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
             BRANCH: item.branch,
             BILLS_ID: item.id,
@@ -180,12 +178,15 @@ export class ChildrenBillsComponent implements OnInit {
     this.params.page = page;
     this.getAllBills(this.type, this.params);
   }
+
   openCreateBillDialog(): void {
     const dialogRef = this.dialog.open(CreateBillDialogComponent, {
-      width: '500px',
-      data: {
-        // you can pass data here if needed
-      },
+      width: '90vw', // Much wider - 90% of viewport width
+      maxWidth: '1200px', // Maximum width limit
+      height: 'auto',
+      maxHeight: '90vh',
+      disableClose: true, // Prevents closing when clicking outside
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -194,6 +195,7 @@ export class ChildrenBillsComponent implements OnInit {
       }
     });
   }
+
   openPromoDialog(bill: any): void {
     const dialogRef = this.dialog.open(PromoCodeDialogComponent, {
       width: '500px',

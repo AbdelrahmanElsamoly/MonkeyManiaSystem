@@ -97,13 +97,13 @@
       </button>
     </div>
 
-    <!-- Dynamic Child Form Array -->
+    <!-- Dynamic Child Form Array with Horizontal Layout -->
     <form [formGroup]="form" *ngIf="newChildren.length > 0">
-      <div formArrayName="new_children">
+      <div formArrayName="new_children" class="children-grid-container">
         <div
           *ngFor="let group of newChildren.controls; let i = index"
           [formGroupName]="i"
-          class="child-card p-3 border rounded mb-3"
+          class="child-card-horizontal p-3 border rounded mb-3"
         >
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">👶 {{ "NEW_CHILD" | translate }} #{{ i + 1 }}</h4>
@@ -118,9 +118,9 @@
             </button>
           </div>
 
-          <div class="child-content">
+          <div class="child-content-horizontal">
             <!-- Child Name -->
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field appearance="outline" class="form-field-compact">
               <mat-label>📝 {{ "CHILD_NAME" | translate }} *</mat-label>
               <input matInput formControlName="name" />
               <mat-error
@@ -136,7 +136,7 @@
             </mat-form-field>
 
             <!-- Birth Date -->
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field appearance="outline" class="form-field-compact">
               <mat-label>🎂 {{ "BIRTH_DATE" | translate }} *</mat-label>
               <input matInput formControlName="birth_date" type="date" />
               <mat-error
@@ -149,15 +149,18 @@
             </mat-form-field>
 
             <!-- Phone Numbers Section -->
-            <div formArrayName="child_phone_numbers_set">
+            <div
+              formArrayName="child_phone_numbers_set"
+              class="phone-section-compact"
+            >
               <div
                 class="d-flex justify-content-between align-items-center mb-2"
               >
-                <h4 class="mb-0">
+                <h5 class="mb-0 phone-section-title">
                   📱 {{ "PHONE_NUMBERS_SECTION" | translate }}
-                </h4>
+                </h5>
                 <button
-                  mat-icon-button
+                  mat-mini-fab
                   color="primary"
                   type="button"
                   (click)="addPhoneNumber(i)"
@@ -176,14 +179,14 @@
               <div
                 *ngFor="let phoneGroup of getPhoneControls(i); let j = index"
                 [formGroupName]="j"
-                class="phone-group mb-3 p-3 border rounded"
+                class="phone-group-compact mb-2 p-2 border rounded"
               >
                 <div
                   class="d-flex justify-content-between align-items-start mb-2"
                 >
-                  <h5 class="mb-0">
+                  <h6 class="mb-0 phone-number-title">
                     ☎️ {{ "PHONE_NUMBER" | translate }} {{ j + 1 }}
-                  </h5>
+                  </h6>
                   <button
                     mat-icon-button
                     color="warn"
@@ -200,7 +203,10 @@
 
                 <!-- Phone Number Value -->
                 <div formGroupName="phone_number">
-                  <mat-form-field appearance="outline" class="w-100">
+                  <mat-form-field
+                    appearance="outline"
+                    class="form-field-compact"
+                  >
                     <mat-label>☎️ {{ "PHONE_NUMBER" | translate }} *</mat-label>
                     <input
                       matInput
@@ -230,7 +236,7 @@
                 </div>
 
                 <!-- Relationship -->
-                <mat-form-field appearance="outline" class="w-100">
+                <mat-form-field appearance="outline" class="form-field-compact">
                   <mat-label>👥 {{ "RELATIONSHIP" | translate }} *</mat-label>
                   <mat-select formControlName="relationship">
                     <mat-option
