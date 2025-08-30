@@ -58,7 +58,7 @@ export class BillDialogComponent implements OnInit {
         // Create a copy of products for editing with counter logic
         this.products = res.products.map((product: any, index: number) => ({
           ...product,
-          product_id: index + 1,
+          product_id: product.id,
           ordered_quantity: product.quantity, // Store original quantity
           counter: 0, // Initialize counter to 0
           quantity: product.quantity, // Keep original for display
