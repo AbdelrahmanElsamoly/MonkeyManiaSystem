@@ -420,7 +420,9 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
   removeFromOrder(index: number): void {
     const removed = this.orderItems.splice(index, 1)[0];
     if (removed && removed.product) {
-      this.toaster.info(`Removed ${removed.product.name} from order`);
+      this.toaster.info(
+        `Removed ${removed.product.name} from order completely`
+      );
     }
   }
 
@@ -607,4 +609,41 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
     this.cacheService.clearAllCaches();
     console.log('All caches cleared (including localStorage)');
   }
+
+  increaseOrderItemQuantity(index: number): void {
+    const item = this.orderItems[index];
+    if (item && item.product && item.quantity < item.product.available_units) {
+      item.quantity++;
+      this.toaster.success(
+        `${item.product.name} quantity increased to ${item.quantity}`
+      );
+    } else if (item && item.product) {
+      this.toaster.warning(
+        `Maximum available quantity reached for ${item.product.name}`
+      );
+    }
+  }
+
+  /**
+   * Decrease quantity of an order item or remove if quantity becomes 1
+   */
+  decreaseOrderItemQuantity(index: number): void {
+    const item = this.orderItems[index];
+    if (!item || !item.product) return;
+
+    if (item.quantity === 1) {
+      // Remove the item completely when quantity is 1
+      this.removeFromOrder(index);
+    } else {
+      // Decrease quantity
+      item.quantity--;
+      this.toaster.info(
+        `${item.product.name} quantity decreased to ${item.quantity}`
+      );
+    }
+  }
+
+  /**
+   * Update the existing removeFromOrder method to show appropriate message
+   */
 }

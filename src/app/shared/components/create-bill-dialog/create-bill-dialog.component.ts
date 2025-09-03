@@ -193,6 +193,12 @@ export class CreateBillDialogComponent implements OnInit {
     this.updateFilteredChildren();
   }
 
+  onSearchInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchValue = target.value;
+    this.updateFilteredChildren();
+  }
+
   clearFilter(): void {
     this.searchValue = '';
     this.filteredChildren = [...this.itemList];
@@ -343,5 +349,26 @@ export class CreateBillDialogComponent implements OnInit {
     }
 
     return '';
+  }
+  // Add this method to your CreateBillDialogComponent class
+  // Place it near your other search-related methods
+
+  onSearchKeydown(event: KeyboardEvent): void {
+    // Allow space character in search input
+    if (event.key === ' ' || event.code === 'Space') {
+      event.stopPropagation();
+    }
+
+    // Prevent Enter key from closing the select dropdown
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Prevent Escape key from being handled by the select
+    if (event.key === 'Escape' && this.searchValue) {
+      event.stopPropagation();
+      this.clearFilter();
+    }
   }
 }

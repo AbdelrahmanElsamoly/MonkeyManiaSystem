@@ -192,7 +192,7 @@
 
             <div class="quantity-selector">
               <label>🔢 {{ "QUANTITY" | translate }}:</label>
-              <div class="quantity-controls">
+              <div class="quantity-controlss">
                 <button
                   class="qty-btn"
                   (click)="decreaseQuantity()"
@@ -246,6 +246,7 @@
   </div>
 
   <!-- Current Order Summary -->
+  <!-- Updated Order Summary with Quantity Controls -->
   <div class="order-summary" *ngIf="orderItems.length > 0">
     <h3>🛒 {{ "CURRENT_ORDER" | translate }}</h3>
     <div class="order-items">
@@ -258,28 +259,64 @@
         <div class="item-details">
           <div class="item-name">{{ item.product?.name }}</div>
           <div class="item-meta">
-            <span class="item-quantity"
-              >🔢 {{ "QTY" | translate }}: {{ item.quantity }}</span
-            >
-            <span class="item-price"
-              >💰
+            <div class="quantity-control-section">
+              <!-- Quantity Controls -->
+              <div class="quantity-controls">
+                <button
+                  class="qty-control-btn decrease-btn"
+                  (click)="decreaseOrderItemQuantity(i)"
+                  [title]="
+                    item.quantity === 1
+                      ? ('REMOVE_ITEM' | translate)
+                      : ('DECREASE_QUANTITY' | translate)
+                  "
+                >
+                  <span *ngIf="item.quantity === 1">🗑️</span>
+                  <span *ngIf="item.quantity > 1">➖</span>
+                </button>
+
+                <span class="quantity-display">{{ item.quantity }}</span>
+
+                <button
+                  class="qty-control-btn increase-btn"
+                  (click)="increaseOrderItemQuantity(i)"
+                  [disabled]="
+                    item.quantity >= (item.product?.available_units || 0)
+                  "
+                  [title]="'INCREASE_QUANTITY' | translate"
+                >
+                  ➕
+                </button>
+              </div>
+            </div>
+
+            <span class="item-price">
+              💰
               {{ (+(item.product?.price || 0) * item.quantity).toFixed(2) }}
-              {{ "EGP" | translate }}</span
-            >
+              {{ "EGP" | translate }}
+            </span>
           </div>
           <div class="item-notes">
             📝 {{ "NOTES" | translate }}:
             {{ item.notes || ("NO_NOTES" | translate) }}
           </div>
         </div>
-        <button class="remove-btn" (click)="removeFromOrder(i)">❌</button>
+
+        <!-- Optional: Keep remove button for complete removal -->
+        <button
+          class="remove-btn"
+          (click)="removeFromOrder(i)"
+          title="{{ 'REMOVE_ALL' | translate }}"
+        >
+          ❌
+        </button>
       </div>
     </div>
     <div class="order-total">
-      <strong
-        >💰 {{ "TOTAL" | translate }}: {{ getOrderTotal().toFixed(2) }}
-        {{ "EGP" | translate }}</strong
-      >
+      <strong>
+        💰 {{ "TOTAL" | translate }}: {{ getOrderTotal().toFixed(2) }}
+        {{ "EGP" | translate }}
+      </strong>
     </div>
   </div>
 

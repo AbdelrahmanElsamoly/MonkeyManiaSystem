@@ -45,19 +45,24 @@
         </mat-select-trigger>
 
         <!-- Search Field -->
+        <!-- Replace the existing search field section in your template with this: -->
+
+        <!-- Search Field -->
         <mat-form-field style="width: 100%" appearance="outline">
           <mat-label>🔍 {{ "SEARCH_CHILD" | translate }}</mat-label>
           <input
             matInput
             [(ngModel)]="searchValue"
-            (ngModelChange)="onFilterChange($event)"
+            (input)="onSearchInput($event)"
+            (keydown)="onSearchKeydown($event)"
+            (click)="$event.stopPropagation()"
             [placeholder]="'SEARCH_CHILD' | translate"
           />
           <button
             *ngIf="searchValue"
             style="position: absolute; left: -10px; top: 5px"
             mat-icon-button
-            (click)="clearFilter()"
+            (click)="clearFilter(); $event.stopPropagation()"
           >
             <mat-icon>close</mat-icon>
           </button>

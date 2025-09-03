@@ -433,7 +433,7 @@
   color: #e8f5e8;
 }
 
-.quantity-controls {
+.quantity-controlss {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -634,11 +634,11 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: transparent;
+  background: transparent !important;
   color: white;
   border: none;
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 1rem;
@@ -792,5 +792,152 @@
   .submit-btn {
     width: 100%;
     max-width: 300px;
+  }
+}
+
+.item-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Increased from 4px to 12px for better spacing */
+  background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+  border-radius: 25px;
+  padding: 8px 16px; /* Increased padding for more breathing room */
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  min-width: 140px; /* Adjusted min-width to accommodate new spacing */
+}
+
+.qty-control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; /* Slightly larger buttons */
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px; /* Slightly larger font */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(145deg, #ffffff, #f1f3f4);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.qty-control-btn:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.qty-control-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.qty-control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.decrease-btn {
+  background: linear-gradient(145deg, #fff8e1, #ffecb3);
+  border: 1px solid #ffcc80;
+}
+
+.decrease-btn:hover:not(:disabled) {
+  background: linear-gradient(145deg, #fff3c4, #ffe082);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.increase-btn {
+  background: linear-gradient(145deg, #e8f5e8, #c8e6c9);
+  border: 1px solid #81c784;
+}
+
+.increase-btn:hover:not(:disabled) {
+  background: linear-gradient(145deg, #c8e6c9, #a5d6a7);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.quantity-display {
+  min-width: 24px; /* Increased from 16px for better readability */
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px; /* Slightly larger font */
+  color: #495057;
+  margin: 0 4px; /* Added margin for extra spacing */
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .quantity-controls {
+    gap: 8px; /* Reduced but still comfortable spacing on mobile */
+    padding: 6px 12px;
+    min-width: 120px;
+  }
+
+  .qty-control-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .quantity-display {
+    font-size: 14px;
+    min-width: 20px;
+  }
+}
+
+.item-price {
+  font-weight: bold;
+  color: #28a745;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+/* Keep your existing remove button styling */
+.remove-btn {
+  background: transparent;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 12px;
+}
+
+.remove-btn:hover {
+  background: #c82333;
+}
+
+.item-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .quantity-controls {
+    gap: 6px;
+    padding: 2px 6px;
+  }
+
+  .qty-control-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .quantity-display {
+    font-size: 14px;
   }
 }
