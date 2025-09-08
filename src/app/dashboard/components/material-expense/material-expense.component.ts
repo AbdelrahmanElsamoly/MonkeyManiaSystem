@@ -115,9 +115,12 @@ export class MaterialExpenseComponent implements OnInit {
   }
 
   goToExpenseProfile(expense: any) {
-    this.router.navigate(['/dashboard/expense', expense.ID], {
-      queryParams: { type: 'material' },
-    });
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/expense', expense.ID], {
+        queryParams: { type: 'material' },
+      })
+    );
+    window.open(url, '_blank');
   }
 
   openExpenseDialog(type: 'general' | 'material') {

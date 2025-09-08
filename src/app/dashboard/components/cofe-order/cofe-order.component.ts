@@ -132,9 +132,12 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   loadingLayer: boolean = false;
 
-  branchId: number = JSON.parse(localStorage.getItem('branch') || '{}')
-    ? JSON.parse(localStorage.getItem('branch') || '{}').id
-    : JSON.parse(localStorage.getItem('user') || '{}').branch;
+  branchId: number = (() => {
+    const branch = JSON.parse(localStorage.getItem('branch') || '{}');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    return branch?.id || user?.branch || 0; // Default to 0 if both are undefined
+  })();
 
   private searchSubject = new Subject<string>();
 

@@ -150,7 +150,10 @@ export class ChildrenBillsComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   goToBillProfile(bill: any) {
-    this.router.navigate(['/dashboard/bills/child', bill.BILLS_ID]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/bills/child', bill.BILLS_ID])
+    );
+    window.open(url, '_blank');
   }
 
   openCloseBillDialog(item: any) {
@@ -167,7 +170,13 @@ export class ChildrenBillsComponent implements OnInit {
               .closeBill(item.BILLS_ID, result)
               .subscribe((res: any) => {
                 this.toaster.success(res.message);
-                this.router.navigate(['/dashboard/bills/child', item.BILLS_ID]);
+                const url = this.router.serializeUrl(
+                  this.router.createUrlTree([
+                    '/dashboard/bills/child',
+                    item.BILLS_ID,
+                  ])
+                );
+                window.open(url, '_blank');
               });
           }
         });

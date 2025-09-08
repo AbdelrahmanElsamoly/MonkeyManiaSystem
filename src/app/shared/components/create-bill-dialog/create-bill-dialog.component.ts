@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -25,7 +25,7 @@ interface PhoneNumber {
   templateUrl: './create-bill-dialog.component.html',
   styleUrls: ['./create-bill-dialog.component.scss'],
 })
-export class CreateBillDialogComponent implements OnInit {
+export class CreateBillDialogComponent implements OnInit, OnDestroy {
   // Form Controls
   childrenControl = new FormControl<number[]>([]);
   discount = new FormControl<string>('');
@@ -35,8 +35,13 @@ export class CreateBillDialogComponent implements OnInit {
   itemList: Child[] = [];
   filteredChildren: Child[] = [];
   selectedChildIds: number[] = [];
+  selectedChildren: Child[] = []; // Array to keep selected children data
+  private persistentSelectedChildren: Child[] = []; // Persistent storage for selected children
   searchValue = '';
   label = 'الأطفال';
+
+  // Search timeout for debouncing
+  private searchTimeout: any;
 
   // User Info
   private readonly userInfo = JSON.parse(localStorage.getItem('user') || '{}');
@@ -59,8 +64,15 @@ export class CreateBillDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadChildren();
     this.setupChildrenControlSubscription();
+    // No initial loading - children will only load when user searches
+    this.loadChildren();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
   }
 
   // Form Initialization
@@ -73,8 +85,7 @@ export class CreateBillDialogComponent implements OnInit {
   private setupChildrenControlSubscription(): void {
     this.childrenControl.valueChanges.subscribe((value: number[] | null) => {
       this.selectedChildIds = value || [];
-      // Update filtered children when selections change
-      this.updateFilteredChildren();
+      this.updateSelectedChildren();
     });
   }
 
@@ -83,18 +94,78 @@ export class CreateBillDialogComponent implements OnInit {
     return this.form.get('new_children') as FormArray;
   }
 
-  // Data Loading
-  private loadChildren(): void {
-    this.sharedService.getAllNonActiveChildren().subscribe({
+  // Data Loading - Only search, no initial load
+  private loadChildren(searchQuery?: string): void {
+    const searchTerm = searchQuery?.trim() || 'ن';
+
+    this.sharedService.getAllNonActiveChildren(searchTerm).subscribe({
       next: (res: any) => {
-        this.itemList = res;
-        this.filteredChildren = [...res];
+        // Merge search results with persistent selected children
+        this.itemList = this.mergeWithPersistentSelected(res);
+        this.filteredChildren = [...this.itemList];
       },
       error: (err) => {
         console.error('Failed to load children:', err);
         this.toaster.error('فشل في تحميل بيانات الأطفال');
       },
     });
+  }
+
+  // Helper method to merge search results with persistent selections
+  private mergeWithPersistentSelected(searchResults: Child[]): Child[] {
+    const merged = [...searchResults];
+
+    // Add persistent selected children that are not in search results
+    this.persistentSelectedChildren.forEach((selectedChild) => {
+      if (!merged.find((child) => child.id === selectedChild.id)) {
+        merged.push(selectedChild);
+      }
+    });
+
+    return merged;
+  }
+
+  // Helper method to update selected children array
+  private updateSelectedChildren(): void {
+    // Find children from all available sources
+    const allAvailableChildren = [
+      ...this.itemList,
+      ...this.persistentSelectedChildren,
+    ];
+
+    this.selectedChildren = this.selectedChildIds
+      .map((id: number) => {
+        return allAvailableChildren.find((child: Child) => child.id === id);
+      })
+      .filter(
+        (child: Child | undefined): child is Child => child !== undefined
+      );
+
+    // Update persistent storage - keep all selected children
+    this.selectedChildren.forEach((child) => {
+      if (!this.persistentSelectedChildren.find((c) => c.id === child.id)) {
+        this.persistentSelectedChildren.push(child);
+      }
+    });
+
+    // Remove unselected children from persistent storage
+    this.persistentSelectedChildren = this.persistentSelectedChildren.filter(
+      (child) => this.selectedChildIds.includes(child.id)
+    );
+  }
+
+  // Helper method to combine search results with selected children
+  private combineWithSelectedChildren(searchResults: Child[]): Child[] {
+    const combined = [...searchResults];
+
+    // Add selected children that are not in search results
+    this.selectedChildren.forEach((selectedChild: Child) => {
+      if (!combined.find((child: Child) => child.id === selectedChild.id)) {
+        combined.push(selectedChild);
+      }
+    });
+
+    return combined;
   }
 
   // Child Management
@@ -156,52 +227,50 @@ export class CreateBillDialogComponent implements OnInit {
 
   // Child Selection Logic
   getChildNameById(id: number): string {
-    const child = this.itemList.find((c) => c.id === id);
+    const allChildren = [...this.itemList, ...this.persistentSelectedChildren];
+    const child = allChildren.find((c: Child) => c.id === id);
     return child?.name || '';
-  }
-
-  private updateFilteredChildren(): void {
-    const search = this.searchValue.toLowerCase();
-
-    if (!search.trim()) {
-      this.filteredChildren = [...this.itemList];
-      return;
-    }
-
-    // Create array for filtered results
-    const filteredResults: Child[] = [];
-
-    // First, add children that match the search
-    const matchingChildren = this.itemList.filter((child) =>
-      child.name.toLowerCase().includes(search)
-    );
-    filteredResults.push(...matchingChildren);
-
-    // Then, add selected children that don't match the search (so they remain visible)
-    const selectedNonMatchingChildren = this.itemList.filter(
-      (child) =>
-        this.selectedChildIds.includes(child.id) &&
-        !child.name.toLowerCase().includes(search)
-    );
-    filteredResults.push(...selectedNonMatchingChildren);
-
-    this.filteredChildren = filteredResults;
   }
 
   onFilterChange(search: string): void {
     this.searchValue = search;
-    this.updateFilteredChildren();
+    this.performSearch();
   }
 
   onSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchValue = target.value;
-    this.updateFilteredChildren();
+
+    // Clear existing timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    // If search is empty, show persistent selected children
+    if (!this.searchValue.trim()) {
+      this.itemList = [...this.persistentSelectedChildren];
+      this.filteredChildren = [...this.persistentSelectedChildren];
+      return;
+    }
+
+    // Set new timeout for debouncing only when there's actual text
+    this.searchTimeout = setTimeout(() => {
+      this.performSearch();
+    }, 500); // 500ms debounce
+  }
+
+  private performSearch(): void {
+    this.loadChildren(this.searchValue);
   }
 
   clearFilter(): void {
     this.searchValue = '';
-    this.filteredChildren = [...this.itemList];
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    // Show persistent selected children when clearing search
+    this.itemList = [...this.persistentSelectedChildren];
+    this.filteredChildren = [...this.persistentSelectedChildren];
   }
 
   isAllSelected(): boolean {
@@ -234,9 +303,19 @@ export class CreateBillDialogComponent implements OnInit {
 
   childClicked(id: number): void {
     const current = this.selectedChildIds;
+    const clickedChild = this.itemList.find((child) => child.id === id);
+
     if (current.includes(id)) {
+      // Removing selection
       this.childrenControl.setValue(current.filter((i) => i !== id));
     } else {
+      // Adding selection - make sure we preserve the child data
+      if (
+        clickedChild &&
+        !this.persistentSelectedChildren.find((c) => c.id === id)
+      ) {
+        this.persistentSelectedChildren.push(clickedChild);
+      }
       this.childrenControl.setValue([...current, id]);
     }
   }
@@ -245,8 +324,10 @@ export class CreateBillDialogComponent implements OnInit {
     const updated = this.selectedChildIds.filter((i) => i !== id);
     this.childrenControl.setValue(updated);
 
-    // Re-apply the current filter to update the displayed list
-    this.updateFilteredChildren();
+    // Remove from persistent storage as well
+    this.persistentSelectedChildren = this.persistentSelectedChildren.filter(
+      (child) => child.id !== id
+    );
   }
 
   // Form Validation
@@ -350,8 +431,6 @@ export class CreateBillDialogComponent implements OnInit {
 
     return '';
   }
-  // Add this method to your CreateBillDialogComponent class
-  // Place it near your other search-related methods
 
   onSearchKeydown(event: KeyboardEvent): void {
     // Allow space character in search input

@@ -90,7 +90,10 @@ export class CafeBillsComponent implements OnInit {
   }
 
   openBillDialog(productBillId: number): void {
-    this.router.navigate(['/dashboard/cofe-bill', productBillId]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/cofe-bill', productBillId])
+    );
+    window.open(url, '_blank');
   }
 
   formatDisplayDate(dateString: string): string {
@@ -189,7 +192,11 @@ export class CafeBillsComponent implements OnInit {
   }
 
   goToBillProfile(bill: any) {
-    this.router.navigate(['/dashboard/bills/cafe', bill.BILLS_ID]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/bills/cafe', bill.BILLS_ID])
+    );
+    window.open(url, '_blank');
+    console.log('shhsjdfudjsfgj');
   }
 
   // openCloseBillDialog(item: any) {

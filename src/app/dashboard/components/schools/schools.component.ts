@@ -84,7 +84,10 @@ export class SchoolsComponent implements OnInit {
     });
   }
   goToSchoolProfilePage(schoolId: any) {
-    this.router.navigate(['/dashboard/school', schoolId]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/school', schoolId])
+    );
+    window.open(url, '_blank');
   }
   schoolBulkUpLoad(csvFile: any) {
     this.dashboardService.uploadBulkSchool(csvFile).subscribe((res: any) => {

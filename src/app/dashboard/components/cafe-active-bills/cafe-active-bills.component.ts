@@ -64,7 +64,10 @@ export class CafeActiveBillsComponent implements OnInit {
 
   // Add this new method to open the dialog:
   openBillDialog(productBillId: number): void {
-    this.router.navigate(['/dashboard/cofe-bill', productBillId]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/cofe-bill', productBillId])
+    );
+    window.open(url, '_blank');
   }
 
   getAllBills(type: string = '/active/', params: any) {

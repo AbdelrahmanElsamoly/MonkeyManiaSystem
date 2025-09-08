@@ -59,7 +59,10 @@ export class ChildrenComponent implements OnInit {
   }
 
   goToChildProfilePge(childId: any) {
-    this.router.navigate(['/dashboard/child', childId]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/child', childId])
+    );
+    window.open(url, '_blank');
   }
   openCreateChildDialog() {
     const dialogRef = this.dialog.open(ChildDialogComponent, {

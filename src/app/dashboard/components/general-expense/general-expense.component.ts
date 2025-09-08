@@ -113,9 +113,12 @@ export class GeneralExpenseComponent implements OnInit {
   }
 
   goToExpenseProfile(expense: any) {
-    this.router.navigate(['/dashboard/expense', expense.ID], {
-      queryParams: { type: 'general' },
-    });
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/expense', expense.ID], {
+        queryParams: { type: 'general' },
+      })
+    );
+    window.open(url, '_blank');
   }
 
   openExpenseDialog(type: 'general' | 'material') {

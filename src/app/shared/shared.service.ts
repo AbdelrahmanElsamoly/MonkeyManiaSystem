@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -15,8 +15,9 @@ export class SharedService {
   getMaterials(branchId: any) {
     return this.http.get(`branch_material/all?branch_id=${branchId}`);
   }
-  getAllNonActiveChildren() {
-    return this.http.get(`child/non_active/all/`);
+  getAllNonActiveChildren(search: string) {
+    const params = new HttpParams().set('search', search);
+    return this.http.get(`child/non_active/all/`, { params });
   }
   createBill(body: any) {
     return this.http.post(`bill/create/`, body);

@@ -78,7 +78,10 @@ export class UserComponent {
   }
 
   goToProfilePage(userId: any) {
-    this.router.navigate(['/dashboard/user', userId]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/dashboard/user', userId])
+    );
+    window.open(url, '_blank');
   }
 
   // ✅ Called when DataTable emits a page change
