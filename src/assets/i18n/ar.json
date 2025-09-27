@@ -197,5 +197,12 @@
   "BILL": "الفاتورة",
   "TODAYS_INSTAPAY": "الدفع بانستاباي اليوم",
   "TODAYS_VISA": "الدفع بالفيزا اليوم",
-  "TODAYS_CASH": "الدفع بالكاش اليوم"
+  "TODAYS_CASH": "الدفع بالكاش اليوم",
+  "DISCOUNT_VALUE": "قيمة الخصم",
+  "DISCOUNT_TYPE": "نوع الخصم",
+  "DISCOUNT_NAME": "اسم الخصم",
+  "IS_ACTIVE": "مفعل",
+  "FINISHED_BY": "انتهى بواسطة",
+  "RETURNED_PRODUCTS_BILLS_SET": "فواتير المنتجات المرتجعة",
+  "RETURNED_PRODUCTS": "المنتجات المرتجعة"
 }

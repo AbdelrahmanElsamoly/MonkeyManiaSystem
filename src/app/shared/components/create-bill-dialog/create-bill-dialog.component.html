@@ -153,6 +153,20 @@
               </mat-error>
             </mat-form-field>
 
+            <!-- Age Display -->
+            <span
+              *ngIf="newChildren.at(i).get('birth_date')?.value"
+              class="text-muted small d-block mt-1 mb-2"
+              style="
+                font-size: 0.875rem;
+                color: white !important;
+                font-family: 'Noto Kufi Arabic', sans-serif;
+              "
+            >
+              📅 العمر:
+              {{ calculateAge(newChildren.at(i).get("birth_date")?.value) }}
+            </span>
+
             <!-- Phone Numbers Section -->
             <div
               formArrayName="child_phone_numbers_set"

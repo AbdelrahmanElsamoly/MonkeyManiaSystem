@@ -137,12 +137,7 @@
     <button mat-button color="warn" (click)="onClose()">
       {{ "CANCEL" | translate }}
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="onSubmit()"
-      [disabled]="childForm.invalid"
-    >
+    <button mat-raised-button color="primary" (click)="onSubmit()">
       {{ "SUBMIT" | translate }}
     </button>
   </mat-dialog-actions>

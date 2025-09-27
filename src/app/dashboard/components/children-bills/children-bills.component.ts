@@ -15,6 +15,7 @@ import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-d
 })
 export class ChildrenBillsComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  isLoading = false; // Add loading state
 
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
@@ -46,9 +47,11 @@ export class ChildrenBillsComponent implements OnInit {
     this.translate.instant('NAME'),
     this.translate.instant('PHONE_NUMBER'),
     this.translate.instant('SPENT_TIME'),
+    this.translate.instant('CHILDREN_COUNT'),
     this.translate.instant('BRANCH'),
   ];
   billsRes: any[] = [];
+
   constructor(
     private dashboardService: DashboardService,
     private translate: TranslateService,
@@ -56,10 +59,25 @@ export class ChildrenBillsComponent implements OnInit {
     private dialog: MatDialog,
     private toaster: ToastrService
   ) {}
+
   ngOnInit(): void {
+    // Auto select last two days
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    this.selectedDateRange.start = yesterday;
+    this.selectedDateRange.end = today;
+
+    this.params.startDate = this.formatDateForAPI(yesterday);
+    this.params.endDate = this.formatDateForAPI(today);
+
     this.getAllBills(this.type, this.params);
   }
+
   getAllBills(type: string = '/', params: any) {
+    this.isLoading = true; // Start loading
+
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
         this.billsRes = data.results.map((item: any) => {
@@ -71,13 +89,20 @@ export class ChildrenBillsComponent implements OnInit {
             BILLS_ID: item.id,
             isActive: item.is_active,
             DISCOUNT_VALUE: Number(item.discount_value),
+            CHILDREN_COUNT: item.children_count,
           };
         });
         this.totalItems = data.count;
         this.currentPage = params.page;
+        this.isLoading = false; // Stop loading
+      },
+      error: (error) => {
+        console.error('Error fetching bills:', error);
+        this.isLoading = false; // Stop loading on error
       },
     });
   }
+
   getSpentTimeFormatted(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
@@ -88,6 +113,7 @@ export class ChildrenBillsComponent implements OnInit {
     if (hoursPart && minutesPart) return `${hoursPart} و${minutesPart}`;
     return hoursPart || minutesPart || '0 دقيقة';
   }
+
   onStartDateChange(date: Date): void {
     this.selectedDateRange.start = date;
     this.checkAndTrigger();
@@ -112,6 +138,7 @@ export class ChildrenBillsComponent implements OnInit {
       this.getAllBills(this.type, this.params);
     }
   }
+
   searchExpense(searchQuery: string) {
     this.params = {
       searchQuery: searchQuery,
@@ -127,6 +154,7 @@ export class ChildrenBillsComponent implements OnInit {
 
     this.getAllBills(this.type, this.params);
   }
+
   onBranchSelectionChange(selected: any) {
     this.selectedBranchIds = selected;
     this.params = {
@@ -143,12 +171,55 @@ export class ChildrenBillsComponent implements OnInit {
     this.getAllBills(this.type, this.params);
   }
 
+  getDateRangeInArabic(): string {
+    if (!this.selectedDateRange.start || !this.selectedDateRange.end) {
+      return '';
+    }
+
+    const arabicDays = [
+      'الأحد',
+      'الاثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+      'السبت',
+    ];
+    const arabicMonths = [
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
+    ];
+
+    const startDay = arabicDays[this.selectedDateRange.start.getDay()];
+    const startDate = this.selectedDateRange.start.getDate();
+    const startMonth = arabicMonths[this.selectedDateRange.start.getMonth()];
+    const startYear = this.selectedDateRange.start.getFullYear();
+
+    const endDay = arabicDays[this.selectedDateRange.end.getDay()];
+    const endDate = this.selectedDateRange.end.getDate();
+    const endMonth = arabicMonths[this.selectedDateRange.end.getMonth()];
+    const endYear = this.selectedDateRange.end.getFullYear();
+
+    return `من ${startDay} ${startDate} ${startMonth} ${startYear} إلى ${endDay} ${endDate} ${endMonth} ${endYear}`;
+  }
+
   formatDateForAPI(date: Date): string {
     const year = date.getFullYear();
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
   }
+
   goToBillProfile(bill: any) {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/dashboard/bills/child', bill.BILLS_ID])
@@ -190,11 +261,11 @@ export class ChildrenBillsComponent implements OnInit {
 
   openCreateBillDialog(): void {
     const dialogRef = this.dialog.open(CreateBillDialogComponent, {
-      width: '90vw', // Much wider - 90% of viewport width
-      maxWidth: '1200px', // Maximum width limit
+      width: '90vw',
+      maxWidth: '1200px',
       height: 'auto',
       maxHeight: '90vh',
-      disableClose: true, // Prevents closing when clicking outside
+      disableClose: true,
       data: {},
     });
 
@@ -214,9 +285,7 @@ export class ChildrenBillsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.success) {
-        // Handle success - maybe refresh the bill data, show success message, etc.
         this.getAllBills(this.type, this.params);
-      } else {
       }
     });
   }

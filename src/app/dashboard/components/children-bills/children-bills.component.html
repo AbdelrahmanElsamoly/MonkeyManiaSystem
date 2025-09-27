@@ -8,54 +8,97 @@
         class="search-input mt-4"
         [(ngModel)]="searchQuery"
         (input)="searchExpense(searchQuery)"
+        [disabled]="isLoading"
       />
-      <div class="d-flex justify-content-start align-items-center mt-4">
+      <div
+        class="d-flex justify-content-start align-items-center mt-4 position-relative"
+      >
         <app-branch-multi-select
           *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner'"
           (selectedBranchesChange)="onBranchSelectionChange($event)"
+          [class.disabled-filter]="isLoading"
         ></app-branch-multi-select>
 
-        <mat-form-field appearance="fill" class="mx-3">
+        <mat-form-field
+          appearance="fill"
+          class="mx-3"
+          [class.disabled-filter]="isLoading"
+        >
           <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
-
-          <mat-date-range-input [rangePicker]="picker">
+          <mat-date-range-input [rangePicker]="picker" [disabled]="isLoading">
             <input
               matStartDate
               [placeholder]="'START_DATE' | translate"
               (dateChange)="onStartDateChange($event.value)"
+              [disabled]="isLoading"
+              [value]="selectedDateRange.start"
             />
             <input
               matEndDate
               [placeholder]="'END_DATE' | translate"
               (dateChange)="onEndDateChange($event.value)"
+              [disabled]="isLoading"
+              [value]="selectedDateRange.end"
             />
           </mat-date-range-input>
-
           <mat-datepicker-toggle
             matSuffix
             [for]="picker"
+            [disabled]="isLoading"
           ></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
+          <mat-date-range-picker
+            #picker
+            [disabled]="isLoading"
+          ></mat-date-range-picker>
         </mat-form-field>
+      </div>
+
+      <!-- Arabic date range display outside the date picker -->
+      <div
+        class="mt-2 date-wrapper"
+        *ngIf="selectedDateRange.start && selectedDateRange.end"
+      >
+        <span class="date-range-arabic"> ⏰ {{ getDateRangeInArabic() }} </span>
       </div>
     </div>
     <div>
-      <button class="dialog-button" (click)="openCreateBillDialog()">
+      <button
+        class="dialog-button"
+        (click)="openCreateBillDialog()"
+        [disabled]="isLoading"
+      >
         + {{ "CREATE" | translate }}
       </button>
     </div>
   </div>
 </div>
 
-<app-data-table
-  [displayedColumns]="['NAME', 'PHONE_NUMBER', 'SPENT_TIME', 'BRANCH']"
-  [data]="billsRes"
-  [isActiveBills]="true"
-  (itemClicked)="goToBillProfile($event)"
-  (editClicked)="openCloseBillDialog($event)"
-  (promoClicked)="openPromoDialog($event)"
-  [paginationType]="'server'"
-  [totalItems]="totalItems"
-  [currentPage]="currentPage"
-  (pageChange)="pageChanged($event)"
-></app-data-table>
+<!-- Table with loading overlay -->
+<div class="table-container position-relative">
+  <!-- Loading overlay for table -->
+  <div *ngIf="isLoading" class="table-loader-overlay">
+    <div class="spinner-container d-flex justify-content-center mb-4">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </div>
+
+  <app-data-table
+    [displayedColumns]="[
+      'NAME',
+      'PHONE_NUMBER',
+      'SPENT_TIME',
+      'CHILDREN_COUNT',
+      'BRANCH'
+    ]"
+    [data]="billsRes"
+    [isActiveBills]="true"
+    (itemClicked)="goToBillProfile($event)"
+    (editClicked)="openCloseBillDialog($event)"
+    (promoClicked)="openPromoDialog($event)"
+    [paginationType]="'server'"
+    [totalItems]="totalItems"
+    [currentPage]="currentPage"
+    (pageChange)="pageChanged($event)"
+    [class.loading-state]="isLoading"
+  ></app-data-table>
+</div>

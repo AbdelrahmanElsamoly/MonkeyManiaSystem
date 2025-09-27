@@ -43,6 +43,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
     this.translate.instant('NAME'),
     this.translate.instant('PHONE_NUMBER'),
     this.translate.instant('SPENT_TIME'),
+    this.translate.instant('CHILDREN_COUNT'),
     this.translate.instant('BRANCH'),
   ];
   billsRes: any[] = [];
@@ -70,6 +71,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
             BILLS_ID: item.id,
             isActive: item.is_active,
             DISCOUNT_VALUE: Number(item.discount_value),
+            CHILDREN_COUNT: item.children_count,
           };
         });
       },

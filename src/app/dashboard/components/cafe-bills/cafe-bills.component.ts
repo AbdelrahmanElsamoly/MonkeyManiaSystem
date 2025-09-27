@@ -14,6 +14,7 @@ import { BillDialogComponent } from 'src/app/shared/components/bill-dialog/bill-
 })
 export class CafeBillsComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  isLoading = false; // Add loading state
 
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
@@ -59,10 +60,23 @@ export class CafeBillsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Auto select last two days
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    this.selectedDateRange.start = yesterday;
+    this.selectedDateRange.end = today;
+
+    this.params.startDate = this.formatDateForAPI(yesterday);
+    this.params.endDate = this.formatDateForAPI(today);
+
     this.getAllBills(this.type, this.params);
   }
 
   getAllBills(type: string = '/', params: any) {
+    this.isLoading = true; // Start loading
+
     this.dashboardService.getCafeBill(type, params).subscribe({
       next: (data: any) => {
         this.billsRes = data.results.map((item: any) => {
@@ -81,10 +95,12 @@ export class CafeBillsComponent implements OnInit {
 
         this.totalItems = data.count || data.length || 0;
         this.currentPage = params.page;
+        this.isLoading = false; // Stop loading
       },
       error: (error) => {
         console.error('Error fetching cafe bills:', error);
         this.toaster.error(this.translate.instant('ERROR_FETCHING_BILLS'));
+        this.isLoading = false; // Stop loading on error
       },
     });
   }
@@ -116,6 +132,7 @@ export class CafeBillsComponent implements OnInit {
     this.selectedDateRange.end = date;
     this.checkAndTrigger();
   }
+
   openUpdateBillDialog(billId: number) {
     const dialogRef = this.dialog.open(BillDialogComponent, {
       data: { billId: billId },
@@ -184,6 +201,48 @@ export class CafeBillsComponent implements OnInit {
     this.getAllBills(this.type, this.params);
   }
 
+  getDateRangeInArabic(): string {
+    if (!this.selectedDateRange.start || !this.selectedDateRange.end) {
+      return '';
+    }
+
+    const arabicDays = [
+      'الأحد',
+      'الاثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+      'السبت',
+    ];
+    const arabicMonths = [
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
+    ];
+
+    const startDay = arabicDays[this.selectedDateRange.start.getDay()];
+    const startDate = this.selectedDateRange.start.getDate();
+    const startMonth = arabicMonths[this.selectedDateRange.start.getMonth()];
+    const startYear = this.selectedDateRange.start.getFullYear();
+
+    const endDay = arabicDays[this.selectedDateRange.end.getDay()];
+    const endDate = this.selectedDateRange.end.getDate();
+    const endMonth = arabicMonths[this.selectedDateRange.end.getMonth()];
+    const endYear = this.selectedDateRange.end.getFullYear();
+
+    return `من ${startDay} ${startDate} ${startMonth} ${startYear} إلى ${endDay} ${endDate} ${endMonth} ${endYear}`;
+  }
+
   formatDateForAPI(date: Date): string {
     const year = date.getFullYear();
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -198,40 +257,6 @@ export class CafeBillsComponent implements OnInit {
     window.open(url, '_blank');
     console.log('shhsjdfudjsfgj');
   }
-
-  // openCloseBillDialog(item: any) {
-  //   // You might need to create a getCafeBillById method in your service
-  //   this.dashboardService
-  //     .getCafeBillById(item.BILLS_ID)
-  //     .subscribe({
-  //       next: (res: any) => {
-  //         const dialogRef = this.dialog.open(CloseBillDialogComponent, {
-  //           data: res,
-  //         });
-
-  //         dialogRef.afterClosed().subscribe((result) => {
-  //           if (result) {
-  //             this.dashboardService
-  //               .closeBill(item.BILLS_ID, result)
-  //               .subscribe({
-  //                 next: (res: any) => {
-  //                   this.toaster.success(res.message);
-  //                   this.router.navigate(['/dashboard/bills/cafe', item.BILLS_ID]);
-  //                 },
-  //                 error: (error) => {
-  //                   console.error('Error closing bill:', error);
-  //                   this.toaster.error(this.translate.instant('ERROR_CLOSING_BILL'));
-  //                 }
-  //               });
-  //           }
-  //         });
-  //       },
-  //       error: (error) => {
-  //         console.error('Error fetching bill details:', error);
-  //         this.toaster.error(this.translate.instant('ERROR_FETCHING_BILL_DETAILS'));
-  //       }
-  //     });
-  // }
 
   pageChanged(page: number) {
     this.params.page = page;
@@ -257,6 +282,7 @@ export class CafeBillsComponent implements OnInit {
       }
     });
   }
+
   makeOrder() {
     this.router.navigate(['/dashboard/order']);
   }

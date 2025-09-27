@@ -50,7 +50,13 @@
 </div>
 
 <app-data-table
-  [displayedColumns]="['NAME', 'PHONE_NUMBER', 'SPENT_TIME', 'BRANCH']"
+  [displayedColumns]="[
+    'NAME',
+    'PHONE_NUMBER',
+    'SPENT_TIME',
+    'CHILDREN_COUNT',
+    'BRANCH'
+  ]"
   [isActiveBills]="true"
   [data]="billsRes"
   (itemClicked)="goToBillProfile($event)"

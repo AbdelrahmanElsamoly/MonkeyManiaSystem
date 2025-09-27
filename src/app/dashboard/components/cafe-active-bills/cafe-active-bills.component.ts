@@ -81,7 +81,7 @@ export class CafeActiveBillsComponent implements OnInit {
             TAKE_AWAY: item.take_away ? 'تيك أواي 🥡' : 'في المطعم 🍽️',
             FIRST_CHILD: item.first_child,
             CREATED_DATE: this.formatDisplayDate(item.created),
-            IS_EDITED: item.returned_products.length > 0 ? '✅' : '❌',
+            IS_EDITED: item?.returned_products?.length > 0 ? '✅' : '❌',
             BILLS_ID: item.id,
             rawData: item, // Keep original data for reference
           };

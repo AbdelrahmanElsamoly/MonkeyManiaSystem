@@ -8,7 +8,7 @@ interface CacheEntry<T> {
 }
 
 interface CacheConfig {
-  ttl: number; // Time to live in milliseconds
+  ttl?: number; // Time to live in milliseconds
   maxSize?: number; // Maximum number of entries
   persistToLocalStorage?: boolean; // Whether to persist cache to localStorage
 }
@@ -32,7 +32,7 @@ export class CacheService {
 
       // Set default config
       const defaultConfig: CacheConfig = {
-        ttl: 5 * 60 * 1000, // 5 minutes default
+        ttl: 24 * 60 * 60 * 1000, // 24 hours default
         maxSize: 100,
         persistToLocalStorage: false,
       };
@@ -50,7 +50,7 @@ export class CacheService {
 
     if (!cache || !config) return;
 
-    const ttl = customTtl || config.ttl;
+    const ttl = customTtl || config.ttl || 24 * 60 * 60 * 1000; // Fallback to 24 hours
     const entry: CacheEntry<T> = {
       data,
       timestamp: Date.now(),
@@ -198,7 +198,7 @@ export class CacheService {
             this.caches.set(cacheName, validEntries);
             // Set default config for persisted cache
             this.configs.set(cacheName, {
-              ttl: 5 * 60 * 1000,
+              ttl: 24 * 60 * 60 * 1000,
               maxSize: 100,
               persistToLocalStorage: true,
             });

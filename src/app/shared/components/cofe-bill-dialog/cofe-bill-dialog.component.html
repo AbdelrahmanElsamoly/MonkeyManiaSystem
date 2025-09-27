@@ -105,6 +105,34 @@
     </table>
   </div>
 
+  <div
+    class="products-section"
+    *ngIf="
+      productBillData.returned_products?.length &&
+      (userInfo.role == 'manger' ||
+        userInfo.role == 'owner' ||
+        userInfo.role == 'admin')
+    "
+  >
+    <h3 class="section-title">{{ "RETURNED_PRODUCTS" | translate }}</h3>
+    <table class="children-table">
+      <thead>
+        <tr>
+          <th>{{ "PRODUCTS" | translate }}</th>
+          <th>{{ "QUANTITY" | translate }}</th>
+          <th>{{ "CREATED_BY" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of productBillData.returned_products">
+          <td>{{ product.name }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.created_by }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Total Price -->
 
   <!-- Error State -->

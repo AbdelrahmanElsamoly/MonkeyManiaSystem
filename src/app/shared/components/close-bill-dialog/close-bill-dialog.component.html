@@ -6,15 +6,60 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
+
+  <!-- Product Bills Table -->
+  <div
+    class="product-bills-section mb-3"
+    *ngIf="data.product_bills_set && data.product_bills_set.length > 0"
+  >
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="m-0">🛍️</h6>
+      <button
+        *ngIf="data.product_bills_set.length > 3"
+        (click)="toggleProductBills()"
+        class="expand-emoji-btn"
+      >
+        {{ isProductBillsExpanded ? "🔼" : "🔽" }}
+      </button>
+    </div>
+
+    <div class="table-responsive" [class.expanded]="isProductBillsExpanded">
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr>
+            <th>{{ "PRODUCTS" | translate }}</th>
+            <th>{{ "QUANTITY" | translate }}</th>
+            <th>{{ "PRICE" | translate }}</th>
+            <th>{{ "TOTAL" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="table-body-transition">
+          <tr
+            *ngFor="let bill of data.product_bills_set; let i = index"
+            [class.hidden-row]="!isProductBillsExpanded && i >= 3"
+            [style.animation-delay]="i * 0.1 + 's'"
+          >
+            <td>{{ bill.name }}</td>
+            <td>{{ bill.quantity }}</td>
+            <td>{{ bill.unit_price }} EGP</td>
+            <td>{{ bill.total_price }} EGP</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="text-center my-3">
     <h5>{{ "TOTAL_PRICE" | translate }}: {{ data.total_price }} EGP</h5>
   </div>
+
   <div class="text-center mb-3">
     <h5>
       {{ "SPENT_TIME" | translate }}:
       {{ getSpentTimeFormatted(data.spent_time) }}
     </h5>
   </div>
+
   <!-- Dialog Body -->
   <div class="dialog-body" [formGroup]="form">
     <div class="row g-3">
@@ -30,7 +75,6 @@
           />
         </mat-form-field>
       </div>
-
       <!-- Cash -->
       <div class="col-md-4">
         <mat-form-field appearance="outline" class="w-100">
@@ -43,7 +87,6 @@
           />
         </mat-form-field>
       </div>
-
       <!-- Visa -->
       <div class="col-md-4">
         <mat-form-field appearance="outline" class="w-100">
@@ -57,7 +100,6 @@
         </mat-form-field>
       </div>
     </div>
-
     <!-- Rest display -->
     <div class="text-center mt-3">
       <h5 [ngStyle]="{ color: rest >= 0 ? 'green' : 'red' }">
@@ -77,7 +119,7 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="rest < 0"
+      [disabled]="rest != 0"
       (click)="submit()"
     >
       {{ "SUBMIT" | translate }}

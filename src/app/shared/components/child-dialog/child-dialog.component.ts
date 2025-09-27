@@ -94,50 +94,46 @@ export class ChildDialogComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.childForm.valid) {
-      const formValue = this.childForm.value;
+    const formValue = this.childForm.value;
 
-      // ✅ Prepare request body
-      const body: any = {
-        ...formValue,
-        birth_date: this.formatDate(formValue.birth_date),
-        school: formValue.school ? formValue.school.id : null,
-        child_phone_numbers_set: formValue.child_phone_numbers_set.map(
-          (item: any) => ({
-            phone_number: { value: item.value }, // ✅ Fix: API expects object
-            relationship: item.relationship,
-          })
-        ),
-      };
+    // ✅ Prepare request body
+    const body: any = {
+      ...formValue,
+      birth_date: this.formatDate(formValue.birth_date),
+      school: formValue.school ? formValue.school.id : null,
+      child_phone_numbers_set: formValue.child_phone_numbers_set.map(
+        (item: any) => ({
+          phone_number: { value: item.value }, // ✅ Fix: API expects object
+          relationship: item.relationship,
+        })
+      ),
+    };
 
-      if (this.isUpdateMode) {
-        body['id'] = this.data.childData.id; // ✅ Use correct ID
-        this.dashboardService
-          .updateChild(this.data.childData.id, body)
-          .subscribe({
-            next: (res: any) => {
-              this.toaster.success(res.message);
-              this.dialogRef.close(true);
-            },
-            error: (err) => {
-              console.error('Update Error:', err);
-              this.toaster.error('Failed to update child');
-            },
-          });
-      } else {
-        this.dashboardService.createChild(body).subscribe({
+    if (this.isUpdateMode) {
+      body['id'] = this.data.childData.id; // ✅ Use correct ID
+      this.dashboardService
+        .updateChild(this.data.childData.id, body)
+        .subscribe({
           next: (res: any) => {
             this.toaster.success(res.message);
             this.dialogRef.close(true);
           },
           error: (err) => {
-            console.error('Create Error:', err);
-            this.toaster.error('Failed to create child');
+            console.error('Update Error:', err);
+            this.toaster.error('Failed to update child');
           },
         });
-      }
     } else {
-      this.childForm.markAllAsTouched(); // ✅ Show validation errors
+      this.dashboardService.createChild(body).subscribe({
+        next: (res: any) => {
+          this.toaster.success(res.message);
+          this.dialogRef.close(true);
+        },
+        error: (err) => {
+          console.error('Create Error:', err);
+          this.toaster.error('Failed to create child');
+        },
+      });
     }
   }
 

@@ -96,7 +96,7 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
 
   // Data Loading - Only search, no initial load
   private loadChildren(searchQuery?: string): void {
-    const searchTerm = searchQuery?.trim() || 'ن';
+    const searchTerm = searchQuery?.trim() || 'شبا';
 
     this.sharedService.getAllNonActiveChildren(searchTerm).subscribe({
       next: (res: any) => {
@@ -448,6 +448,41 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
     if (event.key === 'Escape' && this.searchValue) {
       event.stopPropagation();
       this.clearFilter();
+    }
+  }
+
+  // Add this method to your CreateBillDialogComponent class
+
+  calculateAge(birthDate: string): string {
+    if (!birthDate) return '';
+
+    const birth = new Date(birthDate);
+    const today = new Date();
+
+    let years = today.getFullYear() - birth.getFullYear();
+    let months = today.getMonth() - birth.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    if (today.getDate() < birth.getDate()) {
+      months--;
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+    }
+
+    if (years === 0) {
+      return months === 1 ? `${months} شهر` : `${months} أشهر`;
+    } else if (months === 0) {
+      return years === 1 ? `${years} سنة` : `${years} سنوات`;
+    } else {
+      const yearText = years === 1 ? 'سنة' : 'سنوات';
+      const monthText = months === 1 ? 'شهر' : 'أشهر';
+      return `${years} ${yearText} و ${months} ${monthText}`;
     }
   }
 }

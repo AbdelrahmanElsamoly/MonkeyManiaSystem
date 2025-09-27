@@ -175,6 +175,76 @@
       <span>{{ "BRANCH" | translate }}:</span>
       {{ bill.branch }}
     </div>
+
+    <div
+      *ngIf="
+        userInfo.role == 'manger' ||
+        userInfo.role == 'admin' ||
+        userInfo.role == 'owner'
+      "
+    >
+      <div class="bill-row">
+        <span>{{ "DISCOUNT_NAME" | translate }}:</span>
+        {{ bill.discount_name }}
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "DISCOUNT_TYPE" | translate }}:</span>
+        {{ bill.discount_type }}
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "DISCOUNT_VALUE" | translate }}:</span>
+        {{ bill.discount_value }}
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "IS_ACTIVE" | translate }}:</span>
+        <span *ngIf="bill.is_active; else notActive"
+          >🟢 {{ "Active" | translate }}</span
+        >
+        <ng-template #notActive>🔴 {{ "Inactive" | translate }}</ng-template>
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "SPENT_TIME" | translate }}:</span>
+        {{ getSpentTimeFormatted(bill.spent_time) }}
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "MONEY_UNBALANCE" | translate }}:</span>
+        {{ bill.money_unbalance }} EGP
+      </div>
+      <div class="mt-4">
+        <span
+          class="mt-4"
+          style="margin-top: 10px !important"
+          *ngIf="bill.returned_product_bills_set?.length"
+          >{{ "RETURNED_PRODUCTS_BILLS_SET" | translate }} :</span
+        >
+        <table
+          class="children-table"
+          *ngIf="bill.returned_product_bills_set?.length"
+        >
+          <thead>
+            <tr>
+              <th>{{ "PRODUCTS" | translate }}</th>
+              <th>{{ "QTY" | translate }}</th>
+              <th>{{ "CREATED_BY" | translate }}</th>
+              <th>{{ "TOTAL" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of bill.returned_product_bills_set">
+              <td>{{ product.name }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.created_by }}</td>
+              <td>{{ product.total_price }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <div class="bill-footer mt-4 bill-row" *ngIf="!bill.is_active">

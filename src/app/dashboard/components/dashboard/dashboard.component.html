@@ -55,7 +55,7 @@
       <p class="mx-1" *ngIf="userInfo.role != 'waiter'">
         📅 {{ currentDate | date : "fullDate" }}
       </p>
-      <div *ngIf="userInfo.role == 'waiter'">
+      <div *ngIf="userInfo.role == 'waiter' || userInfo.role == 'reception'">
         <button class="btn mx-4 mb-3" (click)="makeOrder()">
           <i class="animation"></i>
           🛒 {{ "Create_order" | translate }}<i class="animation"></i>

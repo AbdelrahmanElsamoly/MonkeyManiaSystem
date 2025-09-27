@@ -13,10 +13,11 @@ import {
 } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import { ToastrService } from 'ngx-toastr';
-import { CacheService, CacheManager } from '../../cashe.service'; // Import the cache service
+import { CacheService, CacheManager } from '../../cashe.service'; // Fixed import path
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+
 // Your interfaces remain the same...
 interface Child {
   id: number;
@@ -99,7 +100,7 @@ interface OrderItem {
   styleUrls: ['./cofe-order.component.scss'],
 })
 export class CofeOrderComponent implements OnInit, OnDestroy {
-  // Cache instances - now using the singleton service
+  // Cache instances - now using the singleton service with 24-hour TTL
   private layer1Cache: CacheManager<string[]>;
   private layer2Cache: CacheManager<string[]>;
   private productsCache: CacheManager<Product[]>;
@@ -141,14 +142,6 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
 
   private searchSubject = new Subject<string>();
 
-  // Cache configuration constants
-  private readonly CACHE_CONFIG = {
-    LAYER1_TTL: 30 * 60 * 1000, // 30 minutes for layer1 (rarely changes)
-    LAYER2_TTL: 15 * 60 * 1000, // 15 minutes for layer2
-    PRODUCTS_TTL: 5 * 60 * 1000, // 5 minutes for products (inventory changes)
-    MAX_CACHE_SIZE: 50,
-  };
-
   constructor(
     private dashboardService: DashboardService,
     private toaster: ToastrService,
@@ -157,24 +150,20 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router
   ) {
-    // Initialize cache managers using the singleton service with persistence
+    // Initialize cache managers using the singleton service with 24-hour TTL and persistence
     this.layer1Cache = this.cacheService.getCache<string[]>('cafe_layer1', {
-      ttl: this.CACHE_CONFIG.LAYER1_TTL,
-      maxSize: 10,
-      persistToLocalStorage: true, // Enable persistence
+      persistToLocalStorage: true, // Enable persistence - uses 24-hour TTL from service
     });
 
     this.layer2Cache = this.cacheService.getCache<string[]>('cafe_layer2', {
-      ttl: this.CACHE_CONFIG.LAYER2_TTL,
-      maxSize: this.CACHE_CONFIG.MAX_CACHE_SIZE,
-      persistToLocalStorage: true, // Enable persistence
+      maxSize: 50,
+      persistToLocalStorage: true, // Enable persistence - uses 24-hour TTL from service
     });
 
     this.productsCache = this.cacheService.getCache<Product[]>(
       'cafe_products',
       {
-        ttl: this.CACHE_CONFIG.PRODUCTS_TTL,
-        maxSize: this.CACHE_CONFIG.MAX_CACHE_SIZE,
+        maxSize: 50,
         persistToLocalStorage: false, // Don't persist products (inventory changes frequently)
       }
     );
@@ -196,8 +185,6 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     // No need to save cache manually - it's handled by the service
   }
-
-  // Rest of your methods remain the same, just the cache initialization changes...
 
   private setupSearch(): void {
     this.searchSubject
@@ -556,15 +543,44 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
 
   // Utility method for images
   getFoodImage(itemName: string): string {
-    const imageMap: { [key: string]: string } = {
+    const layer1ImageMap: { [key: string]: string } = {
+      // Arabic mappings for your layer1 items
+      اخري: 'https://tse2.mm.bing.net/th/id/OIP.pDBNDkwfB67QnmasFRfC9wHaFj?rs=1&pid=ImgDetMain&o=7&rm=3', // Other/Miscellaneous
+      ديزيرت:
+        'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300&h=200&fit=crop', // Dessert
+      'معجنات حلوة':
+        'https://tse1.mm.bing.net/th/id/OIP.oRZelOfrswAzBbOCcetRFwHaFF?rs=1&pid=ImgDetMain&o=7&rm=3', // Sweet pastries
+      سناكس: 'https://bing.com/th?id=OSK.f2b015ee0a7fd3f507118faf168de27f', // Snacks
+      'مشروبات باردة':
+        'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=300&h=200&fit=crop', // Cold drinks
+      قهوة: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=200&fit=crop', // Coffee
+      'مشروبات ساخنة':
+        'https://bing.com/th?id=OSK.5fd94c4692c9435341ad828764185d04', // Hot drinks
+
+      // English mappings (keeping for compatibility)
+      other:
+        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=200&fit=crop',
+      dessert:
+        'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300&h=200&fit=crop',
+      pastries:
+        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=200&fit=crop',
+      snacks:
+        'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop',
+      'cold drinks':
+        'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=300&h=200&fit=crop',
+      beverages:
+        'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=300&h=200&fit=crop',
+      coffee:
+        'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=200&fit=crop',
+      'hot drinks':
+        'https://images.unsplash.com/photo-1556881286-04ba2dd9399d?w=300&h=200&fit=crop',
+      tea: 'https://images.unsplash.com/photo-1556881286-04ba2dd9399d?w=300&h=200&fit=crop',
+
+      // Additional food items
       burger:
         'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop',
       pizza:
         'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&h=200&fit=crop',
-      dessert:
-        'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300&h=200&fit=crop',
-      beverages:
-        'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=300&h=200&fit=crop',
       sides:
         'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop',
       salads:
@@ -579,23 +595,53 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
         'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&h=200&fit=crop',
       chocolate:
         'https://images.unsplash.com/photo-1549924231-f129b911e442?w=300&h=200&fit=crop',
-      coffee:
-        'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=200&fit=crop',
-      tea: 'https://images.unsplash.com/photo-1556881286-04ba2dd9399d?w=300&h=200&fit=crop',
     };
 
-    const lowerName = itemName?.toLowerCase() || '';
+    // Normalize the input by trimming whitespace
+    const normalizedInput = itemName?.trim() || '';
 
-    if (imageMap[lowerName]) {
-      return imageMap[lowerName];
+    // Try direct match first for layer1 items
+    if (layer1ImageMap[normalizedInput]) {
+      return layer1ImageMap[normalizedInput];
     }
 
-    for (const key of Object.keys(imageMap)) {
-      if (lowerName.includes(key) || key.includes(lowerName)) {
-        return imageMap[key];
+    // Try partial matching for Arabic keywords to ensure consistency
+    for (const [key, value] of Object.entries(layer1ImageMap)) {
+      if (normalizedInput.includes(key) || key.includes(normalizedInput)) {
+        return value;
       }
     }
 
+    // Arabic keyword partial matching for robust detection
+    if (
+      normalizedInput.includes('مشروبات') &&
+      normalizedInput.includes('ساخنة')
+    ) {
+      return layer1ImageMap['مشروبات ساخنة'];
+    }
+    if (
+      normalizedInput.includes('مشروبات') &&
+      normalizedInput.includes('باردة')
+    ) {
+      return layer1ImageMap['مشروبات باردة'];
+    }
+    if (normalizedInput.includes('قهوة')) {
+      return layer1ImageMap['قهوة'];
+    }
+    if (normalizedInput.includes('ديزيرت')) {
+      return layer1ImageMap['ديزيرت'];
+    }
+    if (normalizedInput.includes('معجنات')) {
+      return layer1ImageMap['معجنات حلوة'];
+    }
+    if (normalizedInput.includes('سناكس')) {
+      return layer1ImageMap['سناكس'];
+    }
+    if (normalizedInput.includes('اخري')) {
+      return layer1ImageMap['اخري'];
+    }
+
+    // Default image for unmatched items
     return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=200&fit=crop';
   }
 
@@ -645,8 +691,4 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
       );
     }
   }
-
-  /**
-   * Update the existing removeFromOrder method to show appropriate message
-   */
 }

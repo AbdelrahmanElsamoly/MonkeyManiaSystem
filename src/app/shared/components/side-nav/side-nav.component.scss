@@ -32,7 +32,7 @@ mat-expansion-panel-header mat-icon {
   background-color: rgba(47, 189, 111, 0.1); // light blue background
   span,
   mat-icon {
-    color: #fbbf24;
+    color: #fbbf24 !important;
   }
   border-left: 4px solid #4caf65;
   font-weight: bold;

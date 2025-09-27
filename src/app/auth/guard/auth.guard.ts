@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import {
+  CanActivate,
+  Router,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { loginService } from '../login.service';
@@ -10,28 +15,43 @@ import { loginService } from '../login.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: loginService, private router: Router) {}
 
-  canActivate(): Observable<boolean> {
-    const accessToken = this.authService.getAccessToken();
-
-    if (accessToken && !this.authService.isTokenExpired(accessToken)) {
-      return of(true);
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | boolean {
+    // Check if user has valid session
+    if (this.authService.isSessionValid()) {
+      return true;
     }
 
+    // Check if we can try to refresh token
     const refreshToken = this.authService.getRefreshToken();
-    if (refreshToken) {
+    if (refreshToken && !this.authService.isTokenExpired(refreshToken)) {
       return this.authService.refreshToken().pipe(
-        map((res: any) => {
-          this.authService.saveTokens(res.access, res.refresh);
+        map(() => {
           return true;
         }),
-        catchError(() => {
-          this.authService.logout();
+        catchError((error) => {
+          // FIXED: Don't call logout() - just redirect
+          this.redirectToLogin(state.url);
           return of(false);
         })
       );
     }
 
-    this.router.navigate(['/login']);
-    return of(false);
+    // No valid tokens, redirect to login
+    this.redirectToLogin(state.url);
+    return false;
+  }
+
+  private redirectToLogin(returnUrl: string): void {
+    // Clear expired tokens silently
+    this.authService.clearExpiredSession();
+
+    // Navigate to login with return URL
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl },
+      replaceUrl: true, // Don't add to browser history
+    });
   }
 }

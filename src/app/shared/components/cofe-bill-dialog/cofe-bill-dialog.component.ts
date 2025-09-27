@@ -52,6 +52,7 @@ export class CofeBillDialogComponent implements OnInit {
   billData: BillData | null = null;
   loading: boolean = true;
   productBillId: number = 0;
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 
   constructor(
     private route: ActivatedRoute,

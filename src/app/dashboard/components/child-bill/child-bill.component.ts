@@ -9,6 +9,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ChildBillComponent implements OnInit {
   bill: any;
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+
   constructor(
     private dashboardService: DashboardService,
     private route: ActivatedRoute
