@@ -1,0 +1,225 @@
+<div class="container-fluid">
+  <!-- Loading State -->
+  <h1 style="margin-bottom: 50px; color: white">
+    {{ "free_files" | translate }} ... 💾
+  </h1>
+
+  <div
+    *ngIf="isLoading"
+    class="d-flex justify-content-center align-items-center py-3"
+  >
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger ms-2"
+      (click)="clearError()"
+    >
+      {{ "FLOW_CHART.ERROR.DISMISS" | translate }}
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading">
+    <!-- Three Filters in Columns -->
+    <div class="row">
+      <!-- Type Selection Column -->
+      <div class="col-md-4 col-12 mb-3">
+        <label for="typeSelect" class="form-label"
+          >{{ "FLOW_CHART.FILTERS.TYPE_SELECTION.LABEL" | translate }}
+          <span class="text-danger">{{
+            "FLOW_CHART.FILTERS.TYPE_SELECTION.REQUIRED" | translate
+          }}</span></label
+        >
+        <select
+          id="typeSelect"
+          class="form-select"
+          [(ngModel)]="selectedType"
+          (change)="onTypeSelect(selectedType)"
+          (focus)="onDropdownOpen()"
+          (click)="onDropdownOpen()"
+          [disabled]="isCreatingRequest"
+        >
+          <option value="" disabled>
+            {{
+              isLoading
+                ? ("FLOW_CHART.FILTERS.TYPE_SELECTION.PLACEHOLDER.LOADING"
+                  | translate)
+                : allowedTypes.length === 0
+                ? ("FLOW_CHART.FILTERS.TYPE_SELECTION.PLACEHOLDER.CLICK_TO_LOAD"
+                  | translate)
+                : ("FLOW_CHART.FILTERS.TYPE_SELECTION.PLACEHOLDER.CHOOSE_TYPE"
+                  | translate)
+            }}
+          </option>
+          <option *ngFor="let type of allowedTypes" [value]="type">
+            {{ type | titlecase }}
+          </option>
+        </select>
+        <div class="form-text bg-danger text-light p-2 rounded">
+          <i class="bi bi-info-circle me-1"></i>
+          ⚠️ {{ "FLOW_CHART.FILTERS.TYPE_SELECTION.HELP_TEXT" | translate }}
+        </div>
+      </div>
+
+      <!-- Branch Multi-Select Column -->
+      <div class="col-md-4 col-12 mb-3">
+        <label class="form-label">{{
+          "FLOW_CHART.FILTERS.BRANCH_SELECTION.LABEL" | translate
+        }}</label>
+        <app-branch-multi-select
+          (selectedBranchesChange)="onBranchSelectionChange($event)"
+          [class.disabled-filter]="isLoading || isCreatingRequest"
+        >
+        </app-branch-multi-select>
+      </div>
+
+      <!-- Date Range Picker Column -->
+      <div class="col-md-4 col-12 mb-3">
+        <label class="form-label">{{
+          "FLOW_CHART.FILTERS.DATE_RANGE.LABEL" | translate
+        }}</label>
+        <mat-form-field
+          appearance="outline"
+          class="w-100"
+          [class.disabled-filter]="isLoading || isCreatingRequest"
+        >
+          <mat-date-range-input
+            [rangePicker]="picker"
+            [disabled]="isLoading || isCreatingRequest"
+          >
+            <input
+              matStartDate
+              [placeholder]="
+                'FLOW_CHART.FILTERS.DATE_RANGE.START_DATE_PLACEHOLDER'
+                  | translate
+              "
+              (dateChange)="onStartDateChange($event.value)"
+              [disabled]="isLoading || isCreatingRequest"
+              [value]="selectedDateRange.start"
+            />
+            <input
+              matEndDate
+              [placeholder]="
+                'FLOW_CHART.FILTERS.DATE_RANGE.END_DATE_PLACEHOLDER' | translate
+              "
+              (dateChange)="onEndDateChange($event.value)"
+              [disabled]="isLoading || isCreatingRequest"
+              [value]="selectedDateRange.end"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+            [disabled]="isLoading || isCreatingRequest"
+          >
+          </mat-datepicker-toggle>
+          <mat-date-range-picker
+            #picker
+            [disabled]="isLoading || isCreatingRequest"
+          >
+          </mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-start align-items-center mt-4 gap-3">
+      <!-- Create Request Button -->
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!canCreateRequest"
+        (click)="createRequest()"
+      >
+        <span
+          *ngIf="isCreatingRequest"
+          class="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <i *ngIf="!isCreatingRequest" class="bi bi-download me-2"></i>
+        {{
+          isCreatingRequest
+            ? ("FLOW_CHART.BUTTONS.CREATE_REQUEST.GENERATING" | translate)
+            : ("FLOW_CHART.BUTTONS.CREATE_REQUEST.GENERATE" | translate)
+        }}
+      </button>
+
+      <!-- Reset Filters Button -->
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        [disabled]="isCreatingRequest"
+        (click)="resetFilters()"
+      >
+        <i class="bi bi-arrow-clockwise me-2"></i>
+        {{ "FLOW_CHART.BUTTONS.RESET_FILTERS" | translate }}
+      </button>
+    </div>
+
+    <!-- Debug Information (Remove in production) -->
+    <div *ngIf="selectedType" class="mt-3 alert alert-info">
+      <h6>
+        <i class="bi bi-info-circle me-2"></i
+        >{{ "FLOW_CHART.DEBUG.TITLE" | translate }}
+      </h6>
+      <div class="row">
+        <div class="col-md-6">
+          <strong>{{ "FLOW_CHART.DEBUG.SELECTED_TYPE" | translate }}</strong>
+          {{ selectedType }}<br />
+          <strong>{{ "FLOW_CHART.DEBUG.BRANCHES" | translate }}</strong>
+          {{
+            selectedBranches.length === 0
+              ? ("FLOW_CHART.DEBUG.ALL_BRANCHES" | translate)
+              : selectedBranches.length +
+                " " +
+                ("FLOW_CHART.DEBUG.SELECTED_COUNT" | translate)
+          }}<br />
+        </div>
+        <div class="col-md-6">
+          <strong>{{ "FLOW_CHART.DEBUG.START_DATE" | translate }}</strong>
+          {{
+            selectedDateRange.start
+              ? (selectedDateRange.start | date : "yyyy-MM-dd")
+              : ("FLOW_CHART.DEBUG.NOT_SET" | translate)
+          }}<br />
+          <strong>{{ "FLOW_CHART.DEBUG.END_DATE" | translate }}</strong>
+          {{
+            selectedDateRange.end
+              ? (selectedDateRange.end | date : "yyyy-MM-dd")
+              : ("FLOW_CHART.DEBUG.NOT_SET" | translate)
+          }}<br />
+        </div>
+      </div>
+      <div class="mt-2">
+        <small class="text-muted">
+          {{ "FLOW_CHART.DEBUG.API_URL" | translate }}
+          <code
+            >/csv_analytics/file/?type={{ selectedType }}&branch_id={{
+              selectedBranches.length === 0
+                ? "all"
+                : selectedBranches.join(",")
+            }}<span *ngIf="selectedDateRange.start && selectedDateRange.end"
+              >&start_date={{
+                selectedDateRange.start | date : "yyyy-MM-dd"
+              }}&end_date={{
+                selectedDateRange.end | date : "yyyy-MM-dd"
+              }}</span
+            ></code
+          >
+        </small>
+      </div>
+    </div>
+
+    <!-- Placeholder for Results -->
+    <div class="mt-4">
+      <!-- Your flow chart or results will be displayed here -->
+    </div>
+  </div>
+</div>

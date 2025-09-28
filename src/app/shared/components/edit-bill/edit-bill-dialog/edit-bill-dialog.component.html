@@ -1,0 +1,154 @@
+<div class="dialog-container p-3">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="dialog-header m-0">
+      {{ "EDIT_BILL_CALCULATIONS" | translate }}🧾
+    </h2>
+    <button mat-icon-button color="warn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Customer Info Section -->
+  <div
+    class="customer-info-section mb-4 p-3 rounded"
+    style="
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid #dee2e6;
+    "
+  >
+    <div class="row g-3">
+      <!-- Child Name -->
+      <div class="col-md-3">
+        <div class="info-card text-center">
+          <div class="info-icon mb-2">👶</div>
+          <h6 class="fw-bold text-primary mb-1">
+            {{ "CHILD_NAME" | translate }}
+          </h6>
+          <p class="mb-0 text-dark">{{ data.first_child }}</p>
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="col-md-3">
+        <div class="info-card text-center">
+          <div class="info-icon mb-2">📞</div>
+          <h6 class="fw-bold text-success mb-1">
+            {{ "PHONE_NUMBER" | translate }}
+          </h6>
+          <p class="mb-0 text-dark">{{ data.first_phone }}</p>
+        </div>
+      </div>
+
+      <!-- Products Price -->
+      <div class="col-md-3">
+        <div class="info-card text-center">
+          <div class="info-icon mb-2">🛍️</div>
+          <h6 class="fw-bold text-warning mb-1">
+            {{ "PRODUCTS_PRICE" | translate }}
+          </h6>
+          <p class="mb-0 text-dark fw-bold">{{ data.products_price }} EGP</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="info-card text-center">
+          <div class="info-icon mb-2">💰</div>
+          <h6 class="fw-bold text-warning mb-1">
+            {{ "TOTAL_PRICE" | translate }}
+          </h6>
+          <p class="mb-0 text-dark fw-bold">{{ data.total_price }} EGP</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spent Time Display -->
+  <div class="text-center mb-3" *ngIf="data.spent_time">
+    <h5 class="text-info">
+      ⏰ {{ "SPENT_TIME" | translate }}:
+      {{ getSpentTimeFormatted(data.spent_time) }}
+    </h5>
+  </div>
+
+  <!-- Dialog Body - Payment Form -->
+  <div class="dialog-body" [formGroup]="form">
+    <h6 class="mb-3 text-center">💳 {{ "PAYMENT_BREAKDOWN" | translate }}</h6>
+
+    <div class="row g-3">
+      <!-- Time Price -->
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>⏱️ {{ "TIME_PRICE" | translate }}</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="time_price"
+            (input)="updateRest()"
+            min="0"
+          />
+          <span matSuffix>EGP</span>
+        </mat-form-field>
+      </div>
+
+      <!-- Visa -->
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>💳 Visa</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="visa"
+            (input)="updateRest()"
+            min="0"
+          />
+          <span matSuffix>EGP</span>
+        </mat-form-field>
+      </div>
+
+      <!-- Cash -->
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>💵 {{ "CASH" }}</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="cash"
+            (input)="updateRest()"
+            min="0"
+          />
+          <span matSuffix>EGP</span>
+        </mat-form-field>
+      </div>
+
+      <!-- Instapay -->
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>📲 Instapay</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="instapay"
+            (input)="updateRest()"
+            min="0"
+          />
+          <span matSuffix>EGP</span>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-button color="warn" (click)="onClose()" [disabled]="isLoading">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="submit()">
+      <mat-spinner *ngIf="isLoading" diameter="20" class="me-2"></mat-spinner>
+      {{ "UPDATE_CALCULATIONS" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

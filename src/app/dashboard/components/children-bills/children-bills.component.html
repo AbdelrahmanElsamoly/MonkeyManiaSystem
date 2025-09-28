@@ -93,11 +93,12 @@
     [data]="billsRes"
     [isActiveBills]="true"
     (itemClicked)="goToBillProfile($event)"
-    (editClicked)="openCloseBillDialog($event)"
+    (CloseBillClicked)="openCloseBillDialog($event)"
     (promoClicked)="openPromoDialog($event)"
     [paginationType]="'server'"
     [totalItems]="totalItems"
     [currentPage]="currentPage"
+    (editClicked)="openEditBillDialog($event)"
     (pageChange)="pageChanged($event)"
     [class.loading-state]="isLoading"
   ></app-data-table>

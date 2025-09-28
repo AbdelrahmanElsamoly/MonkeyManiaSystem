@@ -7,6 +7,7 @@ import { CloseBillDialogComponent } from 'src/app/shared/components/close-bill-d
 import { ToastrService } from 'ngx-toastr';
 import { CreateBillDialogComponent } from 'src/app/shared/components/create-bill-dialog/create-bill-dialog.component';
 import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-dialog/promo-code-dialog.component';
+import { EditBillDialogComponent } from 'src/app/shared/components/edit-bill/edit-bill-dialog/edit-bill-dialog.component';
 
 @Component({
   selector: 'app-children-bills',
@@ -211,6 +212,27 @@ export class ChildrenBillsComponent implements OnInit {
     const endYear = this.selectedDateRange.end.getFullYear();
 
     return `من ${startDay} ${startDate} ${startMonth} ${startYear} إلى ${endDay} ${endDate} ${endMonth} ${endYear}`;
+  }
+  openEditBillDialog(item: any): void {
+    this.dashboardService
+      .getChildBillById(item.BILLS_ID)
+      .subscribe((res: any) => {
+        const dialogRef = this.dialog.open(EditBillDialogComponent, {
+          width: '90vw',
+          maxWidth: '800px',
+          height: 'auto',
+          maxHeight: '90vh',
+          disableClose: false,
+          data: res,
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            this.toaster.success('تم تحديث حسابات الفاتورة بنجاح');
+            this.getAllBills(this.type, this.params);
+          }
+        });
+      });
   }
 
   formatDateForAPI(date: Date): string {

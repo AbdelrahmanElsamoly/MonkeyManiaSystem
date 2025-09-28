@@ -19,6 +19,7 @@
   "PRODUCTS": "المنتجات",
   "MATERIALS": "المواد",
   "OFFERS": "العروض",
+  "Reliable": "التحريرات",
   "KIDS_PREFERENCES": "تفضيلات الأطفال",
   "PROMOCODES": "أكواد الترويج",
   "SUBSCRIPTIONS": "الاشتراكات",
@@ -204,5 +205,63 @@
   "IS_ACTIVE": "مفعل",
   "FINISHED_BY": "انتهى بواسطة",
   "RETURNED_PRODUCTS_BILLS_SET": "فواتير المنتجات المرتجعة",
-  "RETURNED_PRODUCTS": "المنتجات المرتجعة"
+  "RETURNED_PRODUCTS": "المنتجات المرتجعة",
+  "free_files": "تحرير الملفات",
+  "FLOW_CHART": {
+    "LOADING": {
+      "LOADING_TYPES": "جاري تحميل الأنواع المسموحة..."
+    },
+    "ERROR": {
+      "DISMISS": "إغلاق"
+    },
+    "FILTERS": {
+      "TYPE_SELECTION": {
+        "LABEL": "اختر النوع:",
+        "REQUIRED": "*",
+        "PLACEHOLDER": {
+          "LOADING": "جاري تحميل الأنواع...",
+          "CLICK_TO_LOAD": "انقر لتحميل الأنواع المتاحة...",
+          "CHOOSE_TYPE": "اختر نوعاً مسموحاً..."
+        },
+        "HELP_TEXT": "يرجى اختيار نوع لتفعيل زر إنشاء الطلب."
+      },
+      "BRANCH_SELECTION": {
+        "LABEL": "اختر الفروع:"
+      },
+      "DATE_RANGE": {
+        "LABEL": "اختر نطاق التاريخ:",
+        "START_DATE_PLACEHOLDER": "تاريخ البداية",
+        "END_DATE_PLACEHOLDER": "تاريخ النهاية"
+      }
+    },
+    "BUTTONS": {
+      "CREATE_REQUEST": {
+        "GENERATING": "جاري إنشاء ملف CSV...",
+        "GENERATE": "إنشاء وتحميل ملف CSV"
+      },
+      "RESET_FILTERS": "إعادة تعيين المرشحات"
+    },
+    "DEBUG": {
+      "TITLE": "معلومات التشخيص:",
+      "SELECTED_TYPE": "النوع المختار:",
+      "BRANCHES": "الفروع:",
+      "ALL_BRANCHES": "جميع الفروع",
+      "SELECTED_COUNT": "مختار",
+      "START_DATE": "تاريخ البداية:",
+      "END_DATE": "تاريخ النهاية:",
+      "NOT_SET": "غير محدد",
+      "API_URL": "رابط API سيكون:"
+    },
+    "ICONS": {
+      "INFO": "معلومات",
+      "WARNING": "تحذير",
+      "DOWNLOAD": "تحميل",
+      "REFRESH": "تحديث"
+    }
+  },
+  "EDIT_BILL_CALCULATIONS": "تعديل حسابات الفاتورة",
+  "PAYMENT_BREAKDOWN": "تفاصيل الدفع",
+  "UPDATE_CALCULATIONS": "تحديث الحسابات",
+  "calculations_updated_by": "تم تحديث الحسابات بواسطة",
+  "is_calculations_updated": "تم تحديث الحسابات"
 }

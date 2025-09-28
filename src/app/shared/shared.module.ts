@@ -41,6 +41,7 @@ import { PromoCodeDialogComponent } from './components/promo-code-dialog/promo-c
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BillDialogComponent } from './components/bill-dialog/bill-dialog.component';
 import { CofeBillDialogComponent } from './components/cofe-bill-dialog/cofe-bill-dialog.component';
+import { EditBillDialogComponent } from './components/edit-bill/edit-bill-dialog/edit-bill-dialog.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -64,6 +65,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PromoCodeDialogComponent,
     BillDialogComponent,
     CofeBillDialogComponent,
+    EditBillDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -113,6 +115,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PromoCodeDialogComponent,
     BillDialogComponent,
     CofeBillDialogComponent,
+    EditBillDialogComponent,
   ],
 })
 export class SharedModule {}

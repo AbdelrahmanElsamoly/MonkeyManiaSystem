@@ -21,10 +21,24 @@
           <button (click)="delete(row)">🗑️</button>
         </td>
         <td *ngIf="isActiveBills">
-          <button [disabled]="!row?.isActive" (click)="editClicked.emit(row)">
+          <button
+            [disabled]="!row?.isActive"
+            (click)="CloseBillClicked.emit(row)"
+          >
             💳
           </button>
           <button (click)="promoClicked.emit(row)">🎁</button>
+          <button
+            *ngIf="
+              !row?.isActive &&
+              (userInfo.role == 'manger' ||
+                userInfo.role == 'admin' ||
+                userInfo.role == 'owner')
+            "
+            (click)="editClicked.emit(row)"
+          >
+            ✏️
+          </button>
 
           <span *ngIf="row?.DISCOUNT_VALUE" class="have_discount">
             💸

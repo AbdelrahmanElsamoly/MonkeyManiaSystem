@@ -15,9 +15,11 @@ import {
 })
 export class DataTableComponent implements OnInit, OnChanges {
   @Input() displayedColumns: string[] = [];
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   @Input() data: any[] = [];
   @Output() editClicked = new EventEmitter<any>();
   @Output() promoClicked = new EventEmitter<any>();
+  @Output() CloseBillClicked = new EventEmitter<any>();
   @Output() itemClicked = new EventEmitter<any>();
   @Input() isActiveBills: boolean = false;
   @Input() isActive: boolean = true;

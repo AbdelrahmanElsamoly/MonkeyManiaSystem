@@ -203,7 +203,9 @@ export class DashboardService {
   createProductBill(orderData: any): Observable<any> {
     return this.http.post(`product_bill/create/`, orderData);
   }
-
+  updateCalculations(billId: number, body: any) {
+    return this.http.patch(`/bill/${billId}/update_calculations/`, body);
+  }
   // cafe Bills Api
   getCafeBill(type: any, paramsOj: any) {
     let params = new HttpParams();
@@ -235,5 +237,33 @@ export class DashboardService {
   // Update bill
   updateBill(billId: number, payload: any) {
     return this.http.patch(`/product_bill/${billId}/update/`, payload);
+  }
+
+  // csv file
+  getAllowedTypes(): Observable<string[]> {
+    return this.http.get<string[]>('/csv_analytics/allowed_types/');
+  }
+
+  getFileSelected(paramsObj: any): Observable<any> {
+    let params = new HttpParams();
+
+    if (paramsObj.type) {
+      params = params.set('type', paramsObj.type); // Changed from 'search' to 'type'
+    }
+    if (!paramsObj.branchIds || paramsObj.branchIds.length === 0) {
+      params = params.set('branch_id', 'all');
+    } else {
+      paramsObj.branchIds.forEach((id: any) => {
+        params = params.append('branch_id', id.toString());
+      });
+    }
+    if (paramsObj.startDate && paramsObj.endDate) {
+      params = params.set('start_date', paramsObj.startDate);
+      params = params.set('end_date', paramsObj.endDate);
+    }
+
+    console.log('API request params:', params.toString());
+
+    return this.http.get<any>(`/csv_analytics/file/`, { params });
   }
 }

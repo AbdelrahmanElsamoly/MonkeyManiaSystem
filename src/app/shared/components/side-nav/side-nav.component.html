@@ -10,6 +10,21 @@
     <span *ngIf="!collapsed">{{ "DASHBOARD" | translate }}</span>
   </a>
 
+  <a
+    *ngIf="
+      userInfo.role == 'manger' ||
+      userInfo.role == 'admin' ||
+      userInfo.role == 'owner'
+    "
+    mat-list-item
+    class="d-flex justify-content-center"
+    routerLink="/dashboard/flow-chart"
+    routerLinkActive="active-link"
+  >
+    <mat-icon>bar_chart</mat-icon>
+    <span *ngIf="!collapsed">{{ "Reliable" | translate }}</span>
+  </a>
+
   <!-- Sales -->
   <a mat-list-item routerLink="/dashboard/sales" routerLinkActive="active-link">
     <mat-icon>point_of_sale</mat-icon>

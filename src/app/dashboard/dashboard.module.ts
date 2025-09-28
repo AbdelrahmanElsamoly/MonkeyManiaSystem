@@ -48,6 +48,7 @@ import { CafeActiveBillsComponent } from './components/cafe-active-bills/cafe-ac
 import { ChildBillComponent } from './components/child-bill/child-bill.component';
 import { CofeOrderComponent } from './components/cofe-order/cofe-order.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FlowChartComponent } from './components/flow-chart/flow-chart/flow-chart.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -60,6 +61,7 @@ registerLocaleData(localeAr);
     MainPageComponent,
     SalesComponent,
     UserComponent,
+    FlowChartComponent,
     StaffComponent,
     ChildrenComponent,
     SchoolsComponent,
@@ -82,6 +84,7 @@ registerLocaleData(localeAr);
     HttpClientModule,
     DashboardRoutingModule,
     SharedModule,
+    MatDatepickerModule,
     FormsModule,
     CarouselModule,
     ReactiveFormsModule,

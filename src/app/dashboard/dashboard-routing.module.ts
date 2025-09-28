@@ -20,6 +20,7 @@ import { CafeBillsComponent } from './components/cafe-bills/cafe-bills.component
 import { ChildBillComponent } from './components/child-bill/child-bill.component';
 import { CofeOrderComponent } from './components/cofe-order/cofe-order.component';
 import { CofeBillDialogComponent } from '../shared/components/cofe-bill-dialog/cofe-bill-dialog.component';
+import { FlowChartComponent } from './components/flow-chart/flow-chart/flow-chart.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ const routes: Routes = [
       { path: 'sales', component: SalesComponent },
       { path: 'child', component: ChildrenComponent },
       { path: 'order', component: CofeOrderComponent },
+      { path: 'flow-chart', component: FlowChartComponent },
       {
         path: 'bills',
         children: [
