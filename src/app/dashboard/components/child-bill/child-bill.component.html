@@ -185,7 +185,7 @@
     >
       <div class="bill-row">
         <span>{{ "DISCOUNT_NAME" | translate }}:</span>
-        {{ bill.discount_name }}
+        {{ bill.discount }}
       </div>
 
       <div class="bill-row">
@@ -224,6 +224,16 @@
       <div class="bill-row">
         <span>{{ "calculations_updated_by" | translate }}:</span>
         {{ bill.calculations_updated_by }}
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "CREATED_BY" | translate }}:</span>
+        {{ bill.created_by }}
+      </div>
+
+      <div class="bill-row">
+        <span>{{ "FINISHED_BY" | translate }}:</span>
+        {{ bill.finished_by }}
       </div>
 
       <div class="mt-4">

@@ -30,8 +30,8 @@
     <div class="row">
       <!-- Type Selection Column -->
       <div class="col-md-4 col-12 mb-3">
-        <label for="typeSelect" class="form-label"
-          >{{ "FLOW_CHART.FILTERS.TYPE_SELECTION.LABEL" | translate }}
+        <label for="typeSelect" class="form-label mx-2">
+          {{ "FLOW_CHART.FILTERS.TYPE_SELECTION.LABEL" | translate }}
           <span class="text-danger">{{
             "FLOW_CHART.FILTERS.TYPE_SELECTION.REQUIRED" | translate
           }}</span></label
@@ -45,7 +45,7 @@
           (click)="onDropdownOpen()"
           [disabled]="isCreatingRequest"
         >
-          <option value="" disabled>
+          <option value="" class="mx-2" disabled>
             {{
               isLoading
                 ? ("FLOW_CHART.FILTERS.TYPE_SELECTION.PLACEHOLDER.LOADING"
@@ -68,7 +68,7 @@
       </div>
 
       <!-- Branch Multi-Select Column -->
-      <div class="col-md-4 col-12 mb-3">
+      <div class="col-md-4 col-12 w-90 mb-3">
         <label class="form-label">{{
           "FLOW_CHART.FILTERS.BRANCH_SELECTION.LABEL" | translate
         }}</label>

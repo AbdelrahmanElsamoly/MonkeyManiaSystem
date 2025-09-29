@@ -69,10 +69,17 @@
         </mat-form-field>
 
         <!-- Children Options -->
+        <mat-option
+          [value]="''"
+          style="display: none"
+          [disabled]="true"
+          class="no-checkbox"
+        >
+          {{ "" }}
+        </mat-option>
         <mat-option *ngFor="let child of filteredChildren" [value]="child.id">
           {{ child.name }}
         </mat-option>
-
         <!-- No Results Message -->
         <div
           *ngIf="filteredChildren.length === 0"

@@ -309,3 +309,11 @@ mat-dialog-actions.dialog-footer {
     min-height: auto;
   }
 }
+::ng-deep .no-checkbox .mat-pseudo-checkbox {
+  display: none !important;
+}
+
+/* Optional: adjust padding to compensate for missing checkbox */
+::ng-deep .no-checkbox {
+  padding-left: 16px !important;
+}

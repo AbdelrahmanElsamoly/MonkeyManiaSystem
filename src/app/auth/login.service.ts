@@ -112,6 +112,7 @@ export class loginService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     this.currentUserSubject.next(null);
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 

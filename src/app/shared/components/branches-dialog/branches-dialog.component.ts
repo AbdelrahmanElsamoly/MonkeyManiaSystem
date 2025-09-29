@@ -42,6 +42,7 @@ export class BranchesDialogComponent implements OnInit {
       localStorage.setItem('branch', JSON.stringify(branch));
       this.toaster.success(this.translate.instant('SUCCESS_CHOOSE'));
       this.dialogRef.close(branch);
+      window.location.reload();
     }
   }
   onClose() {
