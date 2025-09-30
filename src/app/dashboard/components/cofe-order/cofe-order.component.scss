@@ -43,10 +43,6 @@
   font-size: 1rem;
 }
 
-.search-container {
-  position: relative;
-}
-
 .search-input,
 .table-input {
   width: 100%;
@@ -225,10 +221,6 @@
   border-color: #4caf50;
 }
 
-.product-item {
-  position: relative;
-}
-
 .product-item:hover .add-overlay {
   opacity: 1;
 }
@@ -355,13 +347,12 @@
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .modal-content::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
 }
 
 .modal-header {
@@ -610,18 +601,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
-}
-
-.item-quantity {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  margin: 8px 0;
 }
 
 .item-price {
-  color: #4caf50;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: bold;
+  color: #28a745;
+  font-size: 14px;
+  margin-right: 8px;
 }
 
 .item-notes {
@@ -637,15 +624,19 @@
   background: transparent !important;
   color: white;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: #c82333;
 }
 
 .order-total {
@@ -757,73 +748,28 @@
   font-weight: 600;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .order-container {
-    padding: 15px;
-  }
-
-  .menu-grid,
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-  }
-
-  .header h2 {
-    font-size: 2rem;
-  }
-
-  .layer-selection h3 {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-  }
-
-  .modal-content {
-    width: 95%;
-    margin: 10px;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .continue-btn,
-  .submit-btn {
-    width: 100%;
-    max-width: 300px;
-  }
-}
-
-.item-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 0;
-}
-
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 12px; /* Increased from 4px to 12px for better spacing */
+  gap: 12px;
   background: linear-gradient(145deg, #f8f9fa, #e9ecef);
   border-radius: 25px;
-  padding: 8px 16px; /* Increased padding for more breathing room */
+  padding: 8px 16px;
   border: 1px solid #dee2e6;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  min-width: 140px; /* Adjusted min-width to accommodate new spacing */
+  min-width: 140px;
 }
 
 .qty-control-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px; /* Slightly larger buttons */
+  width: 28px;
   height: 28px;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 14px; /* Slightly larger font */
+  font-size: 14px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(145deg, #ffffff, #f1f3f4);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -865,84 +811,14 @@
 }
 
 .quantity-display {
-  min-width: 24px; /* Increased from 16px for better readability */
+  min-width: 24px;
   text-align: center;
   font-weight: 600;
-  font-size: 15px; /* Slightly larger font */
+  font-size: 15px;
   color: #495057;
-  margin: 0 4px; /* Added margin for extra spacing */
+  margin: 0 4px;
 }
 
-/* Responsive design adjustments */
-@media (max-width: 768px) {
-  .quantity-controls {
-    gap: 8px; /* Reduced but still comfortable spacing on mobile */
-    padding: 6px 12px;
-    min-width: 120px;
-  }
-
-  .qty-control-btn {
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
-  }
-
-  .quantity-display {
-    font-size: 14px;
-    min-width: 20px;
-  }
-}
-
-.item-price {
-  font-weight: bold;
-  color: #28a745;
-  font-size: 14px;
-  margin-right: 8px;
-}
-
-/* Keep your existing remove button styling */
-.remove-btn {
-  background: transparent;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 12px;
-}
-
-.remove-btn:hover {
-  background: #c82333;
-}
-
-.item-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .quantity-controls {
-    gap: 6px;
-    padding: 2px 6px;
-  }
-
-  .qty-control-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 12px;
-  }
-
-  .quantity-display {
-    font-size: 14px;
-  }
-}
-
-/* Take Away Button Styling */
 .checkbox-group {
   display: flex;
   justify-content: center;
@@ -975,7 +851,6 @@
   box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
 }
 
-/* Hide the default checkbox */
 .checkbox-label input[type="checkbox"] {
   position: absolute;
   opacity: 0;
@@ -984,7 +859,6 @@
   height: 0;
 }
 
-/* Custom checkmark container */
 .checkmark {
   display: inline-flex;
   align-items: center;
@@ -998,7 +872,6 @@
   transition: all 0.2s ease;
 }
 
-/* Checkmark icon when checked */
 .checkmark::after {
   content: "";
   width: 6px;
@@ -1009,7 +882,6 @@
   transition: transform 0.2s ease;
 }
 
-/* When checkbox is checked */
 .checkbox-label input[type="checkbox"]:checked ~ .checkmark {
   background-color: white;
   border-color: white;
@@ -1020,7 +892,6 @@
   border-color: #28a745;
 }
 
-/* Use :has() selector for modern browsers, fallback with JavaScript if needed */
 .checkbox-label:has(input[type="checkbox"]:checked) {
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
@@ -1030,7 +901,6 @@
   box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
-/* Fallback for browsers without :has() support */
 .checkbox-label.checked {
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
@@ -1040,13 +910,11 @@
   box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
-/* Active state */
 .checkbox-label:active {
   transform: translateY(1px);
   box-shadow: 0 2px 10px rgba(108, 117, 125, 0.2);
 }
 
-/* Focus state for accessibility */
 .checkbox-label input[type="checkbox"]:focus {
   outline: none;
 }
@@ -1056,8 +924,86 @@
   outline-offset: 2px;
 }
 
+.search-container {
+  position: relative;
+
+  .search-input {
+    padding-right: 25px !important;
+  }
+
+  .search-spinner {
+    position: absolute;
+    right: 5px !important;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .spinner-small {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #4caf50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+  .order-container {
+    padding: 15px;
+  }
+
+  .menu-grid,
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .header h2 {
+    font-size: 2rem;
+  }
+
+  .layer-selection h3 {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .continue-btn,
+  .submit-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .quantity-controls {
+    gap: 8px;
+    padding: 6px 12px;
+    min-width: 120px;
+  }
+
+  .qty-control-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .quantity-display {
+    font-size: 14px;
+    min-width: 20px;
+  }
+
   .checkbox-label {
     min-width: 180px;
     padding: 10px 20px;
@@ -1073,61 +1019,5 @@
   .checkmark::after {
     width: 5px;
     height: 8px;
-  }
-}
-.search-container {
-  position: relative;
-
-  .search-spinner {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-
-  .spinner-small {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #3498db;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-}
-.search-container {
-  position: relative;
-
-  .search-input {
-    padding-right: 30px !important;
-    padding-left: 15px !important;
-  }
-
-  .search-spinner {
-    position: absolute;
-    right: 12px !important;
-    left: auto !important;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  .spinner-small {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top: 2px solid #4caf50;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
   }
 }
