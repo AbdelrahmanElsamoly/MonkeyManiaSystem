@@ -1020,11 +1020,6 @@
   border-color: #28a745;
 }
 
-/* Change button style when checked */
-.checkbox-label input[type="checkbox"]:checked {
-  /* This selector targets the parent label when checkbox is checked */
-}
-
 /* Use :has() selector for modern browsers, fallback with JavaScript if needed */
 .checkbox-label:has(input[type="checkbox"]:checked) {
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
@@ -1078,5 +1073,70 @@
   .checkmark::after {
     width: 5px;
     height: 8px;
+  }
+}
+.search-container {
+  position: relative;
+
+  .search-spinner {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .spinner-small {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+.search-container {
+  position: relative;
+
+  .search-input {
+    padding-right: 35px !important; // Space for spinner in RTL (right side is start in RTL)
+    padding-left: 15px !important;
+  }
+
+  .search-spinner {
+    position: absolute;
+    // right: 1000px !important; // In RTL, right is the left side visually
+    left: 100% !important;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .spinner-small {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #4caf50;
+    border-radius: 50%;
+    animation: spin-search 0.8s linear infinite;
+  }
+
+  @keyframes spin-search {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }

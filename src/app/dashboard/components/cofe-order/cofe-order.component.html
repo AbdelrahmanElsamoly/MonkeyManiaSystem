@@ -8,6 +8,10 @@
     <div class="field-group">
       <label>🔍 {{ "SEARCH_CHILD_BILL" | translate }}</label>
       <div class="search-container">
+        <div class="search-spinner" *ngIf="searchLoading">
+          <div class="spinner-small"></div>
+        </div>
+
         <input
           type="text"
           [placeholder]="'SEARCH_BY_CHILD_NAME' | translate"
@@ -15,6 +19,8 @@
           (input)="onSearchInput($event)"
           class="search-input"
         />
+
+        <!-- Spinner inside input -->
 
         <div class="dropdown" *ngIf="searchResults.length > 0 && showDropdown">
           <div

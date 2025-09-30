@@ -12,7 +12,7 @@
 
   <a
     *ngIf="
-      userInfo.role == 'manger' ||
+      userInfo.role == 'manager' ||
       userInfo.role == 'admin' ||
       userInfo.role == 'owner'
     "
@@ -106,7 +106,7 @@
         *ngIf="
           (userInfo.role == 'admin' ||
             userInfo.role == 'owner' ||
-            userInfo.role == 'manger' ||
+            userInfo.role == 'manager' ||
             userInfo.role == 'reception') &&
           !collapsed
         "
@@ -148,7 +148,7 @@
           (userInfo.role == 'admin' ||
             userInfo.role == 'owner' ||
             userInfo.role == 'waiter' ||
-            userInfo.role == 'manger' ||
+            userInfo.role == 'manager' ||
             userInfo.role == 'reception') &&
           !collapsed
         "

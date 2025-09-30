@@ -109,7 +109,7 @@
     class="products-section"
     *ngIf="
       productBillData.returned_products?.length &&
-      (userInfo.role == 'manger' ||
+      (userInfo.role == 'manager' ||
         userInfo.role == 'owner' ||
         userInfo.role == 'admin')
     "

@@ -112,6 +112,7 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
   allActiveBills: ActiveBill[] = [];
   selectedBill: ActiveBill | null = null;
   showDropdown: boolean = false;
+  searchLoading: boolean = false;
 
   tableNumber: number | null = null;
   takeAway: boolean = false;
@@ -322,14 +323,21 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
   private performSearch(term: string): void {
     if (!term.trim()) {
       this.searchResults = [];
+      this.searchLoading = false;
       return;
     }
 
-    this.searchResults = this.allActiveBills.filter((bill) =>
-      bill.children.some((child) =>
-        child.name.toLowerCase().includes(term.toLowerCase())
-      )
-    );
+    this.searchLoading = true;
+
+    // Simulate async search with a small delay to show spinner
+    setTimeout(() => {
+      this.searchResults = this.allActiveBills.filter((bill) =>
+        bill.children.some((child) =>
+          child.name.toLowerCase().includes(term.toLowerCase())
+        )
+      );
+      this.searchLoading = false;
+    }, 100);
   }
 
   selectBill(bill: ActiveBill): void {
