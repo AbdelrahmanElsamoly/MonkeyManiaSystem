@@ -1108,14 +1108,14 @@
   position: relative;
 
   .search-input {
-    padding-right: 35px !important; // Space for spinner in RTL (right side is start in RTL)
+    padding-right: 30px !important;
     padding-left: 15px !important;
   }
 
   .search-spinner {
     position: absolute;
-    // right: 1000px !important; // In RTL, right is the left side visually
-    left: 100% !important;
+    right: 12px !important;
+    left: auto !important;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
@@ -1123,20 +1123,11 @@
   }
 
   .spinner-small {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid #4caf50;
     border-radius: 50%;
-    animation: spin-search 0.8s linear infinite;
-  }
-
-  @keyframes spin-search {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    animation: spin 0.8s linear infinite;
   }
 }
