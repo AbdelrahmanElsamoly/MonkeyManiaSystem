@@ -70,6 +70,9 @@
         </mat-select-trigger>
 
         <!-- Search Field -->
+        <!-- Replace the existing search field section in your template with this: -->
+
+        <!-- Search Field -->
         <mat-form-field style="width: 100%" appearance="outline">
           <mat-label>🔍 {{ "SEARCH_CHILD" | translate }}</mat-label>
           <input
@@ -112,7 +115,6 @@
       </mat-select>
     </mat-form-field>
 
-    <!-- Rest of your form content remains the same -->
     <!--promo code  -->
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>{{ "PROMO_CODE" | translate }}</mat-label>
@@ -133,7 +135,180 @@
     </div>
 
     <!-- Dynamic Child Form Array with Horizontal Layout -->
-    <!-- ... rest of your existing form code ... -->
+    <form [formGroup]="form" *ngIf="newChildren.length > 0">
+      <div formArrayName="new_children" class="children-grid-container">
+        <div
+          *ngFor="let group of newChildren.controls; let i = index"
+          [formGroupName]="i"
+          class="child-card-horizontal p-3 border rounded mb-3"
+        >
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">👶 {{ "NEW_CHILD" | translate }} #{{ i + 1 }}</h4>
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeNewChild(i)"
+              [attr.aria-label]="('REMOVE_CHILD' | translate) + ' ' + (i + 1)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <div class="child-content-horizontal">
+            <!-- Child Name -->
+            <mat-form-field appearance="outline" class="form-field-compact">
+              <mat-label>📝 {{ "CHILD_NAME" | translate }} *</mat-label>
+              <input matInput formControlName="name" />
+              <mat-error
+                *ngIf="newChildren.at(i).get('name')?.hasError('required')"
+              >
+                {{ "CHILD_NAME_REQUIRED" | translate }}
+              </mat-error>
+              <mat-error
+                *ngIf="newChildren.at(i).get('name')?.hasError('minlength')"
+              >
+                {{ "NAME_TOO_SHORT" | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Birth Date -->
+            <mat-form-field appearance="outline" class="form-field-compact">
+              <mat-label>🎂 {{ "BIRTH_DATE" | translate }} *</mat-label>
+              <input matInput formControlName="birth_date" type="date" />
+              <mat-error
+                *ngIf="
+                  newChildren.at(i).get('birth_date')?.hasError('required')
+                "
+              >
+                {{ "BIRTH_DATE_REQUIRED" | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Age Display -->
+            <span
+              *ngIf="newChildren.at(i).get('birth_date')?.value"
+              class="text-muted small d-block mt-1 mb-2"
+              style="
+                font-size: 0.875rem;
+                color: white !important;
+                font-family: 'Noto Kufi Arabic', sans-serif;
+              "
+            >
+              📅 العمر:
+              {{ calculateAge(newChildren.at(i).get("birth_date")?.value) }}
+            </span>
+
+            <!-- Phone Numbers Section -->
+            <div
+              formArrayName="child_phone_numbers_set"
+              class="phone-section-compact"
+            >
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <h5 class="mb-0 phone-section-title">
+                  📱 {{ "PHONE_NUMBERS_SECTION" | translate }}
+                </h5>
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  type="button"
+                  (click)="addPhoneNumber(i)"
+                  [attr.aria-label]="
+                    ('ADD_PHONE_NUMBER' | translate) +
+                    ' ' +
+                    ('CHILD_NAME' | translate) +
+                    ' ' +
+                    (i + 1)
+                  "
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <div
+                *ngFor="let phoneGroup of getPhoneControls(i); let j = index"
+                [formGroupName]="j"
+                class="phone-group-compact mb-2 p-2 border rounded"
+              >
+                <div
+                  class="d-flex justify-content-between align-items-start mb-2"
+                >
+                  <h6 class="mb-0 phone-number-title">
+                    ☎️ {{ "PHONE_NUMBER" | translate }} {{ j + 1 }}
+                  </h6>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    type="button"
+                    (click)="removePhoneNumber(i, j)"
+                    [disabled]="getPhoneControls(i).length === 1"
+                    [attr.aria-label]="
+                      ('REMOVE_PHONE_NUMBER' | translate) + ' ' + (j + 1)
+                    "
+                  >
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+
+                <!-- Phone Number Value -->
+                <div formGroupName="phone_number">
+                  <mat-form-field
+                    appearance="outline"
+                    class="form-field-compact"
+                  >
+                    <mat-label>☎️ {{ "PHONE_NUMBER" | translate }} *</mat-label>
+                    <input
+                      matInput
+                      formControlName="value"
+                      [placeholder]="'PHONE_EXAMPLE' | translate"
+                      dir="ltr"
+                    />
+                    <mat-error
+                      *ngIf="
+                        phoneGroup
+                          .get('phone_number.value')
+                          ?.hasError('required')
+                      "
+                    >
+                      {{ "PHONE_NUMBER_REQUIRED" | translate }}
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        phoneGroup
+                          .get('phone_number.value')
+                          ?.hasError('pattern')
+                      "
+                    >
+                      {{ "INVALID_PHONE_FORMAT" | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <!-- Relationship -->
+                <mat-form-field appearance="outline" class="form-field-compact">
+                  <mat-label>👥 {{ "RELATIONSHIP" | translate }} *</mat-label>
+                  <mat-select formControlName="relationship">
+                    <mat-option
+                      *ngFor="let option of relationshipOptions"
+                      [value]="option.value"
+                    >
+                      {{ option.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="phoneGroup.get('relationship')?.hasError('required')"
+                  >
+                    {{ "RELATIONSHIP_REQUIRED" | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 
   <!-- Footer -->
