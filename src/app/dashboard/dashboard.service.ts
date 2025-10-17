@@ -33,18 +33,23 @@ export class DashboardService {
     return this.http.post(`school/bulk_create/`, file);
   }
   // mainpAge Api
-  getStatistics(branchId: any) {
-    let params = {};
-    if (branchId) {
-      params = new HttpParams().set('branch_id', branchId);
-      return this.http.get(`dashboard/statistics`, { params });
-    } else if (branchId == null) {
-      return this.http.get(`dashboard/statistics`);
-    }
-    // Default return to handle all code paths
-    return this.http.get(`dashboard/statistics`);
-  }
+  getStatistics(
+    branchId: any,
+    paramsObj?: { startDate?: string; endDate?: string }
+  ) {
+    let params = new HttpParams();
 
+    if (branchId) {
+      params = params.set('branch_id', branchId);
+    }
+
+    if (paramsObj?.startDate && paramsObj?.endDate) {
+      params = params.set('start_date', paramsObj.startDate);
+      params = params.set('end_date', paramsObj.endDate);
+    }
+
+    return this.http.get(`dashboard/statistics`, { params });
+  }
   // children Api
   getChild(searchQuery: string = '', page: number) {
     let params = new HttpParams().set('page', page);

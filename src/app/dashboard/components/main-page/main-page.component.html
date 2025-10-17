@@ -1,6 +1,47 @@
 <!-- main-page.component.html -->
 <div class="main-page">
-  <h1 class="mb-5 mt-5">{{ "DASHBOARD" | translate }} ... 📊</h1>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0 mt-5">{{ "DASHBOARD" | translate }} ... 📊</h1>
+
+    <!-- Date Range Picker -->
+  </div>
+
+  <div
+    *ngIf="
+      userInfo.role == 'manager' ||
+      userInfo.role == 'owner' ||
+      userInfo.role == 'admin'
+    "
+  >
+    <div class="d-flex align-items-center">
+      <mat-form-field appearance="fill" style="margin: 0px 30px 0px 30px">
+        <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            matStartDate
+            [placeholder]="'START_DATE' | translate"
+            (dateChange)="onStartDateChange($event.value)"
+            [value]="selectedDateRange.start"
+          />
+          <input
+            matEndDate
+            [placeholder]="'END_DATE' | translate"
+            (dateChange)="onEndDateChange($event.value)"
+            [value]="selectedDateRange.end"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+    <!-- Arabic date range display -->
+    <div
+      style="margin: 0px 30px 30px 30px"
+      *ngIf="selectedDateRange.start && selectedDateRange.end"
+    >
+      <span class="date-range-arabic"> ⏰ {{ getDateRangeInArabic() }} </span>
+    </div>
+  </div>
 
   <div class="widgets-container">
     <div

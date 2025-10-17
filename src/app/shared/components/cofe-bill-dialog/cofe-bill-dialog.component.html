@@ -79,6 +79,17 @@
       <span>{{ "CREATED" | translate }}:</span>
       {{ productBillData.created | date : "short" }}
     </div>
+    <div
+      class="bill-row"
+      *ngIf="
+        userInfo.role == 'manager' ||
+        userInfo.role == 'owner' ||
+        userInfo.role == 'admin'
+      "
+    >
+      <span>{{ "CREATED_BY" | translate }}:</span>
+      {{ productBillData.created_by }}
+    </div>
   </div>
 
   <!-- Products Table -->

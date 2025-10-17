@@ -317,3 +317,60 @@ mat-dialog-actions.dialog-footer {
 ::ng-deep .no-checkbox {
   padding-left: 16px !important;
 }
+
+.selected-children-compact {
+  background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.selected-children-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.child-chip {
+  background: white !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 4px 8px !important;
+  height: auto !important;
+  min-height: 32px !important;
+  font-size: 0.85rem !important;
+
+  &:hover {
+    border-color: #667eea !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .child-name-compact {
+    font-weight: 600;
+    color: #333;
+    margin-right: 6px;
+  }
+
+  .child-age-highlight {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #667eea;
+    background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 4px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+
+    &.age-under-two {
+      color: #f44336;
+      background: linear-gradient(135deg, #f4433620 0%, #ff572220 100%);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}

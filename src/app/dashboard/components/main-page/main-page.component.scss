@@ -9,6 +9,24 @@
   }
 }
 
+// Date range display styling
+.date-range-arabic {
+  display: inline-block;
+  background: linear-gradient(135deg, #66eaa8 0%, #4c4ba2 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-size: 0.7rem !important;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+}
+
 .widgets-container {
   display: flex;
   flex-direction: column;
@@ -137,5 +155,10 @@
     width: 70px;
     height: 70px;
     font-size: 32px;
+  }
+
+  .date-range-arabic {
+    font-size: 1rem;
+    padding: 14px 28px;
   }
 }

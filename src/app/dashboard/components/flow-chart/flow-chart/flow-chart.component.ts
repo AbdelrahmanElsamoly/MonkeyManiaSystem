@@ -31,19 +31,15 @@ export class FlowChartComponent implements OnInit {
 
   // Branch selection properties
   selectedBranches: any[] = [];
-  userInfo: any; // You should type this properly based on your user interface
+  userInfo: any;
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    // Remove the automatic API call
-    this.loadAllowedTypes(); // <-- Commented out
-    // Initialize userInfo - replace with your actual user service call
-    // this.userInfo = this.userService.getCurrentUser();
+    this.loadAllowedTypes();
   }
 
   loadAllowedTypes(): void {
-    // Don't call API if already loaded or currently loading
     if (this.allowedTypes.length > 0 || this.isLoading) {
       return;
     }
@@ -64,7 +60,6 @@ export class FlowChartComponent implements OnInit {
     });
   }
 
-  // New method: Called when dropdown is clicked/focused
   onDropdownOpen(): void {
     this.loadAllowedTypes();
   }
@@ -117,13 +112,11 @@ export class FlowChartComponent implements OnInit {
         console.log('API Response:', response);
         console.log('Response type:', typeof response);
 
-        // Check if response is an error or success
         if (this.isErrorResponse(response)) {
           this.handleErrorResponse(response);
           return;
         }
 
-        // Check if response contains file data
         if (this.hasFileData(response)) {
           this.processAndDownloadFile(response);
         } else {
@@ -155,7 +148,7 @@ export class FlowChartComponent implements OnInit {
     return (
       response?.error ||
       response?.message?.includes('error') ||
-      response?.message?.includes('خطأ') || // Arabic for "error"
+      response?.message?.includes('خطأ') ||
       response?.status === 'error' ||
       (response?.count !== undefined &&
         response.count === 0 &&
@@ -192,15 +185,13 @@ export class FlowChartComponent implements OnInit {
   }
 
   private hasFileData(response: any): boolean {
-    // Check if response has actual data to download
     if (typeof response === 'string') {
       const trimmed = response.trim();
-      // Check if it has CSV structure (header + data)
       if (trimmed.length === 0) return false;
       const lines = trimmed
         .split('\n')
         .filter((line) => line.trim().length > 0);
-      return lines.length >= 2 && lines.some((line) => line.includes(','));
+      return lines.length >= 1; // At least one line (could be just headers or data)
     }
 
     if (Array.isArray(response) && response.length > 0) {
@@ -208,7 +199,6 @@ export class FlowChartComponent implements OnInit {
     }
 
     if (typeof response === 'object' && response !== null) {
-      // Look for common data properties or file-related properties
       const dataFields = [
         'data',
         'results',
@@ -218,7 +208,7 @@ export class FlowChartComponent implements OnInit {
         'items',
         'FileByteArr',
         'FileName',
-        'MimeType', // File model properties
+        'MimeType',
       ];
       return dataFields.some((field) => response[field]);
     }
@@ -238,23 +228,19 @@ export class FlowChartComponent implements OnInit {
         return;
       }
 
-      // If response is CSV string, convert to file model
+      // If response is CSV string
       if (typeof response === 'string') {
         console.log('Response is string, processing as CSV');
-        console.log(
-          'Raw CSV content (first 200 chars):',
-          response.substring(0, 200)
-        );
+        const fileModel = this.createFileModelFromCSV(response);
+        this.downloadFile(fileModel);
+        return;
+      }
 
-        const cleanedCSV = this.cleanCSVContent(response);
-        console.log(
-          'Cleaned CSV content (first 200 chars):',
-          cleanedCSV.substring(0, 200)
-        );
-
-        const fileModel = this.createFileModelFromCSV(cleanedCSV);
-        console.log('Created file model:', fileModel);
-
+      // If response is an array of objects
+      if (Array.isArray(response)) {
+        console.log('Response is array, converting to CSV');
+        const csvContent = this.arrayToCSV(response);
+        const fileModel = this.createFileModelFromCSV(csvContent);
         this.downloadFile(fileModel);
         return;
       }
@@ -275,8 +261,7 @@ export class FlowChartComponent implements OnInit {
           if (response[field]) {
             console.log(`Found data in field: ${field}`);
             if (typeof response[field] === 'string') {
-              const cleanedCSV = this.cleanCSVContent(response[field]);
-              const fileModel = this.createFileModelFromCSV(cleanedCSV);
+              const fileModel = this.createFileModelFromCSV(response[field]);
               this.downloadFile(fileModel);
               return;
             } else if (Array.isArray(response[field])) {
@@ -310,11 +295,14 @@ export class FlowChartComponent implements OnInit {
       );
       console.log(
         'createFileModelFromCSV - CSV preview:',
-        csvContent.substring(0, 100)
+        csvContent.substring(0, 200)
       );
 
-      // Add UTF-8 BOM for better Excel compatibility
-      const csvWithBOM = '\uFEFF' + csvContent;
+      // Clean the CSV content but preserve all columns
+      const cleanedCSV = this.cleanCSVContent(csvContent);
+
+      // Add UTF-8 BOM for better Excel compatibility with Arabic text
+      const csvWithBOM = '\uFEFF' + cleanedCSV;
 
       // Convert CSV string to Base64
       const base64Content = btoa(unescape(encodeURIComponent(csvWithBOM)));
@@ -333,11 +321,6 @@ export class FlowChartComponent implements OnInit {
         MimeType: 'text/csv;charset=utf-8',
       };
 
-      console.log('createFileModelFromCSV - Created file model:', {
-        ...fileModel,
-        FileByteArr: `[Base64 data - ${fileModel.FileByteArr?.length} chars]`,
-      });
-
       return fileModel;
     } catch (error) {
       console.error('Error creating file model from CSV:', error);
@@ -346,78 +329,60 @@ export class FlowChartComponent implements OnInit {
   }
 
   private cleanCSVContent(csvString: string): string {
-    // Split into lines and filter out empty lines
-    const lines = csvString.split('\n').filter((line) => {
-      const trimmed = line.trim();
-      return trimmed.length > 0 && trimmed !== ',' && !trimmed.match(/^,+$/);
-    });
+    try {
+      // Remove any BOM that might already exist
+      csvString = csvString.replace(/^\uFEFF/, '');
 
-    if (lines.length === 0) {
-      throw new Error('No valid data found in CSV');
-    }
+      // Split into lines and filter out completely empty lines
+      const lines = csvString.split(/\r?\n/).filter((line) => {
+        const trimmed = line.trim();
+        return trimmed.length > 0;
+      });
 
-    let processedLines = [];
-
-    // Check if first line looks like a header
-    const firstLine = lines[0];
-    if (
-      firstLine.includes('value,created') ||
-      firstLine.includes('value') ||
-      firstLine.includes('created')
-    ) {
-      processedLines.push(firstLine);
-    } else {
-      processedLines.push('value,created');
-    }
-
-    // Process data lines
-    const dataStartIndex = firstLine.includes('value,created') ? 1 : 0;
-
-    for (let i = dataStartIndex; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      if (line.length === 0 || line.match(/^,+$/)) {
-        continue;
+      if (lines.length === 0) {
+        throw new Error('No valid data found in CSV');
       }
 
-      const parts = line.split(',');
+      console.log(`Found ${lines.length} lines in CSV`);
 
-      if (parts.length >= 2) {
-        const value = parts[0].trim();
-        const created = parts[1].trim();
+      // Keep all lines as-is, just trim trailing whitespace
+      const processedLines = lines.map((line) => line.trimEnd());
 
-        if (value && created) {
-          processedLines.push(`${value},${created}`);
-        }
+      if (processedLines.length === 0) {
+        throw new Error('No valid data rows found in CSV');
       }
-    }
 
-    if (processedLines.length <= 1) {
-      throw new Error('No valid data rows found in CSV');
+      console.log(`Processed ${processedLines.length} lines`);
+      return processedLines.join('\n');
+    } catch (error) {
+      console.error('Error cleaning CSV content:', error);
+      throw error;
     }
-
-    return processedLines.join('\n');
   }
 
   private arrayToCSV(data: any[]): string {
-    if (data.length === 0) return '';
+    if (data.length === 0) {
+      throw new Error('No data to convert to CSV');
+    }
 
-    const headers = Object.keys(data[0]);
-    let csv = headers.join(',') + '\n';
+    // Get all unique headers from all objects (in case objects have different properties)
+    const headersSet = new Set<string>();
+    data.forEach((row) => {
+      Object.keys(row).forEach((key) => headersSet.add(key));
+    });
+    const headers = Array.from(headersSet);
 
+    // Create header row
+    let csv = headers.map((h) => this.escapeCSVValue(h)).join(',') + '\n';
+
+    // Create data rows
     data.forEach((row) => {
       const values = headers.map((header) => {
         let value = row[header];
-        if (value == null) value = '';
-        value = String(value);
-        if (
-          value.includes(',') ||
-          value.includes('"') ||
-          value.includes('\n')
-        ) {
-          value = `"${value.replace(/"/g, '""')}"`;
+        if (value == null) {
+          return '';
         }
-        return value;
+        return this.escapeCSVValue(String(value));
       });
       csv += values.join(',') + '\n';
     });
@@ -425,16 +390,27 @@ export class FlowChartComponent implements OnInit {
     return csv;
   }
 
-  // File download utility method (embedded in component)
+  private escapeCSVValue(value: string): string {
+    // Check if value needs escaping (contains comma, quote, newline, or starts with special chars)
+    if (
+      value.includes(',') ||
+      value.includes('"') ||
+      value.includes('\n') ||
+      value.includes('\r') ||
+      value.startsWith('=') ||
+      value.startsWith('+') ||
+      value.startsWith('-') ||
+      value.startsWith('@')
+    ) {
+      // Escape quotes by doubling them and wrap in quotes
+      return `"${value.replace(/"/g, '""')}"`;
+    }
+    return value;
+  }
+
   private downloadFile(fileData: DownloadFileModel): void {
     try {
       console.log('downloadFile - Starting download process');
-      console.log('downloadFile - File data:', {
-        ...fileData,
-        FileByteArr: fileData.FileByteArr
-          ? `[Base64 data - ${fileData.FileByteArr.length} chars]`
-          : 'null',
-      });
 
       if (!fileData.FileByteArr) {
         throw new Error('No file data to download - FileByteArr is empty');
@@ -445,9 +421,10 @@ export class FlowChartComponent implements OnInit {
       const byteCharacters = atob(fileData.FileByteArr);
       console.log('downloadFile - Decoded length:', byteCharacters.length);
 
-      const byteNumbers = new Array(byteCharacters.length)
-        .fill(0)
-        .map((_, i) => byteCharacters.charCodeAt(i));
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
       const byteArray = new Uint8Array(byteNumbers);
       console.log('downloadFile - Byte array length:', byteArray.length);
 
@@ -461,22 +438,16 @@ export class FlowChartComponent implements OnInit {
       );
 
       const url = window.URL.createObjectURL(blob);
-      console.log('downloadFile - Blob URL created:', url);
-
       const fileName = `${fileData.FileName}.${fileData.FileNameExtension}`;
       console.log('downloadFile - Full filename:', fileName);
 
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
-      a.style.display = 'none'; // Hide the element
+      a.style.display = 'none';
 
       document.body.appendChild(a);
-      console.log('downloadFile - Link element added to DOM');
-
-      // Trigger click
       a.click();
-      console.log('downloadFile - Click triggered');
 
       // Clean up
       setTimeout(() => {
@@ -484,6 +455,9 @@ export class FlowChartComponent implements OnInit {
         window.URL.revokeObjectURL(url);
         console.log('downloadFile - Cleanup completed');
       }, 100);
+
+      // Show success message
+      console.log('File downloaded successfully:', fileName);
     } catch (error) {
       console.error('Error downloading file:', error);
       this.error = `Failed to download file: ${error}`;

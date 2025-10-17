@@ -10,9 +10,16 @@ import { SharedService } from '../../shared.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
+// Update the Child interface at the top of your component
 interface Child {
   id: number;
   name: string;
+  age?: {
+    years: number;
+    months: number;
+    days: number;
+  };
+  birth_date?: string;
 }
 
 interface PhoneNumber {
@@ -96,7 +103,7 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
 
   // Data Loading - Only search, no initial load
   private loadChildren(searchQuery?: string): void {
-    const searchTerm = searchQuery?.trim() || 'شبا';
+    const searchTerm = searchQuery?.trim() || '^';
 
     this.sharedService.getAllNonActiveChildren(searchTerm).subscribe({
       next: (res: any) => {
@@ -109,6 +116,56 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
         this.toaster.error('فشل في تحميل بيانات الأطفال');
       },
     });
+  }
+
+  // Add this method to your component class
+  private calculateAgeFromBirthDate(birthDate: string): {
+    years: number;
+    months: number;
+    days: number;
+  } {
+    const birth = new Date(birthDate);
+    const today = new Date();
+
+    let years = today.getFullYear() - birth.getFullYear();
+    let months = today.getMonth() - birth.getMonth();
+    let days = today.getDate() - birth.getDate();
+
+    if (days < 0) {
+      months--;
+      const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += lastMonth.getDate();
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return { years, months, days };
+  }
+
+  getChildAgeById(id: number): string {
+    const allChildren = [...this.itemList, ...this.persistentSelectedChildren];
+    const child = allChildren.find((c: any) => c.id === id);
+
+    if (!child || !child.age) {
+      return '';
+    }
+
+    const { years, months, days } = child.age;
+    return `${years}y ${months}m ${days}d`;
+  }
+
+  isChildUnderTwoYears(id: number): boolean {
+    const allChildren = [...this.itemList, ...this.persistentSelectedChildren];
+    const child = allChildren.find((c: any) => c.id === id);
+
+    if (!child || !child.age) {
+      return false;
+    }
+
+    return child.age.years < 2;
   }
 
   // Helper method to merge search results with persistent selections
