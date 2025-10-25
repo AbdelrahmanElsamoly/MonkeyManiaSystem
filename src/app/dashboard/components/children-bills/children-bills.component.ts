@@ -269,6 +269,7 @@ export class ChildrenBillsComponent implements OnInit {
                     item.BILLS_ID,
                   ])
                 );
+                this.getAllBills(this.type, this.params);
                 window.open(url, '_blank');
               });
           }

@@ -28,13 +28,11 @@ export class MainPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Auto select last two days (optional)
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+    // Auto select today only
+    // const today = new Date();
 
-    this.selectedDateRange.start = yesterday;
-    this.selectedDateRange.end = today;
+    // this.selectedDateRange.start = today;
+    // this.selectedDateRange.end = today;
 
     this.getStatstics();
   }
@@ -44,15 +42,15 @@ export class MainPageComponent implements OnInit {
       ? this.userInfo.branch
       : this.branch.id;
 
-    // Prepare params object with dates
-    const paramsObj = {
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : undefined,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : undefined,
-    };
+    // Only send params if dates are selected
+    let paramsObj: any = {};
+
+    if (this.selectedDateRange.start && this.selectedDateRange.end) {
+      paramsObj = {
+        startDate: this.formatDateForAPI(this.selectedDateRange.start),
+        endDate: this.formatDateForAPI(this.selectedDateRange.end),
+      };
+    }
 
     this.dashboardService
       .getStatistics(branchId, paramsObj)
@@ -60,79 +58,95 @@ export class MainPageComponent implements OnInit {
         this.data = [
           {
             title: 'TODAYS_SUBSCRIPTIONS_SALES',
-            value: `US$ ${(res.todays_subscriptions_sales ?? 0).toFixed(2)}`,
+            value: `US$ ${this.extractValue(res.todays_subscriptions_sales)}`,
             subtext: `${this.translate.instant(
               'TODAYS_SUBSCRIPTIONS_COUNT'
-            )} : ${res.todays_subscriptions_count ?? 0}`,
+            )} : ${this.extractCount(res.todays_subscriptions_sales)}`,
             icon: '🎫',
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           },
           {
             title: 'TODAYS_CHILDREN_COUNT',
             value: res.todays_children_count ?? 0,
-            subtext: `${this.translate.instant('CHILDREN_COUNT_DIFF')} : ${
-              res.children_count_difference_from_yesterday
-            }`,
+            subtext: res.children_count_difference_from_yesterday ?? '',
             icon: '👶',
-            gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            gradient: 'linear-gradient(135deg, #f093fb 0%, #d42d44ff 100%)',
           },
           {
             title: 'TODAYS_CAFE_SALES',
-            value: `US$ ${(res.todays_cafe_sales ?? 0).toFixed(2)}`,
-            subtext: `${this.translate.instant('CAFE_SALES_DIFF')} : ${
-              res.cafe_sales_difference_from_yesterday ?? 0
-            }`,
+            value: `US$ ${this.extractValue(res.todays_cafe_sales)}`,
+            subtext: res.cafe_sales_difference_from_yesterday ?? '',
             icon: '☕',
             gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
           },
           {
             title: 'TODAYS_KIDS_SALES',
-            value: `US$ ${(res.todays_kids_sales ?? 0).toFixed(2)}`,
-            subtext: `${this.translate.instant('KIDS_SALES_DIFF')} : ${
-              res.kids_sales_difference_from_yesterday ?? 0
-            }`,
+            value: `US$ ${this.extractValue(res.todays_kids_sales)}`,
+            subtext: res.kids_sales_difference_from_yesterday ?? '',
             icon: '🧒',
-            gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            gradient: 'linear-gradient(135deg, #124924ff 0%, #38f9d7 100%)',
           },
           {
             title: 'TODAYS_MONEY_UNBALANCE',
-            value: `US$ ${res.todays_money_unbalance}`,
-            subtext: `قيمة غير متوازنة`,
+            value: `US$ ${this.extractValue(res.todays_money_unbalance)}`,
+            subtext:
+              res.money_unbalance_difference_from_yesterday ??
+              'قيمة غير متوازنة',
             icon: '📉',
-            gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            gradient: 'linear-gradient(135deg, #fa709a 0%, #eed12fff 100%)',
           },
           {
             title: 'TODAYS_STAFF_WITHDRAWS_TOTAL',
-            value: `US$ ${(res.todays_staff_withdraws_total ?? 0).toFixed(2)}`,
-            subtext: `${this.translate.instant(
-              'TODAYS_STAFF_REQUESTED_WITHDRAW_COUNT'
-            )} : ${res.todays_staff_requested_withdraw_count ?? 0}`,
+            value: `US$ ${this.extractValue(res.todays_staff_withdraws_total)}`,
+            subtext: res.todays_staff_requested_withdraw_count ?? '',
             icon: '💼',
-            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            gradient: 'linear-gradient(135deg, #435ed4ff 0%, #7f2ecfff 100%)',
           },
           {
             title: 'TODAYS_CASH',
-            value: `US$ ${(res.todays_cash ?? 0).toFixed(2)}`,
-            subtext: `${this.translate.instant('CASH_PAYMENTS')}`,
+            value: `US$ ${this.extractValue(res.todays_cash)}`,
+            subtext:
+              res.cash_difference_from_yesterday ??
+              this.translate.instant('CASH_PAYMENTS'),
             icon: '💵',
-            gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+            gradient: 'linear-gradient(135deg, #a8edea 0%, #2c29c4ff 100%)',
           },
           {
             title: 'TODAYS_VISA',
-            value: `US$ ${(res.todays_visa ?? 0).toFixed(2)}`,
-            subtext: `${this.translate.instant('VISA_PAYMENTS')}`,
+            value: `US$ ${this.extractValue(res.todays_visa)}`,
+            subtext:
+              res.visa_difference_from_yesterday ??
+              this.translate.instant('VISA_PAYMENTS'),
             icon: '💳',
-            gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+            gradient: 'linear-gradient(135deg, #ffecd2 0%, #ee6436ff 100%)',
           },
           {
             title: 'TODAYS_INSTAPAY',
-            value: `US$ ${(res.todays_instapay ?? 0).toFixed(2)}`,
-            subtext: `${this.translate.instant('INSTAPAY_PAYMENTS')}`,
+            value: `US$ ${this.extractValue(res.todays_instapay)}`,
+            subtext:
+              res.instapay_difference_from_yesterday ??
+              this.translate.instant('INSTAPAY_PAYMENTS'),
             icon: '📱',
-            gradient: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)',
+            gradient: 'linear-gradient(135deg, #89f7fe 0%, #2369ccff 100%)',
           },
         ];
       });
+  }
+
+  // Helper method to extract numeric value from format "680.00 (3)" or just "0"
+  extractValue(value: any): string {
+    if (!value) return '0.00';
+    const strValue = value.toString();
+    const match = strValue.match(/^([+-]?\d+\.?\d*)/);
+    return match ? parseFloat(match[1]).toFixed(2) : '0.00';
+  }
+
+  // Helper method to extract count from format "680.00 (3)"
+  extractCount(value: any): number {
+    if (!value) return 0;
+    const strValue = value.toString();
+    const match = strValue.match(/\((\d+)\)/);
+    return match ? parseInt(match[1]) : 0;
   }
 
   // Add date change handlers
