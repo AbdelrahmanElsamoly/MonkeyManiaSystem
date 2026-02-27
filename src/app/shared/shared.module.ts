@@ -42,6 +42,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BillDialogComponent } from './components/bill-dialog/bill-dialog.component';
 import { CofeBillDialogComponent } from './components/cofe-bill-dialog/cofe-bill-dialog.component';
 import { EditBillDialogComponent } from './components/edit-bill/edit-bill-dialog/edit-bill-dialog.component';
+import { SubscriptionDialogComponent } from './components/subscription-dialog/subscription-dialog.component';
+import { ChildSubscriptionDialogComponent } from './components/child-subscription-dialog/child-subscription-dialog.component';
+import { ChildSubscriptionDetailDialogComponent } from './components/child-subscription-detail-dialog/child-subscription-detail-dialog.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -66,6 +69,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     BillDialogComponent,
     CofeBillDialogComponent,
     EditBillDialogComponent,
+    SubscriptionDialogComponent,
+    ChildSubscriptionDialogComponent,
+    ChildSubscriptionDetailDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -116,6 +122,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     BillDialogComponent,
     CofeBillDialogComponent,
     EditBillDialogComponent,
+    SubscriptionDialogComponent,
+    ChildSubscriptionDialogComponent,
+    ChildSubscriptionDetailDialogComponent,
   ],
 })
 export class SharedModule {}

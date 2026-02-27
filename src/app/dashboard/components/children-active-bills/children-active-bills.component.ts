@@ -23,12 +23,15 @@ export class ChildrenActiveBillsComponent implements OnInit {
   page = 1;
   searchQuery: string = '';
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  filterKeys: string[] = [];
+  selectedFilter: string = '';
 
   params: {
     searchQuery: string;
     branchIds: any[];
     startDate: Date | string | null;
     endDate: Date | string | null;
+    filter?: string;
   } = {
     searchQuery: this.searchQuery,
     branchIds: this.selectedBranchIds,
@@ -55,14 +58,15 @@ export class ChildrenActiveBillsComponent implements OnInit {
     private toaster: ToastrService
   ) {}
   ngOnInit(): void {
+    this.dashboardService.getBillFilterKeys().subscribe({
+      next: (keys: any) => { this.filterKeys = keys[0] ?? []; },
+    });
     this.getAllBills(this.type, this.params);
   }
   getAllBills(type: string = '/active/', params: any) {
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
         this.billsRes = data.map((item: any) => {
-          const firstChild = item.children[0];
-          const firstPhone = firstChild?.phone_numbers?.[0]?.phone_number ?? '';
           return {
             NAME: item?.first_child,
             PHONE_NUMBER: item?.first_phone,
@@ -106,6 +110,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
         branchIds: this.selectedBranchIds,
         startDate: this.formatDateForAPI(start),
         endDate: this.formatDateForAPI(end),
+        filter: this.selectedFilter || undefined,
       };
       this.getAllBills(this.type, this.params);
     }
@@ -120,6 +125,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
       endDate: this.selectedDateRange.end
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
+      filter: this.selectedFilter || undefined,
     };
 
     this.getAllBills(this.type, this.params);
@@ -135,6 +141,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
       endDate: this.selectedDateRange.end
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
+      filter: this.selectedFilter || undefined,
     };
     this.getAllBills(this.type, this.params);
   }
@@ -197,6 +204,29 @@ export class ChildrenActiveBillsComponent implements OnInit {
       }
     });
   }
+  onFilterChange(filter: string): void {
+    this.selectedFilter = filter;
+    this.params = { ...this.params, filter: filter || undefined };
+    this.getAllBills(this.type, this.params);
+  }
+
+  openSubscriptionBillDialog(): void {
+    const dialogRef = this.dialog.open(CreateBillDialogComponent, {
+      width: '90vw',
+      maxWidth: '1200px',
+      height: 'auto',
+      maxHeight: '90vh',
+      disableClose: true,
+      data: { isSubscription: true },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getAllBills(this.type, this.params);
+      }
+    });
+  }
+
   openPromoDialog(bill: any): void {
     const dialogRef = this.dialog.open(PromoCodeDialogComponent, {
       width: '500px',

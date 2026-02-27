@@ -1,0 +1,144 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="m-1 d-flex justify-content-between align-items-center">
+    <h2 mat-dialog-title class="dialog-header">
+      {{ (data.isEdit ? "UPDATE_SUBSCRIPTION" : "CREATE_SUBSCRIPTION") | translate }} 🎟️
+    </h2>
+    <button mat-icon-button (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <hr />
+
+  <!-- Body -->
+  <mat-dialog-content class="dialog-body">
+    <form #subForm="ngForm">
+
+      <!-- Name -->
+      <div class="mb-3">
+        <label class="form-label">{{ "SUBSCRIPTION_NAME" | translate }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="form.name"
+          name="name"
+          required
+          #name="ngModel"
+        />
+        <div *ngIf="name.invalid && name.touched" class="my-1 text-danger">
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Hours -->
+      <div class="mb-3">
+        <label class="form-label">{{ "HOURS" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.hours"
+          name="hours"
+          min="0"
+          required
+          #hours="ngModel"
+        />
+        <div *ngIf="hours.invalid && hours.touched" class="my-1 text-danger">
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Instance Duration -->
+      <div class="mb-3">
+        <label class="form-label">{{ "INSTANCE_DURATION" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.instance_duration"
+          name="instance_duration"
+          min="0"
+          required
+          #instanceDuration="ngModel"
+        />
+        <div *ngIf="instanceDuration.invalid && instanceDuration.touched" class="my-1 text-danger">
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="mb-3">
+        <label class="form-label">{{ "PRICE" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.price"
+          name="price"
+          min="0"
+          required
+          #price="ngModel"
+        />
+        <div *ngIf="price.invalid && price.touched" class="my-1 text-danger">
+          {{ "FIELD_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Creatable In Branches -->
+      <div class="mb-3">
+        <label class="form-label">{{ "CREATABLE_IN_BRANCHES" | translate }}</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select
+            multiple
+            [(ngModel)]="form.creatable_in_branches"
+            name="creatable_in_branches"
+          >
+            <mat-option *ngFor="let branch of branches" [value]="branch.id">
+              {{ branch.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Is Active (Edit only) -->
+      <div *ngIf="data.isEdit" class="mb-3 d-flex align-items-center gap-2">
+        <mat-checkbox [(ngModel)]="form.is_active" name="is_active" color="primary">
+          {{ "IS_ACTIVE" | translate }}
+        </mat-checkbox>
+      </div>
+
+      <!-- Usable In Branches -->
+      <div class="mb-3">
+        <label class="form-label">{{ "USABLE_IN_BRANCHES" | translate }}</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select
+            multiple
+            [(ngModel)]="form.usable_in_branches"
+            name="usable_in_branches"
+          >
+            <mat-option *ngFor="let branch of branches" [value]="branch.id">
+              {{ branch.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-stroked-button color="warn" (click)="onClose()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="!isFormValid || isLoading"
+      (click)="onSave()"
+    >
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+      {{ "SAVE" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

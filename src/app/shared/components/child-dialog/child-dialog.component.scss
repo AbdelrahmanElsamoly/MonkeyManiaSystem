@@ -70,6 +70,20 @@ mat-dialog-actions.dialog-footer {
   background: transparent !important;
 }
 
+::ng-deep .mat-mdc-checkbox .mdc-label,
+::ng-deep .mat-mdc-checkbox label,
+::ng-deep .mat-checkbox-label {
+  color: $font-color !important;
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-checkbox__background {
+  border-color: $font-color !important;
+}
+
+::ng-deep .mat-mdc-checkbox:not(.mdc-checkbox--selected) .mdc-checkbox__background {
+  border-color: $font-color !important;
+}
+
 // .mat-icon {
 //   color: #r !important;
 // }

@@ -32,10 +32,13 @@ export class DashboardService {
   uploadBulkSchool(file: any) {
     return this.http.post(`school/bulk_create/`, file);
   }
+  uploadCsvFile(file: any, type: string) {
+    return this.http.post(`${type}/bulk_create/`, file);
+  }
   // mainpAge Api
   getStatistics(
     branchId: any,
-    paramsObj?: { startDate?: string; endDate?: string }
+    paramsObj?: { startDate?: string; endDate?: string },
   ) {
     let params = new HttpParams();
 
@@ -74,7 +77,7 @@ export class DashboardService {
   getUsers(
     searchQuery: string = '',
     branchIds: any[] = [],
-    page: number
+    page: number,
   ): Observable<any> {
     let params = new HttpParams();
     params = params.set('page', page);
@@ -166,7 +169,14 @@ export class DashboardService {
       params = params.set('start_date', paramsOj.startDate);
       params = params.set('end_date', paramsOj.endDate);
     }
+    if (paramsOj.filter) {
+      params = params.set('filter', paramsOj.filter);
+    }
     return this.http.get(`bill${type}all/`, { params });
+  }
+
+  getBillFilterKeys() {
+    return this.http.get<string[]>(`bill/filter-keys/all/`);
   }
   getChildBillById(billId: any) {
     return this.http.get(`bill/${billId}/`);
@@ -196,7 +206,7 @@ export class DashboardService {
   getFinalProducts(
     branchId: number,
     layer1: string,
-    layer2: string
+    layer2: string,
   ): Observable<any> {
     const params = new HttpParams()
       .set('branch_id', branchId.toString())
@@ -269,6 +279,58 @@ export class DashboardService {
 
     console.log('API request params:', params.toString());
 
-    return this.http.get<any>(`/csv_analytics/file/`, { params });
+    return this.http.get(`/csv_analytics/file/`, { params, responseType: 'text' });
+  }
+
+  // Subscription APIs
+  getAllSubscriptions(): Observable<any> {
+    return this.http.get('/subscription/all/');
+  }
+
+  getSubscriptionById(id: number): Observable<any> {
+    return this.http.get(`/subscription/${id}/`);
+  }
+
+  createSubscription(body: any): Observable<any> {
+    return this.http.post('/subscription/create/', body);
+  }
+
+  updateSubscription(id: number, body: any): Observable<any> {
+    return this.http.put(`/subscription/${id}/update/`, body);
+  }
+
+  // Subscription Instance APIs
+  getAllSubscriptionInstances(paramsObj: {
+    branchIds?: number[];
+    startDate?: string | null;
+    endDate?: string | null;
+  }): Observable<any> {
+    let params = new HttpParams();
+    if (!paramsObj.branchIds || paramsObj.branchIds.length === 0) {
+      params = params.set('branch_id', 'all');
+    } else {
+      paramsObj.branchIds.forEach((id) => {
+        params = params.append('branch_id', id.toString());
+      });
+    }
+    if (paramsObj.startDate) {
+      params = params.set('start_date', paramsObj.startDate);
+    }
+    if (paramsObj.endDate) {
+      params = params.set('end_date', paramsObj.endDate);
+    }
+    return this.http.get('/subscription_instance/all', { params });
+  }
+
+  getSubscriptionInstanceById(id: number): Observable<any> {
+    return this.http.get(`/subscription_instance/${id}/`);
+  }
+
+  createSubscriptionInstance(body: any): Observable<any> {
+    return this.http.post('/subscription_instance/create/', body);
+  }
+
+  updateSubscriptionInstance(id: number, body: any): Observable<any> {
+    return this.http.put(`/subscription_instance/${id}/update/`, body);
   }
 }

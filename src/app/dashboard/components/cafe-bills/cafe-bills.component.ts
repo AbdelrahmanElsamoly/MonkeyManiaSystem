@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DashboardService } from '../../dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -12,7 +14,8 @@ import { BillDialogComponent } from 'src/app/shared/components/bill-dialog/bill-
   templateUrl: './cafe-bills.component.html',
   styleUrls: ['./cafe-bills.component.scss'],
 })
-export class CafeBillsComponent implements OnInit {
+export class CafeBillsComponent implements OnInit, OnDestroy {
+  private searchSubject = new Subject<string>();
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   isLoading = false; // Add loading state
 
@@ -72,6 +75,21 @@ export class CafeBillsComponent implements OnInit {
     this.params.endDate = this.formatDateForAPI(today);
 
     this.getAllBills(this.type, this.params);
+
+    this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe((query) => {
+      this.params = {
+        searchQuery: query,
+        branchIds: this.selectedBranchIds,
+        startDate: this.selectedDateRange.start ? this.formatDateForAPI(this.selectedDateRange.start) : null,
+        endDate: this.selectedDateRange.end ? this.formatDateForAPI(this.selectedDateRange.end) : null,
+        page: 1,
+      };
+      this.getAllBills(this.type, this.params);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
   }
 
   getAllBills(type: string = '/', params: any) {
@@ -170,19 +188,7 @@ export class CafeBillsComponent implements OnInit {
   }
 
   searchExpense(searchQuery: string) {
-    this.params = {
-      searchQuery: searchQuery,
-      branchIds: this.selectedBranchIds,
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : null,
-      page: 1,
-    };
-
-    this.getAllBills(this.type, this.params);
+    this.searchSubject.next(searchQuery);
   }
 
   onBranchSelectionChange(selected: any) {

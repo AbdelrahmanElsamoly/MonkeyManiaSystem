@@ -21,6 +21,8 @@ import { ChildBillComponent } from './components/child-bill/child-bill.component
 import { CofeOrderComponent } from './components/cofe-order/cofe-order.component';
 import { CofeBillDialogComponent } from '../shared/components/cofe-bill-dialog/cofe-bill-dialog.component';
 import { FlowChartComponent } from './components/flow-chart/flow-chart/flow-chart.component';
+import { SubscriptionComponent } from './components/subscription/subscription.component';
+import { ChildSubscriptionComponent } from './components/child-subscription/child-subscription.component';
 
 const routes: Routes = [
   {
@@ -52,6 +54,8 @@ const routes: Routes = [
       { path: 'child/:id', component: ChildProfileComponent },
       { path: 'user/:id', component: UserProfileComponent },
       { path: 'expense/:id', component: ExpenseComponent },
+      { path: 'subscription/all', component: SubscriptionComponent },
+      { path: 'subscription/children/all', component: ChildSubscriptionComponent },
       {
         path: 'cofe-bill/:id',
         component: CofeBillDialogComponent,

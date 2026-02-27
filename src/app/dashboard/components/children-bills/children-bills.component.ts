@@ -16,7 +16,9 @@ import { EditBillDialogComponent } from 'src/app/shared/components/edit-bill/edi
 })
 export class ChildrenBillsComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-  isLoading = false; // Add loading state
+  isLoading = false;
+  filterKeys: string[] = [];
+  selectedFilter: string = '';
 
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
@@ -33,6 +35,7 @@ export class ChildrenBillsComponent implements OnInit {
     startDate: Date | string | null;
     endDate: Date | string | null;
     page: number;
+    filter?: string;
   } = {
     searchQuery: this.searchQuery,
     branchIds: this.selectedBranchIds,
@@ -62,6 +65,10 @@ export class ChildrenBillsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dashboardService.getBillFilterKeys().subscribe({
+      next: (keys: any) => { this.filterKeys = keys[0] ?? []; },
+    });
+
     // Auto select last two days
     const today = new Date();
     const yesterday = new Date();
@@ -82,10 +89,16 @@ export class ChildrenBillsComponent implements OnInit {
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
         this.billsRes = data.results.map((item: any) => {
+          const methods = [
+            parseFloat(item.cash) > 0 ? { icon: '💵', label: 'كاش' } : null,
+            parseFloat(item.instapay) > 0 ? { icon: '📱', label: 'انستاباي' } : null,
+            parseFloat(item.visa) > 0 ? { icon: '💳', label: 'فيزا' } : null,
+          ].filter(Boolean);
           return {
             NAME: item?.first_child,
             PHONE_NUMBER: item?.first_phone,
             SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
+            PAYMENT_METHODS: methods.length ? methods : [{ icon: '—', label: '' }],
             BRANCH: item.branch,
             BILLS_ID: item.id,
             isActive: item.is_active,
@@ -135,6 +148,7 @@ export class ChildrenBillsComponent implements OnInit {
         startDate: this.formatDateForAPI(start),
         endDate: this.formatDateForAPI(end),
         page: 1,
+        filter: this.selectedFilter || undefined,
       };
       this.getAllBills(this.type, this.params);
     }
@@ -151,6 +165,7 @@ export class ChildrenBillsComponent implements OnInit {
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
       page: 1,
+      filter: this.selectedFilter || undefined,
     };
 
     this.getAllBills(this.type, this.params);
@@ -168,6 +183,7 @@ export class ChildrenBillsComponent implements OnInit {
         ? this.formatDateForAPI(this.selectedDateRange.end)
         : null,
       page: 1,
+      filter: this.selectedFilter || undefined,
     };
     this.getAllBills(this.type, this.params);
   }
@@ -290,6 +306,29 @@ export class ChildrenBillsComponent implements OnInit {
       maxHeight: '90vh',
       disableClose: true,
       data: {},
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getAllBills(this.type, this.params);
+      }
+    });
+  }
+
+  onFilterChange(filter: string): void {
+    this.selectedFilter = filter;
+    this.params = { ...this.params, filter: filter || undefined, page: 1 };
+    this.getAllBills(this.type, this.params);
+  }
+
+  openSubscriptionBillDialog(): void {
+    const dialogRef = this.dialog.open(CreateBillDialogComponent, {
+      width: '90vw',
+      maxWidth: '1200px',
+      height: 'auto',
+      maxHeight: '90vh',
+      disableClose: true,
+      data: { isSubscription: true },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

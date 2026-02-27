@@ -103,7 +103,17 @@
           {{ "" }}
         </mat-option>
         <mat-option *ngFor="let child of filteredChildren" [value]="child.id">
-          {{ child.name }}
+          <span class="child-option-row">
+            <span>{{ child.name }}</span>
+            <span class="child-badges">
+              <span *ngIf="child.is_blocked" class="child-badge blocked">
+                <span class="badge-dot"></span> محظور
+              </span>
+              <span *ngIf="child.has_active_subscription" class="child-badge subscribed">
+                <span class="badge-dot"></span> لديه اشتراك
+              </span>
+            </span>
+          </span>
         </mat-option>
         <!-- No Results Message -->
         <div
@@ -126,8 +136,8 @@
       <mat-icon matSuffix>local_offer</mat-icon>
     </mat-form-field>
 
-    <!-- Add New Child Button -->
-    <div class="mb-3">
+    <!-- Add New Child Button (hidden in subscription mode) -->
+    <div class="mb-3" *ngIf="!isSubscription">
       <button mat-raised-button color="primary" (click)="addNewChild()">
         <mat-icon>add</mat-icon>
         👶 {{ "CREATE_NEW_CHILD" | translate }}
@@ -135,7 +145,7 @@
     </div>
 
     <!-- Dynamic Child Form Array with Horizontal Layout -->
-    <form [formGroup]="form" *ngIf="newChildren.length > 0">
+    <form [formGroup]="form" *ngIf="newChildren.length > 0 && !isSubscription">
       <div formArrayName="new_children" class="children-grid-container">
         <div
           *ngFor="let group of newChildren.controls; let i = index"

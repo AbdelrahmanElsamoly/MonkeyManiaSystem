@@ -3,20 +3,19 @@
 .expense-container {
   color: $font-color;
 }
-input {
+
+.search-input {
   width: 100%;
   max-width: 400px;
   padding: 0.5rem;
-  margin-bottom: 1.5rem;
   border: 1px solid #e6d9d9;
   border-radius: 6px;
 }
+
 :focus {
   outline: none;
 }
-::ng-deep .mat-calendar-body-selected {
-  background-color: $button-color;
-}
+
 .dialog-button {
   background-color: $button-color;
   color: $font-color;
@@ -26,11 +25,28 @@ input {
   cursor: pointer;
   font-weight: bold;
 }
+
 .dialog-button:hover {
   background-color: darken($button-color, 10%);
 }
 
-.subscription-btn {
-  background-color: #2e7d32;
-  &:hover { background-color: darken(#2e7d32, 10%); }
+.table-container {
+  position: relative;
+}
+
+.table-loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-state {
+  opacity: 0.4;
+  pointer-events: none;
 }

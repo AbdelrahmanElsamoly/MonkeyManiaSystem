@@ -12,7 +12,7 @@
   </button>
 </div>
 <app-data-table
-  [displayedColumns]="['CHILD_NAME', 'AGE', 'PHONE_NUMBER', 'STATUS']"
+  [displayedColumns]="['CHILD_NAME', 'AGE', 'PHONE_NUMBER', 'HAS_ACTIVE_SUBSCRIPTION', 'STATUS']"
   [data]="myTableData"
   (itemClicked)="goToChildProfilePge($event.ID)"
   (editClicked)="editChild($event)"

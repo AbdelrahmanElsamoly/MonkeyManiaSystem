@@ -47,6 +47,11 @@ input {
     cursor: not-allowed;
     opacity: 0.6;
   }
+
+  &.subscription-btn {
+    background-color: #2e7d32;
+    &:hover:not(:disabled) { background-color: darken(#2e7d32, 10%); }
+  }
 }
 
 .table-container {

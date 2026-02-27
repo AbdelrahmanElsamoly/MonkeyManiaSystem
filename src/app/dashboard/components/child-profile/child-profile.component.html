@@ -52,6 +52,19 @@
     </div>
 
     <div class="field">
+      <span class="label">{{ "IS_BLOCKED" | translate }} : 🚫</span>
+      <span
+        class="value"
+        [ngClass]="{
+          blocked: childData?.is_blocked,
+          'not-blocked': !childData?.is_blocked
+        }"
+      >
+        {{ (childData?.is_blocked ? "IS_BLOCKED" : "NOT_BLOCKED") | translate }}
+      </span>
+    </div>
+
+    <div class="field">
       <span class="label">{{ "SPECIAL_NEEDS" | translate }} : ♿</span>
       <span class="value">{{ childData?.special_needs ? "Yes" : "No" }}</span>
     </div>

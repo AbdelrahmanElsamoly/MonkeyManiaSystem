@@ -16,6 +16,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 // i18n
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -49,6 +50,8 @@ import { ChildBillComponent } from './components/child-bill/child-bill.component
 import { CofeOrderComponent } from './components/cofe-order/cofe-order.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FlowChartComponent } from './components/flow-chart/flow-chart/flow-chart.component';
+import { SubscriptionComponent } from './components/subscription/subscription.component';
+import { ChildSubscriptionComponent } from './components/child-subscription/child-subscription.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -77,6 +80,8 @@ registerLocaleData(localeAr);
     CafeActiveBillsComponent,
     ChildBillComponent,
     CofeOrderComponent,
+    SubscriptionComponent,
+    ChildSubscriptionComponent,
   ],
   imports: [
     CommonModule,
@@ -100,6 +105,7 @@ registerLocaleData(localeAr);
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
+    MatSelectModule,
     // Translate
     TranslateModule.forChild({
       loader: {

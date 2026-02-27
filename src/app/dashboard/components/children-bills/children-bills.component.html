@@ -18,6 +18,15 @@
           [class.disabled-filter]="isLoading"
         ></app-branch-multi-select>
 
+        <!-- Filter Dropdown -->
+        <mat-form-field appearance="fill" class="mx-3" [class.disabled-filter]="isLoading" *ngIf="filterKeys.length">
+          <mat-label>تصفية</mat-label>
+          <mat-select [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange($event)" [disabled]="isLoading">
+            <mat-option value="">الكل</mat-option>
+            <mat-option *ngFor="let key of filterKeys" [value]="key">{{ key }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
         <mat-form-field
           appearance="fill"
           class="mx-3"
@@ -60,13 +69,20 @@
         <span class="date-range-arabic"> ⏰ {{ getDateRangeInArabic() }} </span>
       </div>
     </div>
-    <div>
+    <div class="d-flex gap-2">
       <button
         class="dialog-button"
         (click)="openCreateBillDialog()"
         [disabled]="isLoading"
       >
         + {{ "CREATE" | translate }}
+      </button>
+      <button
+        class="dialog-button subscription-btn"
+        (click)="openSubscriptionBillDialog()"
+        [disabled]="isLoading"
+      >
+        + اضافة فاتورة اشتراك
       </button>
     </div>
   </div>
@@ -87,6 +103,7 @@
       'PHONE_NUMBER',
       'SPENT_TIME',
       'CHILDREN_COUNT',
+      'PAYMENT_METHODS',
       'BRANCH'
     ]"
     [data]="billsRes"

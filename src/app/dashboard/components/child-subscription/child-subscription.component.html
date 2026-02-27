@@ -1,0 +1,77 @@
+<div class="expense-container mt-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex flex-column justify-content-between">
+      <h1>{{ "ALL_CHILD_SUBSCRIPTIONS" | translate }} ... 🎟️</h1>
+
+      <!-- Filters Row -->
+      <div class="d-flex justify-content-start align-items-center mt-4 flex-wrap gap-3">
+
+        <!-- Branch Multi-Select -->
+        <mat-form-field appearance="fill" [class.disabled-filter]="isLoading">
+          <mat-label>{{ "BRANCH" | translate }}</mat-label>
+          <mat-select
+            multiple
+            [(ngModel)]="selectedBranchIds"
+            (ngModelChange)="onBranchChange($event)"
+          >
+            <mat-option *ngFor="let branch of branches" [value]="branch.id">
+              {{ branch.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Date Range Picker -->
+        <mat-form-field appearance="fill" [class.disabled-filter]="isLoading">
+          <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [disabled]="isLoading">
+            <input
+              matStartDate
+              [placeholder]="'START_DATE' | translate"
+              (dateChange)="onStartDateChange($event.value)"
+              [disabled]="isLoading"
+              [value]="selectedDateRange.start"
+            />
+            <input
+              matEndDate
+              [placeholder]="'END_DATE' | translate"
+              (dateChange)="onEndDateChange($event.value)"
+              [disabled]="isLoading"
+              [value]="selectedDateRange.end"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isLoading"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker [disabled]="isLoading"></mat-date-range-picker>
+        </mat-form-field>
+
+      </div>
+
+      <!-- Arabic date range display -->
+      <div class="mt-2 date-wrapper" *ngIf="selectedDateRange.start && selectedDateRange.end">
+        <span class="date-range-arabic">⏰ {{ getDateRangeInArabic() }}</span>
+      </div>
+    </div>
+
+    <div>
+      <button class="dialog-button" (click)="openCreateDialog()">
+        + {{ "CREATE_CHILD_SUBSCRIPTION" | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Table with loading overlay -->
+<div class="table-container position-relative">
+  <div *ngIf="isLoading" class="table-loader-overlay">
+    <div class="spinner-container d-flex justify-content-center mb-5">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </div>
+
+  <app-data-table
+    [displayedColumns]="displayedColumns"
+    [data]="instances"
+    (editClicked)="openEditDialog($event)"
+    (itemClicked)="onRowClick($event)"
+    [class.loading-state]="isLoading"
+  ></app-data-table>
+</div>

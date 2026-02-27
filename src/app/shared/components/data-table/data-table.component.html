@@ -14,7 +14,16 @@
           *ngFor="let column of displayedColumns"
           (click)="itemClicked.emit(row)"
         >
-          {{ row[column] }}
+          <ng-container *ngIf="column !== 'PAYMENT_METHODS'; else paymentCell">
+            {{ row[column] }}
+          </ng-container>
+          <ng-template #paymentCell>
+            <span
+              *ngFor="let method of row['PAYMENT_METHODS']"
+              [title]="method.label"
+              class="payment-icon"
+            >{{ method.icon }}</span>
+          </ng-template>
         </td>
         <td *ngIf="!isActiveBills">
           <button (click)="editClicked.emit(row)">✏️</button>

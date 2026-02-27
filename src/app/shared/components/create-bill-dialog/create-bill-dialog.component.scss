@@ -309,6 +309,52 @@ mat-dialog-actions.dialog-footer {
     min-height: auto;
   }
 }
+.child-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.child-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.child-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  &.blocked {
+    background: rgba(244, 67, 54, 0.12);
+    color: #d32f2f;
+    .badge-dot { background: #d32f2f; }
+  }
+
+  &.subscribed {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    .badge-dot { background: #2e7d32; }
+  }
+}
+
 ::ng-deep .no-checkbox .mat-pseudo-checkbox {
   display: none !important;
 }

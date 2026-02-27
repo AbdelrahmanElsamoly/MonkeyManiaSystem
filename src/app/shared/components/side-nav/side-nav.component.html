@@ -222,4 +222,32 @@
       </a>
     </mat-action-list>
   </mat-expansion-panel>
+
+  <!-- Subscriptions -->
+  <mat-expansion-panel [hideToggle]="collapsed">
+    <mat-expansion-panel-header class="px-3">
+      <mat-panel-title>
+        <mat-icon>card_membership</mat-icon>
+        <span *ngIf="!collapsed">{{ "SUBSCRIPTIONS" | translate }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-action-list>
+      <a
+        mat-list-item
+        routerLinkActive="active-link"
+        routerLink="/dashboard/subscription/all"
+      >
+        <mat-icon>list</mat-icon>
+        <span *ngIf="!collapsed">{{ "ALL_SUBSCRIPTIONS" | translate }}</span>
+      </a>
+      <a
+        mat-list-item
+        routerLinkActive="active-link"
+        routerLink="/dashboard/subscription/children/all"
+      >
+        <mat-icon>child_care</mat-icon>
+        <span *ngIf="!collapsed">{{ "ALL_CHILD_SUBSCRIPTIONS" | translate }}</span>
+      </a>
+    </mat-action-list>
+  </mat-expansion-panel>
 </mat-nav-list>

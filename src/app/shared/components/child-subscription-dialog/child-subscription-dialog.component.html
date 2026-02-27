@@ -1,0 +1,142 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="m-1 d-flex justify-content-between align-items-center">
+    <h2 mat-dialog-title class="dialog-header">
+      {{ (data.isEdit ? "UPDATE_CHILD_SUBSCRIPTION" : "CREATE_CHILD_SUBSCRIPTION") | translate }} 🎟️
+    </h2>
+    <button mat-icon-button (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <hr />
+
+  <!-- Body -->
+  <mat-dialog-content class="dialog-body">
+    <form #subForm="ngForm">
+
+      <!-- Child (searchable select) -->
+      <div class="mb-3">
+        <label class="form-label">{{ "CHILD_NAME" | translate }}</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select [(ngModel)]="form.child" name="child" required>
+            <mat-form-field style="width:100%" appearance="outline">
+              <mat-label>🔍 {{ "SEARCH" | translate }}</mat-label>
+              <input
+                matInput
+                [(ngModel)]="childSearchValue"
+                name="childSearch"
+                (input)="onChildSearchInput($event)"
+                (keydown)="onChildSearchKeydown($event)"
+                (click)="$event.stopPropagation()"
+              />
+            </mat-form-field>
+            <mat-option *ngFor="let child of children" [value]="child.id">
+              {{ child.name }}
+            </mat-option>
+            <div *ngIf="children.length === 0" style="padding:16px;text-align:center;color:#999">
+              😔 {{ "NO_RESULTS" | translate }}
+            </div>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Subscription (searchable select) -->
+      <div class="mb-3">
+        <label class="form-label">{{ "SELECT_SUBSCRIPTION" | translate }}</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select [(ngModel)]="form.subscription" name="subscription" required>
+            <mat-form-field style="width:100%" appearance="outline">
+              <mat-label>🔍 {{ "SEARCH" | translate }}</mat-label>
+              <input
+                matInput
+                [(ngModel)]="subscriptionSearchValue"
+                name="subscriptionSearch"
+                (input)="onSubscriptionSearchInput($event)"
+                (keydown)="onSubscriptionSearchKeydown($event)"
+                (click)="$event.stopPropagation()"
+              />
+            </mat-form-field>
+            <mat-option *ngFor="let sub of filteredSubscriptions" [value]="sub.id">
+              {{ sub.name }}
+            </mat-option>
+            <div *ngIf="filteredSubscriptions.length === 0" style="padding:16px;text-align:center;color:#999">
+              😔 {{ "NO_RESULTS" | translate }}
+            </div>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Branch (dropdown) -->
+      <div class="mb-3">
+        <label class="form-label">{{ "BRANCH" | translate }}</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select
+            [(ngModel)]="form.branch"
+            name="branch"
+            required
+          >
+            <mat-option *ngFor="let branch of branches" [value]="branch.id">
+              {{ branch.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Cash -->
+      <div class="mb-3">
+        <label class="form-label">{{ "CASH" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.cash"
+          name="cash"
+          min="0"
+        />
+      </div>
+
+      <!-- Visa -->
+      <div class="mb-3">
+        <label class="form-label">{{ "VISA" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.visa"
+          name="visa"
+          min="0"
+        />
+      </div>
+
+      <!-- Instapay -->
+      <div class="mb-3">
+        <label class="form-label">{{ "INSTAPAY" | translate }}</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="form.instapay"
+          name="instapay"
+          min="0"
+        />
+      </div>
+
+    </form>
+  </mat-dialog-content>
+
+  <!-- Footer -->
+  <mat-dialog-actions
+    align="end"
+    class="d-flex justify-content-between align-items-center m-3 dialog-footer"
+  >
+    <button mat-stroked-button color="warn" (click)="onClose()">
+      {{ "CANCEL" | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="!isFormValid || isLoading"
+      (click)="onSave()"
+    >
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+      {{ "SAVE" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

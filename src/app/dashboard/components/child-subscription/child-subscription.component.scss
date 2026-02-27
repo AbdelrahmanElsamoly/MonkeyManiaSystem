@@ -1,0 +1,54 @@
+@import "../../../shared/styles/colors.scss";
+
+.expense-container {
+  color: $font-color;
+}
+
+:focus {
+  outline: none;
+}
+
+.dialog-button {
+  background-color: $button-color;
+  color: $font-color;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.dialog-button:hover {
+  background-color: darken($button-color, 10%);
+}
+
+.table-container {
+  position: relative;
+}
+
+.table-loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-state {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.date-range-arabic {
+  color: $font-color;
+  font-size: 0.9rem;
+}
+
+.disabled-filter {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { SharedService } from '../../shared.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
 // Update the Child interface at the top of your component
@@ -20,6 +20,8 @@ interface Child {
     days: number;
   };
   birth_date?: string;
+  is_blocked?: boolean;
+  has_active_subscription?: boolean;
 }
 
 interface PhoneNumber {
@@ -50,6 +52,8 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
   // Search timeout for debouncing
   private searchTimeout: any;
 
+  isSubscription = false;
+
   // User Info
   private readonly userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   private readonly branch = JSON.parse(localStorage.getItem('branch') || '{}');
@@ -66,8 +70,11 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreateBillDialogComponent>,
-    private toaster: ToastrService
-  ) {}
+    private toaster: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.isSubscription = !!data?.isSubscription;
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -414,9 +421,10 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
 
     return {
       ...(children && { children }),
-      ...(newChildren.length > 0 && { new_children: newChildren }),
+      ...(this.isSubscription ? { new_children: [] } : newChildren.length > 0 ? { new_children: newChildren } : {}),
       ...(discount ? { discount } : {}),
       branch: branchId,
+      ...(this.isSubscription ? { is_subscription: true } : {}),
     };
   }
 

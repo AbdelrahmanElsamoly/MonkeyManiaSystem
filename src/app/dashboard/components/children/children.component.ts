@@ -15,6 +15,7 @@ export class ChildrenComponent implements OnInit {
     this.translate.instant('NAME'),
     this.translate.instant('AGE'),
     this.translate.instant('PHONE_NUMBER'),
+    this.translate.instant('HAS_ACTIVE_SUBSCRIPTION'),
     this.translate.instant('STATUS'),
   ];
   totalChildren: number = 0;
@@ -28,7 +29,7 @@ export class ChildrenComponent implements OnInit {
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
   ngOnInit(): void {
     this.getChildrenData();
@@ -46,6 +47,7 @@ export class ChildrenComponent implements OnInit {
           STATUS: child.is_active ? '✅' : '❌',
           ID: child.id,
           CHILD: child,
+          HAS_ACTIVE_SUBSCRIPTION: child.has_active_subscription ? '✅' : '❌',
         }));
 
         this.totalChildren = res.count; // ✅ needed for DataTable totalItems
@@ -60,7 +62,7 @@ export class ChildrenComponent implements OnInit {
 
   goToChildProfilePge(childId: any) {
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/dashboard/child', childId])
+      this.router.createUrlTree(['/dashboard/child', childId]),
     );
     window.open(url, '_blank');
   }

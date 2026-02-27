@@ -40,6 +40,16 @@
         font-weight: bold;
       }
 
+      &.blocked {
+        color: red;
+        font-weight: bold;
+      }
+
+      &.not-blocked {
+        color: green;
+        font-weight: bold;
+      }
+
       ul {
         list-style: none;
         margin: 0;

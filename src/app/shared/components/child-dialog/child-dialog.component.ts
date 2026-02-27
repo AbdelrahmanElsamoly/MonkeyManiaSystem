@@ -14,6 +14,7 @@ export class ChildDialogComponent implements OnInit {
   filteredSchools: any[] = [];
   schools: any[] = [];
   isUpdateMode: boolean = false;
+  userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 
   constructor(
     private fb: FormBuilder,
@@ -28,6 +29,7 @@ export class ChildDialogComponent implements OnInit {
       address: ['', Validators.required],
       notes: [''],
       school: [null],
+      is_blocked: [false],
       child_phone_numbers_set: this.fb.array([this.createPhoneGroup()]),
     });
   }
@@ -78,6 +80,7 @@ export class ChildDialogComponent implements OnInit {
       school: child.school
         ? this.schools.find((s) => s.id === child.school_id) || null
         : null,
+      is_blocked: child.is_blocked || false,
     });
 
     this.phoneNumbers.clear();

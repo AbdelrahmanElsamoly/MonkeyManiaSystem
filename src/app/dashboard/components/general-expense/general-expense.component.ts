@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ExpenseDialogComponent } from 'src/app/shared/components/expense-dialog/expense-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-general-expense',
@@ -42,7 +43,8 @@ export class GeneralExpenseComponent implements OnInit {
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toaster: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +133,16 @@ export class GeneralExpenseComponent implements OnInit {
       if (result) {
         this.getGeneralExpense(this.type, this.params);
       }
+    });
+  }
+
+  onCsvUpload(formData: FormData) {
+    this.dashboardService.uploadCsvFile(formData, this.type).subscribe({
+      next: () => {
+        this.toaster.success(this.translate.instant('CSV_UPLOAD_SUCCESS'));
+        this.getGeneralExpense(this.type, this.params);
+      },
+      error: () => this.toaster.error(this.translate.instant('CSV_UPLOAD_ERROR')),
     });
   }
 
