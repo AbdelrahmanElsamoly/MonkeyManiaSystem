@@ -10,51 +10,41 @@
         (input)="searchExpense(searchQuery)"
       />
       <div
-        class="d-flex justify-content-start align-items-center mt-4"
-        *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner'"
+        class="d-flex justify-content-start align-items-center mt-4 flex-wrap gap-2"
+        *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner' || userInfo?.role === 'manager'"
       >
         <app-branch-multi-select
+          *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner'"
           (selectedBranchesChange)="onBranchSelectionChange($event)"
         ></app-branch-multi-select>
 
         <!-- Filter Dropdown -->
-        <mat-form-field appearance="fill" class="mx-3" *ngIf="filterKeys.length">
+        <mat-form-field
+          appearance="fill"
+          class="mx-2"
+          *ngIf="filterKeys.length"
+        >
           <mat-label>تصفية</mat-label>
-          <mat-select [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange($event)">
+          <mat-select
+            [(ngModel)]="selectedFilter"
+            (ngModelChange)="onFilterChange($event)"
+          >
             <mat-option value="">الكل</mat-option>
-            <mat-option *ngFor="let key of filterKeys" [value]="key">{{ key }}</mat-option>
+            <mat-option *ngFor="let key of filterKeys" [value]="key">{{
+              key
+            }}</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <!-- <mat-form-field appearance="fill" class="mx-3">
-          <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
-
-          <mat-date-range-input [rangePicker]="picker">
-            <input
-              matStartDate
-              [placeholder]="'START_DATE' | translate"
-              (dateChange)="onStartDateChange($event.value)"
-            />
-            <input
-              matEndDate
-              [placeholder]="'END_DATE' | translate"
-              (dateChange)="onEndDateChange($event.value)"
-            />
-          </mat-date-range-input>
-
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field> -->
       </div>
     </div>
     <div class="d-flex gap-2">
       <button class="dialog-button" (click)="openCreateBillDialog()">
         + {{ "CREATE" | translate }}
       </button>
-      <button class="dialog-button subscription-btn" (click)="openSubscriptionBillDialog()">
+      <button
+        class="dialog-button subscription-btn"
+        (click)="openSubscriptionBillDialog()"
+      >
         + اضافة فاتورة اشتراك
       </button>
     </div>
@@ -67,7 +57,7 @@
     'PHONE_NUMBER',
     'SPENT_TIME',
     'CHILDREN_COUNT',
-    'BRANCH'
+    'BRANCH',
   ]"
   [isActiveBills]="true"
   [data]="billsRes"

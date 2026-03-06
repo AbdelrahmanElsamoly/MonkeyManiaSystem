@@ -6,19 +6,14 @@
     [class.collapsed]="sidebarCollapsed"
     class="sidenav"
   >
-    <div class="toggle-button">
-      <button mat-icon-button (click)="toggleSidebar()">
-        <mat-icon color="accent">menu</mat-icon>
-      </button>
+    <div class="logo-container" [class.logo-container-collapsed]="sidebarCollapsed">
+      <img
+        src="../../../../assets/png/logo-01.png"
+        [class.logo-collapsed]="sidebarCollapsed"
+        class="sidenav-logo"
+        alt=""
+      />
     </div>
-
-    <img
-      src="../../../../assets/png/logo-01.png"
-      *ngIf="!sidebarCollapsed"
-      alt=""
-    />
-
-    <hr />
 
     <!-- Sidebar content wrapper -->
     <div class="sidenav-content-wrapper mb-5">
@@ -38,6 +33,9 @@
   <!-- Content -->
   <mat-sidenav-content [class.expanded]="sidebarCollapsed">
     <mat-toolbar class="top-toolbar">
+      <button mat-icon-button (click)="toggleSidebar()" class="menu-toggle-btn">
+        <mat-icon color="accent">menu</mat-icon>
+      </button>
       <img src="../../../../assets/png/avatar.png" alt="" />
       <span class="welcome-text"
         >{{ "WELCOME" | translate }} , {{ userInfo.username }} !</span

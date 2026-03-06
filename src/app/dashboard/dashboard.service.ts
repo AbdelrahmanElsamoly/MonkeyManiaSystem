@@ -74,6 +74,14 @@ export class DashboardService {
     return this.http.put(`child/${childId}/update/`, body);
   }
   // user Api
+  createUser(body: any): Observable<any> {
+    return this.http.post(`user/create/`, body);
+  }
+
+  updateUser(id: number, body: any): Observable<any> {
+    return this.http.put(`user/${id}/update/`, body);
+  }
+
   getUsers(
     searchQuery: string = '',
     branchIds: any[] = [],

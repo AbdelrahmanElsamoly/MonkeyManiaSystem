@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DashboardService } from 'src/app/dashboard/dashboard.service';
-import { SharedService } from '../../shared.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -13,7 +12,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./child-subscription-dialog.component.scss'],
 })
 export class ChildSubscriptionDialogComponent implements OnInit, OnDestroy {
-  branches: any[] = [];
+  currentBranch = JSON.parse(localStorage.getItem('branch') || '{}');
   subscriptions: any[] = [];
   filteredSubscriptions: any[] = [];
   children: any[] = [];
@@ -36,14 +35,12 @@ export class ChildSubscriptionDialogComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<ChildSubscriptionDialogComponent>,
     private dashboardService: DashboardService,
-    private sharedService: SharedService,
     private toaster: ToastrService,
     private translate: TranslateService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   ngOnInit(): void {
-    this.loadBranches();
     this.loadSubscriptions();
     this.loadChildren('');
 
@@ -59,17 +56,13 @@ export class ChildSubscriptionDialogComponent implements OnInit, OnDestroy {
       this.form.subscription = s.subscription_id;
       this.form.child = s.child_id;
       this.form.branch = s.branch_id;
+    } else {
+      this.form.branch = this.currentBranch?.id ?? null;
     }
   }
 
   ngOnDestroy(): void {
     this.childSearchSubject.complete();
-  }
-
-  loadBranches() {
-    this.sharedService.getBranches().subscribe({
-      next: (res: any) => (this.branches = res),
-    });
   }
 
   loadSubscriptions() {

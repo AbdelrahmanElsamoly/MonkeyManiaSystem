@@ -66,22 +66,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Branch (dropdown) -->
-      <div class="mb-3">
-        <label class="form-label">{{ "BRANCH" | translate }}</label>
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-select
-            [(ngModel)]="form.branch"
-            name="branch"
-            required
-          >
-            <mat-option *ngFor="let branch of branches" [value]="branch.id">
-              {{ branch.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
       <!-- Cash -->
       <div class="mb-3">
         <label class="form-label">{{ "CASH" | translate }}</label>

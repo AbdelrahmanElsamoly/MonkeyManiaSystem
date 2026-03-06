@@ -45,6 +45,7 @@ import { EditBillDialogComponent } from './components/edit-bill/edit-bill-dialog
 import { SubscriptionDialogComponent } from './components/subscription-dialog/subscription-dialog.component';
 import { ChildSubscriptionDialogComponent } from './components/child-subscription-dialog/child-subscription-dialog.component';
 import { ChildSubscriptionDetailDialogComponent } from './components/child-subscription-detail-dialog/child-subscription-detail-dialog.component';
+import { CreateUserDialogComponent } from './components/create-user-dialog/create-user-dialog.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -72,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SubscriptionDialogComponent,
     ChildSubscriptionDialogComponent,
     ChildSubscriptionDetailDialogComponent,
+    CreateUserDialogComponent,
   ],
   imports: [
     CommonModule,

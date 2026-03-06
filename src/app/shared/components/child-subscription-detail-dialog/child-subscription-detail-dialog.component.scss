@@ -59,10 +59,95 @@
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
 
   button {
     border-radius: 8px;
     min-width: 90px;
     font-weight: 500;
+  }
+}
+
+.print-btn {
+  color: $font-color !important;
+  border-color: $font-color !important;
+}
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .print-header p {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 8px;
+  }
+
+  ::ng-deep .mat-mdc-dialog-container,
+  ::ng-deep .mat-mdc-dialog-surface {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    margin: 0 !important;
+    padding: 4px !important;
+  }
+
+  ::ng-deep .cdk-overlay-backdrop,
+  ::ng-deep .cdk-overlay-container > *:not(.cdk-overlay-pane) {
+    display: none !important;
+  }
+
+  .dialog-body {
+    color: #000 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px dashed #ccc;
+    font-size: 11px;
+
+    .detail-label {
+      font-weight: bold;
+      color: #000 !important;
+    }
+
+    .detail-value {
+      color: #000 !important;
+
+      &.highlight {
+        font-weight: bold;
+        color: #000 !important;
+      }
+    }
+  }
+
+  .divider {
+    border-color: #ccc;
+    margin: 4px 0;
+  }
+
+  @page {
+    size: 80mm auto;
+    margin: 4mm;
   }
 }

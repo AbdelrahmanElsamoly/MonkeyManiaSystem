@@ -4,10 +4,11 @@
       <h1>{{ "ALL_CHILD_SUBSCRIPTIONS" | translate }} ... 🎟️</h1>
 
       <!-- Filters Row -->
-      <div class="d-flex justify-content-start align-items-center mt-4 flex-wrap gap-3">
-
+      <div
+        class="d-flex justify-content-start align-items-center mt-4 flex-wrap gap-3"
+      >
         <!-- Branch Multi-Select -->
-        <mat-form-field appearance="fill" [class.disabled-filter]="isLoading">
+        <mat-form-field *ngIf="isAdminOrOwner" appearance="fill" [class.disabled-filter]="isLoading">
           <mat-label>{{ "BRANCH" | translate }}</mat-label>
           <mat-select
             multiple
@@ -39,14 +40,23 @@
               [value]="selectedDateRange.end"
             />
           </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isLoading"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker [disabled]="isLoading"></mat-date-range-picker>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+            [disabled]="isLoading"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker
+            #picker
+            [disabled]="isLoading"
+          ></mat-date-range-picker>
         </mat-form-field>
-
       </div>
 
       <!-- Arabic date range display -->
-      <div class="mt-2 date-wrapper" *ngIf="selectedDateRange.start && selectedDateRange.end">
+      <div
+        class="mt-2 date-wrapper"
+        *ngIf="selectedDateRange.start && selectedDateRange.end"
+      >
         <span class="date-range-arabic">⏰ {{ getDateRangeInArabic() }}</span>
       </div>
     </div>
@@ -70,7 +80,6 @@
   <app-data-table
     [displayedColumns]="displayedColumns"
     [data]="instances"
-    (editClicked)="openEditDialog($event)"
     (itemClicked)="onRowClick($event)"
     [class.loading-state]="isLoading"
   ></app-data-table>

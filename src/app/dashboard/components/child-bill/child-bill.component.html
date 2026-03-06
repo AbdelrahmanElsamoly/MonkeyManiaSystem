@@ -42,6 +42,25 @@
       </tbody>
     </table>
 
+    <!-- Subscription Details (active bill) -->
+    <div *ngIf="bill.is_subscription && bill.subscription" class="subscription-section">
+      <div class="bill-row subscription-header">
+        <span>🎟️ {{ "SUBSCRIPTION_DETAILS" | translate }}</span>
+      </div>
+      <div class="bill-row">
+        <span>{{ "SUBSCRIPTION_NAME" | translate }}:</span>
+        {{ bill.subscription.name }}
+      </div>
+      <div class="bill-row">
+        <span>{{ "HOURS" | translate }}:</span>
+        {{ bill.subscription.base_hours }}
+      </div>
+      <div class="bill-row">
+        <span>{{ "REMAINING_HOURS" | translate }}:</span>
+        {{ bill.subscription.remaining_hours }}
+      </div>
+    </div>
+
     <!-- Payment Methods -->
     <div class="bill-row" *ngIf="bill.visa > 0">
       <span>Visa:</span> {{ bill.visa }} EGP
@@ -53,11 +72,11 @@
       <span>Instapay:</span> {{ bill.instapay }} EGP
     </div>
 
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="!bill.is_subscription">
       <span>{{ "HOUR_PRICE" | translate }}:</span>
       {{ bill.hour_price }}
     </div>
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="!bill.is_subscription">
       <span>{{ "HALF_HOUR_PRICE" | translate }}:</span>
       {{ bill.half_hour_price }}
     </div>
@@ -65,7 +84,7 @@
     <!-- Times -->
     <div class="bill-row">
       <span>{{ "ENTER_AT" | translate }}:</span>
-      {{ bill.created | date : "short" }}
+      {{ bill.created | date: "short" }}
     </div>
 
     <div class="bill-row">
@@ -119,8 +138,27 @@
       </tbody>
     </table>
 
+    <!-- Subscription Details (closed bill) -->
+    <div *ngIf="bill.is_subscription && bill.subscription" class="subscription-section">
+      <div class="bill-row subscription-header">
+        <span>🎟️ {{ "SUBSCRIPTION_DETAILS" | translate }}</span>
+      </div>
+      <div class="bill-row">
+        <span>{{ "SUBSCRIPTION_NAME" | translate }}:</span>
+        {{ bill.subscription.name }}
+      </div>
+      <div class="bill-row">
+        <span>{{ "HOURS" | translate }}:</span>
+        {{ bill.subscription.base_hours }}
+      </div>
+      <div class="bill-row">
+        <span>{{ "REMAINING_HOURS" | translate }}:</span>
+        {{ bill.subscription.remaining_hours }}
+      </div>
+    </div>
+
     <!-- Time Price -->
-    <div class="bill-row">
+    <div class="bill-row" *ngIf="!bill.is_subscription">
       <span>{{ "TIME_PRICE" | translate }}:</span>
       {{ bill.time_price }} EGP
     </div>
@@ -165,11 +203,11 @@
     <!-- Times -->
     <div class="bill-row">
       <span>{{ "ENTER_AT" | translate }}:</span>
-      {{ bill.created | date : "short" }}
+      {{ bill.created | date: "short" }}
     </div>
     <div class="bill-row" *ngIf="bill.finished">
       <span>{{ "EXIT_AT" | translate }}:</span>
-      {{ bill.finished | date : "short" }}
+      {{ bill.finished | date: "short" }}
     </div>
     <div class="bill-row">
       <span>{{ "BRANCH" | translate }}:</span>

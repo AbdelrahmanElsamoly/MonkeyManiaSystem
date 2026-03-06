@@ -21,12 +21,12 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private authService: loginService,
     private toaster: ToastrService,
-    private router: Router
+    private router: Router,
   ) {}
 
   intercept(
     req: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     // Skip authentication for certain requests
     if (this.skipAuth(req)) {
@@ -50,7 +50,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         // Handle other errors
         return this.handleOtherErrors(error);
-      })
+      }),
     );
   }
 
@@ -105,7 +105,7 @@ export class AuthInterceptor implements HttpInterceptor {
   // FIXED: Only handle 401 errors with token refresh
   private handle401Error(
     req: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
@@ -131,7 +131,7 @@ export class AuthInterceptor implements HttpInterceptor {
         }),
         finalize(() => {
           this.isRefreshing = false;
-        })
+        }),
       );
     } else {
       // Wait for the refresh to complete
@@ -145,7 +145,7 @@ export class AuthInterceptor implements HttpInterceptor {
             },
           });
           return next.handle(retryReq);
-        })
+        }),
       );
     }
   }
@@ -173,7 +173,7 @@ export class AuthInterceptor implements HttpInterceptor {
           catchError(() => {
             this.authService.logout();
             return throwError(() => error);
-          })
+          }),
         );
       } else {
         // No refresh token, just logout
@@ -192,17 +192,17 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private getFriendly403Message(errorMessage: string): string {
     // Customize based on your app's needs
-    if (errorMessage.includes('permission')) {
-      return "You don't have permission to access this resource";
-    }
-    if (errorMessage.includes('role')) {
-      return "Your role doesn't allow this action";
-    }
-    if (errorMessage.includes('admin')) {
-      return 'Admin access required';
-    }
+    // if (errorMessage.includes('permission')) {
+    //   return "You don't have permission to access this resource";
+    // }
+    // if (errorMessage.includes('role')) {
+    //   return "Your role doesn't allow this action";
+    // }
+    // if (errorMessage.includes('admin')) {
+    //   return 'Admin access required';
+    // }
 
-    return 'Access denied - insufficient permissions';
+    return errorMessage;
   }
 
   private handleOtherErrors(error: HttpErrorResponse): Observable<never> {

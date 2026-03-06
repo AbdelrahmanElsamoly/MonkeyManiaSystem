@@ -1,6 +1,6 @@
 <div class="dialog-container">
   <!-- Header -->
-  <div class="m-1 d-flex justify-content-between align-items-center">
+  <div class="m-1 d-flex justify-content-between align-items-center no-print">
     <h2 mat-dialog-title class="dialog-header">
       {{ "SUBSCRIPTION_DETAILS" | translate }} 🎟️
     </h2>
@@ -8,7 +8,12 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <hr />
+  <hr class="no-print" />
+
+  <!-- Print-only header -->
+  <div class="print-only print-header">
+    <p>🎟️ {{ "SUBSCRIPTION_DETAILS" | translate }}</p>
+  </div>
 
   <!-- Body -->
   <mat-dialog-content class="dialog-body">
@@ -99,7 +104,10 @@
   </mat-dialog-content>
 
   <!-- Footer -->
-  <mat-dialog-actions align="end" class="m-3 dialog-footer">
+  <mat-dialog-actions align="end" class="m-3 dialog-footer no-print">
+    <button mat-stroked-button (click)="onPrint()" class="print-btn">
+      🖨️ {{ "PRINT" | translate }}
+    </button>
     <button mat-flat-button color="primary" (click)="onClose()">
       {{ "CLOSE" | translate }}
     </button>

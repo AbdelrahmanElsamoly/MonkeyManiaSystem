@@ -18,7 +18,7 @@ a[mat-list-item],
 mat-expansion-panel-header mat-panel-title {
   display: flex;
   align-items: center;
-  gap: 10px; // spacing between icon and text
+  gap: 10px;
   color: $font-color !important;
 }
 
@@ -26,10 +26,28 @@ a[mat-list-item] mat-icon,
 mat-expansion-panel-header mat-icon {
   font-size: 20px;
   vertical-align: middle;
-  color: $font-color !important;
 }
+
+// ── Per-link icon colors ──────────────────────────────────────────
+// Dashboard
+mat-nav-list > a:nth-child(1) mat-icon { color: #60a5fa !important; } // blue
+// Flow chart
+mat-nav-list > a:nth-child(2) mat-icon { color: #a78bfa !important; } // purple
+// Sales
+mat-nav-list > a[routerLink="/dashboard/sales"] mat-icon { color: #34d399 !important; } // green
+// Schools
+mat-nav-list > a[routerLink="/dashboard/school"] mat-icon { color: #f97316 !important; } // orange
+
+// Expansion panel icon colors
+mat-expansion-panel:nth-of-type(1) mat-icon { color: #f472b6 !important; } // pink  - Human
+mat-expansion-panel:nth-of-type(2) mat-icon { color: #38bdf8 !important; } // sky   - Children Bills
+mat-expansion-panel:nth-of-type(3) mat-icon { color: #fb923c !important; } // amber - Cafe Bills
+mat-expansion-panel:nth-of-type(4) mat-icon { color: #a3e635 !important; } // lime  - Cafe Prefs
+mat-expansion-panel:nth-of-type(5) mat-icon { color: #f87171 !important; } // red   - Expense
+mat-expansion-panel:nth-of-type(6) mat-icon { color: #fbbf24 !important; } // gold  - Subscriptions
+
 .active-link {
-  background-color: rgba(47, 189, 111, 0.1); // light blue background
+  background-color: rgba(47, 189, 111, 0.1);
   span,
   mat-icon {
     color: #fbbf24 !important;
@@ -37,6 +55,7 @@ mat-expansion-panel-header mat-icon {
   border-left: 4px solid #4caf65;
   font-weight: bold;
 }
+
 ::ng-deep .mat-expansion-panel-body {
   padding: 8px !important;
 }

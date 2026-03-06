@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateUserDialogComponent } from 'src/app/shared/components/create-user-dialog/create-user-dialog.component';
 
 @Component({
   selector: 'app-user',
@@ -31,7 +33,8 @@ export class UserComponent {
   constructor(
     private dashboardService: DashboardService,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -56,6 +59,7 @@ export class UserComponent {
           STATUS: user.is_active ? '✅' : '❌',
           ROLE: user.role,
           ID: user.id,
+          _raw: user,
         }));
 
         this.totalUsers = res.count;
@@ -75,6 +79,30 @@ export class UserComponent {
   onBranchSelectionChange(searchQuery: string, selected: number[]) {
     this.selectedBranch = selected;
     this.getUsers(searchQuery, selected, 1);
+  }
+
+  openCreateUserDialog() {
+    const dialogRef = this.dialog.open(CreateUserDialogComponent, {
+      width: '480px',
+      data: { isEdit: false },
+    });
+    dialogRef.afterClosed().subscribe((created) => {
+      if (created) {
+        this.getUsers(this.searchTerm, this.selectedBranch, this.currentPage);
+      }
+    });
+  }
+
+  openEditUserDialog(row: any) {
+    const dialogRef = this.dialog.open(CreateUserDialogComponent, {
+      width: '480px',
+      data: { isEdit: true, user: { ...row._raw, id: row.ID } },
+    });
+    dialogRef.afterClosed().subscribe((updated) => {
+      if (updated) {
+        this.getUsers(this.searchTerm, this.selectedBranch, this.currentPage);
+      }
+    });
   }
 
   goToProfilePage(userId: any) {

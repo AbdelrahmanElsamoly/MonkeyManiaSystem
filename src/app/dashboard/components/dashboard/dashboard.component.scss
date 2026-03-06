@@ -27,14 +27,35 @@ mat-sidenav {
   }
 }
 
-img {
-  width: 200px;
+.logo-container {
+  background-color: $primary-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 10px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  transition: padding 0.3s ease;
+
+  &.logo-container-collapsed {
+    padding: 10px 6px;
+  }
 }
 
-.toggle-button {
-  display: flex;
-  justify-content: flex-end;
-  padding: 17px;
+.sidenav-logo {
+  width: 150px;
+  display: block;
+  transition: width 0.3s ease;
+
+  &.logo-collapsed {
+    width: 44px;
+    object-fit: contain;
+  }
+}
+
+.menu-toggle-btn {
+  color: $font-color !important;
+  margin-left: 4px;
 }
 
 .mat-sidenav-content {

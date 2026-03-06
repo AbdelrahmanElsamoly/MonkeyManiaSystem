@@ -236,6 +236,7 @@
         mat-list-item
         routerLinkActive="active-link"
         routerLink="/dashboard/subscription/all"
+        *ngIf="userInfo.role == 'admin' || userInfo.role == 'owner'"
       >
         <mat-icon>list</mat-icon>
         <span *ngIf="!collapsed">{{ "ALL_SUBSCRIPTIONS" | translate }}</span>
@@ -246,7 +247,9 @@
         routerLink="/dashboard/subscription/children/all"
       >
         <mat-icon>child_care</mat-icon>
-        <span *ngIf="!collapsed">{{ "ALL_CHILD_SUBSCRIPTIONS" | translate }}</span>
+        <span *ngIf="!collapsed">{{
+          "ALL_CHILD_SUBSCRIPTIONS" | translate
+        }}</span>
       </a>
     </mat-action-list>
   </mat-expansion-panel>

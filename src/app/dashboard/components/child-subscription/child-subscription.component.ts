@@ -17,6 +17,7 @@ export class ChildSubscriptionComponent implements OnInit {
   instances: any[] = [];
   branches: any[] = [];
   selectedBranchIds: number[] = [];
+  isAdminOrOwner = false;
 
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
@@ -56,6 +57,9 @@ export class ChildSubscriptionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.isAdminOrOwner = user.role === 'admin' || user.role === 'owner';
+
     const today = new Date();
     const lastMonth = new Date();
     lastMonth.setMonth(today.getMonth() - 1);
@@ -65,11 +69,13 @@ export class ChildSubscriptionComponent implements OnInit {
     this.params.startDate = this.formatDateForAPI(lastMonth);
     this.params.endDate = this.formatDateForAPI(today);
 
-    this.sharedService.getBranches().subscribe({
-      next: (res: any) => {
-        this.branches = res;
-      },
-    });
+    if (this.isAdminOrOwner) {
+      this.sharedService.getBranches().subscribe({
+        next: (res: any) => {
+          this.branches = res;
+        },
+      });
+    }
 
     this.loadInstances();
   }
@@ -133,9 +139,10 @@ export class ChildSubscriptionComponent implements OnInit {
   }
 
   openCreateDialog() {
+    const branch = JSON.parse(localStorage.getItem('branch') || '{}');
     const dialogRef = this.dialog.open(ChildSubscriptionDialogComponent, {
       width: '600px',
-      data: { isEdit: false },
+      data: { isEdit: false, branchId: branch.id ?? null },
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
