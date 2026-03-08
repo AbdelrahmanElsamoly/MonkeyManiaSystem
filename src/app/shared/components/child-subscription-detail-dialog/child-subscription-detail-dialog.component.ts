@@ -1,23 +1,40 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DashboardService } from 'src/app/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-child-subscription-detail-dialog',
   templateUrl: './child-subscription-detail-dialog.component.html',
   styleUrls: ['./child-subscription-detail-dialog.component.scss'],
 })
-export class ChildSubscriptionDetailDialogComponent {
+export class ChildSubscriptionDetailDialogComponent implements OnInit {
+  isLoading = true;
+  details: any = null;
+
   constructor(
     private dialogRef: MatDialogRef<ChildSubscriptionDetailDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: { id: number },
+    private dashboardService: DashboardService
   ) {}
+
+  ngOnInit(): void {
+    this.dashboardService.getSubscriptionInstanceById(this.data.id).subscribe({
+      next: (res: any) => {
+        this.details = res;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
+    });
+  }
 
   onClose() {
     this.dialogRef.close();
   }
 
   onPrint() {
-    const d = this.data;
+    const d = this.details;
     const html = `
       <!DOCTYPE html>
       <html dir="rtl" lang="ar">
@@ -81,12 +98,22 @@ export class ChildSubscriptionDetailDialogComponent {
           .row span:last-child { color: #111; }
           .divider { border: none; border-top: 2px dashed #ccc; margin: 12px 0; }
           .highlight span:last-child { font-weight: bold; font-size: 15px; color: #1976d2; }
+          .logo-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+          }
+          .logo-header img {
+            height: 70px;
+            object-fit: contain;
+          }
           @media print {
             body { background: #fff; padding: 0; }
             .page { box-shadow: none; border-radius: 0; padding: 8px; max-width: 80mm; }
             .print-bar { display: none !important; }
             .row { padding: 4px 4px; font-size: 11px; }
             .title { font-size: 14px; }
+            .logo-header img { height: 50px; }
             @page { size: 80mm auto; margin: 4mm; }
           }
         </style>
@@ -95,6 +122,9 @@ export class ChildSubscriptionDetailDialogComponent {
         <div class="page">
           <div class="print-bar">
             <button onclick="window.print()">🖨️ طباعة</button>
+          </div>
+          <div class="logo-header">
+            <img src="{{LOGO_URL}}" alt="Logo" />
           </div>
           <div class="title">🎟️ تفاصيل الاشتراك</div>
           <div class="section">
@@ -126,9 +156,13 @@ export class ChildSubscriptionDetailDialogComponent {
       </body>
       </html>`;
 
+    const logoUrl = window.location.origin + '/assets/png/logo-01.png';
     const win = window.open('', '_blank');
     if (win) {
-      win.document.documentElement.innerHTML = html;
+      win.document.documentElement.innerHTML = html.replace(
+        '{{LOGO_URL}}',
+        logoUrl
+      );
     }
   }
 }

@@ -177,16 +177,9 @@ export class ChildSubscriptionComponent implements OnInit {
   }
 
   onRowClick(row: any) {
-    this.dashboardService.getSubscriptionInstanceById(row.ID).subscribe({
-      next: (details: any) => {
-        this.dialog.open(ChildSubscriptionDetailDialogComponent, {
-          width: '500px',
-          data: details,
-        });
-      },
-      error: () => {
-        this.toaster.error(this.translate.instant('ERROR'));
-      },
+    this.dialog.open(ChildSubscriptionDetailDialogComponent, {
+      width: '500px',
+      data: { id: row.ID },
     });
   }
 

@@ -17,95 +17,102 @@
 
   <!-- Body -->
   <mat-dialog-content class="dialog-body">
-    <div class="detail-row">
-      <span class="detail-label">{{ "CHILD_NAME" | translate }}</span>
-      <span class="detail-value">{{ data.child }}</span>
+    <!-- Spinner while loading -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center py-5">
+      <mat-spinner diameter="40"></mat-spinner>
     </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "SUBSCRIPTION_NAME" | translate }}</span>
-      <span class="detail-value">{{ data.subscription }}</span>
-    </div>
+    <ng-container *ngIf="!isLoading && details">
+      <div class="detail-row">
+        <span class="detail-label">{{ "CHILD_NAME" | translate }}</span>
+        <span class="detail-value">{{ details.child }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "create_in_branch" | translate }}</span>
-      <span class="detail-value">{{ data.branch }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "SUBSCRIPTION_NAME" | translate }}</span>
+        <span class="detail-value">{{ details.subscription }}</span>
+      </div>
 
-    <hr class="divider" />
+      <div class="detail-row">
+        <span class="detail-label">{{ "create_in_branch" | translate }}</span>
+        <span class="detail-value">{{ details.branch }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "CASH" | translate }}</span>
-      <span class="detail-value">{{ data.cash }}</span>
-    </div>
+      <hr class="divider" />
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "VISA" | translate }}</span>
-      <span class="detail-value">{{ data.visa }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "CASH" | translate }}</span>
+        <span class="detail-value">{{ details.cash }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "INSTAPAY" | translate }}</span>
-      <span class="detail-value">{{ data.instapay }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "VISA" | translate }}</span>
+        <span class="detail-value">{{ details.visa }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "PRICE" | translate }}</span>
-      <span class="detail-value highlight">{{ data.price }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "INSTAPAY" | translate }}</span>
+        <span class="detail-value">{{ details.instapay }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "accessible_branches" | translate }}</span>
-      <span class="detail-value">{{ data.usable_in_branches }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "PRICE" | translate }}</span>
+        <span class="detail-value highlight">{{ details.price }}</span>
+      </div>
 
-    <hr class="divider" />
+      <div class="detail-row">
+        <span class="detail-label">{{ "accessible_branches" | translate }}</span>
+        <span class="detail-value">{{ details.usable_in_branches }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "HOURS" | translate }}</span>
-      <span class="detail-value">{{ data.base_hours }}</span>
-    </div>
+      <hr class="divider" />
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "REMAINING_HOURS" | translate }}</span>
-      <span class="detail-value">{{ data.remaining_hours }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "HOURS" | translate }}</span>
+        <span class="detail-value">{{ details.base_hours }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "EXPIRE_DATE" | translate }}</span>
-      <span class="detail-value">{{ data.expire_date }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "REMAINING_HOURS" | translate }}</span>
+        <span class="detail-value">{{ details.remaining_hours }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "IS_ACTIVE" | translate }}</span>
-      <span class="detail-value">{{ data.is_active ? "✅" : "❌" }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "EXPIRE_DATE" | translate }}</span>
+        <span class="detail-value">{{ details.expire_date }}</span>
+      </div>
 
-    <hr class="divider" />
+      <div class="detail-row">
+        <span class="detail-label">{{ "IS_ACTIVE" | translate }}</span>
+        <span class="detail-value">{{ details.is_active ? "✅" : "❌" }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "CREATED_BY" | translate }}</span>
-      <span class="detail-value">{{ data.created_by }}</span>
-    </div>
+      <hr class="divider" />
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "CREATED_AT" | translate }}</span>
-      <span class="detail-value">{{
-        data.created | date: "yyyy-MM-dd HH:mm"
-      }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "CREATED_BY" | translate }}</span>
+        <span class="detail-value">{{ details.created_by }}</span>
+      </div>
 
-    <div class="detail-row">
-      <span class="detail-label">{{ "UPDATED_AT" | translate }}</span>
-      <span class="detail-value">{{
-        data.updated | date: "yyyy-MM-dd HH:mm"
-      }}</span>
-    </div>
+      <div class="detail-row">
+        <span class="detail-label">{{ "CREATED_AT" | translate }}</span>
+        <span class="detail-value">{{
+          details.created | date: "yyyy-MM-dd HH:mm"
+        }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">{{ "UPDATED_AT" | translate }}</span>
+        <span class="detail-value">{{
+          details.updated | date: "yyyy-MM-dd HH:mm"
+        }}</span>
+      </div>
+    </ng-container>
   </mat-dialog-content>
 
   <!-- Footer -->
   <mat-dialog-actions align="end" class="m-3 dialog-footer no-print">
-    <button mat-stroked-button (click)="onPrint()" class="print-btn">
+    <button mat-stroked-button (click)="onPrint()" class="print-btn" [disabled]="isLoading">
       🖨️ {{ "PRINT" | translate }}
     </button>
     <button mat-flat-button color="primary" (click)="onClose()">

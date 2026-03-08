@@ -1,4 +1,4 @@
-<mat-nav-list>
+<mat-nav-list [class.nav-collapsed]="collapsed">
   <!-- Dashboard -->
   <a
     mat-list-item
@@ -7,7 +7,7 @@
     routerLinkActive="active-link"
   >
     <mat-icon>dashboard</mat-icon>
-    <span *ngIf="!collapsed">{{ "DASHBOARD" | translate }}</span>
+    <span class="mx-2" *ngIf="!collapsed">{{ "DASHBOARD" | translate }}</span>
   </a>
 
   <a
@@ -22,13 +22,13 @@
     routerLinkActive="active-link"
   >
     <mat-icon>bar_chart</mat-icon>
-    <span *ngIf="!collapsed">{{ "Reliable" | translate }}</span>
+    <span class="mx-2" *ngIf="!collapsed">{{ "Reliable" | translate }}</span>
   </a>
 
   <!-- Sales -->
   <a mat-list-item routerLink="/dashboard/sales" routerLinkActive="active-link">
     <mat-icon>point_of_sale</mat-icon>
-    <span *ngIf="!collapsed">{{ "SALES" | translate }}</span>
+    <span *ngIf="!collapsed" class="mx-2">{{ "SALES" | translate }}</span>
   </a>
 
   <!-- Human -->
@@ -47,7 +47,7 @@
         routerLinkActive="active-link"
       >
         <mat-icon>person</mat-icon>
-        <span *ngIf="!collapsed">{{ "USER" | translate }}</span>
+        <span class="mx-2" *ngIf="!collapsed">{{ "USER" | translate }}</span>
       </a>
       <a
         mat-list-item
@@ -55,7 +55,7 @@
         routerLinkActive="active-link"
       >
         <mat-icon>badge</mat-icon>
-        <span *ngIf="!collapsed">{{ "STAFF" | translate }}</span>
+        <span class="mx-2" *ngIf="!collapsed">{{ "STAFF" | translate }}</span>
       </a>
       <!-- Children route not defined - disabling -->
       <a
@@ -64,7 +64,9 @@
         routerLinkActive="active-link"
       >
         <mat-icon>child_care</mat-icon>
-        <span *ngIf="!collapsed">{{ "CHILDREN" | translate }}</span>
+        <span class="mx-2" *ngIf="!collapsed">{{
+          "CHILDREN" | translate
+        }}</span>
       </a>
     </mat-action-list>
   </mat-expansion-panel>
@@ -76,7 +78,7 @@
     routerLinkActive="active-link"
   >
     <mat-icon>school</mat-icon>
-    <span *ngIf="!collapsed">{{ "SCHOOLS" | translate }}</span>
+    <span *ngIf="!collapsed" class="mx-2">{{ "SCHOOLS" | translate }}</span>
   </a>
 
   <!-- Bills -->
@@ -98,7 +100,7 @@
         *ngIf="!collapsed"
       >
         <mat-icon>check_circle</mat-icon>
-        <span>
+        <span class="mx-2">
           {{ "ACTIVE_BILLS" | translate }}
         </span>
       </a>
@@ -115,7 +117,7 @@
         routerLinkActive="active-link"
       >
         <mat-icon>receipt</mat-icon>
-        <span>
+        <span class="mx-2">
           {{ "ALL_BILLS" | translate }}
         </span>
       </a>
@@ -139,7 +141,7 @@
         *ngIf="!collapsed"
       >
         <mat-icon>check_circle</mat-icon>
-        <span>
+        <span class="mx-2">
           {{ "ACTIVE_BILLS" | translate }}
         </span>
       </a>
@@ -157,7 +159,7 @@
         routerLinkActive="active-link"
       >
         <mat-icon>receipt</mat-icon>
-        <span>
+        <span class="mx-2">
           {{ "ALL_BILLS" | translate }}
         </span>
       </a>
@@ -176,15 +178,19 @@
       <!-- No routes defined for these - disabling all -->
       <a mat-list-item disabled>
         <mat-icon>inventory</mat-icon>
-        <span *ngIf="!collapsed">{{ "PRODUCTS" | translate }}</span>
+        <span *ngIf="!collapsed" class="mx-2">{{
+          "PRODUCTS" | translate
+        }}</span>
       </a>
       <a mat-list-item disabled>
         <mat-icon>inventory_2</mat-icon>
-        <span *ngIf="!collapsed">{{ "MATERIALS" | translate }}</span>
+        <span *ngIf="!collapsed" class="mx-2">{{
+          "MATERIALS" | translate
+        }}</span>
       </a>
       <a mat-list-item disabled>
         <mat-icon>local_offer</mat-icon>
-        <span *ngIf="!collapsed">{{ "OFFERS" | translate }}</span>
+        <span *ngIf="!collapsed" class="mx-2">{{ "OFFERS" | translate }}</span>
       </a>
     </mat-action-list>
   </mat-expansion-panel>
@@ -210,7 +216,9 @@
         routerLink="/dashboard/material/expense"
       >
         <mat-icon>inventory_2</mat-icon>
-        <span *ngIf="!collapsed">{{ "MATERIAL_EXPENSE" | translate }}</span>
+        <span *ngIf="!collapsed" class="mx-2">
+          {{ "MATERIAL_EXPENSE" | translate }}</span
+        >
       </a>
       <a
         mat-list-item
@@ -218,7 +226,9 @@
         routerLink="/dashboard/general/expense"
       >
         <mat-icon>receipt_long</mat-icon>
-        <span *ngIf="!collapsed">{{ "GENERAL_EXPENSE" | translate }}</span>
+        <span *ngIf="!collapsed" class="mx-2">{{
+          "GENERAL_EXPENSE" | translate
+        }}</span>
       </a>
     </mat-action-list>
   </mat-expansion-panel>
@@ -239,7 +249,9 @@
         *ngIf="userInfo.role == 'admin' || userInfo.role == 'owner'"
       >
         <mat-icon>list</mat-icon>
-        <span *ngIf="!collapsed">{{ "ALL_SUBSCRIPTIONS" | translate }}</span>
+        <span *ngIf="!collapsed" class="mx-2">{{
+          "ALL_SUBSCRIPTIONS" | translate
+        }}</span>
       </a>
       <a
         mat-list-item
@@ -247,7 +259,7 @@
         routerLink="/dashboard/subscription/children/all"
       >
         <mat-icon>child_care</mat-icon>
-        <span *ngIf="!collapsed">{{
+        <span *ngIf="!collapsed" class="mx-2">{{
           "ALL_CHILD_SUBSCRIPTIONS" | translate
         }}</span>
       </a>
