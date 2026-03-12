@@ -104,7 +104,7 @@ export class ChildSubscriptionDetailDialogComponent implements OnInit {
             margin-bottom: 16px;
           }
           .logo-header img {
-            height: 70px;
+            height:200px;
             object-fit: contain;
           }
           @media print {
@@ -113,7 +113,7 @@ export class ChildSubscriptionDetailDialogComponent implements OnInit {
             .print-bar { display: none !important; }
             .row { padding: 4px 4px; font-size: 11px; }
             .title { font-size: 14px; }
-            .logo-header img { height: 50px; }
+            .logo-header img { height:150px !important; }
             @page { size: 80mm auto; margin: 4mm; }
           }
         </style>
