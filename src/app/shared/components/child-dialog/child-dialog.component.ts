@@ -99,10 +99,14 @@ export class ChildDialogComponent implements OnInit {
   onSubmit() {
     const formValue = this.childForm.value;
 
+    const isAdminOrOwner = this.userInfo.role === 'admin' || this.userInfo.role === 'owner';
+
     // ✅ Prepare request body
     const body: any = {
-      ...formValue,
+      name: formValue.name,
       birth_date: this.formatDate(formValue.birth_date),
+      address: formValue.address,
+      notes: formValue.notes,
       school: formValue.school ? formValue.school.id : null,
       child_phone_numbers_set: formValue.child_phone_numbers_set.map(
         (item: any) => ({
@@ -110,6 +114,7 @@ export class ChildDialogComponent implements OnInit {
           relationship: item.relationship,
         })
       ),
+      ...(isAdminOrOwner && { is_blocked: formValue.is_blocked }),
     };
 
     if (this.isUpdateMode) {

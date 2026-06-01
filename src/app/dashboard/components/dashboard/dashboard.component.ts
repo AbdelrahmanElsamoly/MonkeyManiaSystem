@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { loginService } from 'src/app/auth/login.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BranchesDialogComponent } from 'src/app/shared/components/branches-dialog/branches-dialog.component';
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -14,7 +13,8 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit, OnDestroy {
   sidebarCollapsed = true;
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-  branch = JSON.parse(localStorage.getItem('branch') || '{}');
+  branch: any = JSON.parse(localStorage.getItem('branch') || 'null') ||
+    (this.userInfo?.branch_id ? { id: this.userInfo.branch_id, name: this.userInfo.branch } : {});
   currentDate = new Date();
   intervalId: any;
   clockEmoji = '🕒';
@@ -42,7 +42,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private authService: loginService,
     private dialog: MatDialog,
-    private breakpointObserver: BreakpointObserver,
     private router: Router
   ) {}
 
@@ -51,11 +50,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.currentDate = new Date();
     }, 60000);
 
-    // ✅ Responsive detection
     setInterval(() => {
       this.emojiIndex = (this.emojiIndex + 1) % this.clockEmojis.length;
       this.clockEmoji = this.clockEmojis[this.emojiIndex];
     }, 1000);
+
   }
 
   toggleSidebar(): void {
@@ -79,7 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.branch = JSON.parse(localStorage.getItem('branch') || '{}');
+      this.branch = JSON.parse(localStorage.getItem('branch') || 'null') || {};
     });
   }
 

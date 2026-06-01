@@ -83,7 +83,7 @@ export class UserComponent {
 
   openCreateUserDialog() {
     const dialogRef = this.dialog.open(CreateUserDialogComponent, {
-      width: '480px',
+      width: '750px',
       data: { isEdit: false },
     });
     dialogRef.afterClosed().subscribe((created) => {
@@ -95,7 +95,7 @@ export class UserComponent {
 
   openEditUserDialog(row: any) {
     const dialogRef = this.dialog.open(CreateUserDialogComponent, {
-      width: '480px',
+      width: '750px',
       data: { isEdit: true, user: { ...row._raw, id: row.ID } },
     });
     dialogRef.afterClosed().subscribe((updated) => {

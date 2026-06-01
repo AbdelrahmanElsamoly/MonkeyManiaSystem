@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DashboardService } from 'src/app/dashboard/dashboard.service';
+import { SharedService } from 'src/app/shared/shared.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -9,8 +10,9 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./create-user-dialog.component.scss'],
 })
 export class CreateUserDialogComponent implements OnInit {
-  currentBranch = JSON.parse(localStorage.getItem('branch') || '{}');
+  currentBranch = JSON.parse(localStorage.getItem('branch') || 'null') || {};
   roles = ['admin', 'manager', 'reception', 'waiter'];
+  branches: any[] = [];
   hidePassword = true;
   hideConfirm = true;
 
@@ -20,6 +22,7 @@ export class CreateUserDialogComponent implements OnInit {
     email: '',
     branch: null,
     role: '',
+    is_active: true,
     password: '',
     confirm_password: '',
   };
@@ -27,6 +30,7 @@ export class CreateUserDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<CreateUserDialogComponent>,
     private dashboardService: DashboardService,
+    private sharedService: SharedService,
     private toaster: ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -36,12 +40,17 @@ export class CreateUserDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.sharedService.getBranches().subscribe((res: any) => {
+      this.branches = res;
+    });
+
     if (this.isEdit && this.data.user) {
       const u = this.data.user;
       this.form.username = u.username ?? '';
       this.form.phone_number = u.phone_number ?? '';
       this.form.email = u.email ?? '';
       this.form.role = u.role ?? '';
+      this.form.is_active = u.is_active ?? true;
       this.form.branch = u.branch_id ?? this.currentBranch?.id ?? null;
     } else {
       this.form.branch = this.currentBranch?.id ?? null;
@@ -60,6 +69,7 @@ export class CreateUserDialogComponent implements OnInit {
       username: this.form.username,
       phone_number: this.form.phone_number,
       role: this.form.role,
+      is_active: this.form.is_active,
     };
 
     if (this.form.email) {

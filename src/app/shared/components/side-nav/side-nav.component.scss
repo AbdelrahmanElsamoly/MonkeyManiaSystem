@@ -36,23 +36,31 @@ mat-expansion-panel-header mat-icon {
   background-color: rgba(255, 255, 255, 0.07);
 }
 
-// ── Per-link icon colors ──────────────────────────────────────────
-// Dashboard
-mat-nav-list > a:nth-child(1) mat-icon { color: #60a5fa !important; } // blue
-// Flow chart
-mat-nav-list > a:nth-child(2) mat-icon { color: #a78bfa !important; } // purple
-// Sales
-mat-nav-list > a[routerLink="/dashboard/sales"] mat-icon { color: #34d399 !important; } // green
-// Schools
-mat-nav-list > a[routerLink="/dashboard/school"] mat-icon { color: #f97316 !important; } // orange
+// ── Gradient icon mixin ───────────────────────────────────────────
+@mixin gradient-icon($from, $to, $deg: 135deg) {
+  background: linear-gradient($deg, $from, $to) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
 
-// Expansion panel icon colors
-mat-expansion-panel:nth-of-type(1) mat-icon { color: #f472b6 !important; } // pink  - Human
-mat-expansion-panel:nth-of-type(2) mat-icon { color: #38bdf8 !important; } // sky   - Children Bills
-mat-expansion-panel:nth-of-type(3) mat-icon { color: #fb923c !important; } // amber - Cafe Bills
-mat-expansion-panel:nth-of-type(4) mat-icon { color: #a3e635 !important; } // lime  - Cafe Prefs
-mat-expansion-panel:nth-of-type(5) mat-icon { color: #f87171 !important; } // red   - Expense
-mat-expansion-panel:nth-of-type(6) mat-icon { color: #fbbf24 !important; } // gold  - Subscriptions
+// ── Per-link icon gradients ───────────────────────────────────────
+// Dashboard - blue → cyan
+mat-nav-list > a:nth-child(1) mat-icon        { @include gradient-icon(#60a5fa, #06b6d4); }
+// Flow chart - purple → pink
+mat-nav-list > a:nth-child(2) mat-icon        { @include gradient-icon(#a78bfa, #ec4899); }
+// Sales - green → teal
+mat-nav-list > a[routerLink="/dashboard/sales"] mat-icon  { @include gradient-icon(#34d399, #059669); }
+// Schools - orange → amber
+mat-nav-list > a[routerLink="/dashboard/school"] mat-icon { @include gradient-icon(#f97316, #f59e0b); }
+
+// Expansion panel header icon gradients
+mat-expansion-panel:nth-of-type(1) mat-icon  { @include gradient-icon(#f472b6, #a855f7); } // pink → purple  - Human
+mat-expansion-panel:nth-of-type(2) mat-icon  { @include gradient-icon(#38bdf8, #6366f1); } // sky → indigo   - Children Bills
+mat-expansion-panel:nth-of-type(3) mat-icon  { @include gradient-icon(#fb923c, #f59e0b); } // orange → amber - Cafe Bills
+mat-expansion-panel:nth-of-type(4) mat-icon  { @include gradient-icon(#a3e635, #34d399); } // lime → green   - Cafe Prefs
+mat-expansion-panel:nth-of-type(5) mat-icon  { @include gradient-icon(#f87171, #fb923c); } // red → orange   - Expense
+mat-expansion-panel:nth-of-type(6) mat-icon  { @include gradient-icon(#fbbf24, #f97316); } // gold → orange  - Subscriptions
 
 .active-link {
   background-color: rgba(47, 189, 111, 0.1);

@@ -11,49 +11,79 @@
   <div class="dialog-body">
     <form #userForm="ngForm">
 
-      <!-- Username -->
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ "USERNAME" | translate }}</mat-label>
-        <input matInput [(ngModel)]="form.username" name="username" required />
-      </mat-form-field>
+      <!-- Row 1: Username & Phone -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "USERNAME" | translate }}</mat-label>
+            <input matInput [(ngModel)]="form.username" name="username" required />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "PHONE_NUMBER" | translate }}</mat-label>
+            <input matInput [(ngModel)]="form.phone_number" name="phone_number" required />
+          </mat-form-field>
+        </div>
+      </div>
 
-      <!-- Phone -->
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ "PHONE_NUMBER" | translate }}</mat-label>
-        <input matInput [(ngModel)]="form.phone_number" name="phone_number" required />
-      </mat-form-field>
+      <!-- Row 2: Email & Role -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "EMAIL" | translate }}</mat-label>
+            <input matInput type="email" [(ngModel)]="form.email" name="email" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "ROLE" | translate }}</mat-label>
+            <mat-select [(ngModel)]="form.role" name="role" required>
+              <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
 
-      <!-- Email (nullable) -->
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ "EMAIL" | translate }}</mat-label>
-        <input matInput type="email" [(ngModel)]="form.email" name="email" />
-      </mat-form-field>
+      <!-- Row 3: Branch & is_active -->
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "BRANCH" | translate }}</mat-label>
+            <mat-select [(ngModel)]="form.branch" name="branch">
+              <mat-option [value]="null">—</mat-option>
+              <mat-option *ngFor="let b of branches" [value]="b.id">{{ b.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 d-flex align-items-center active-checkbox">
+          <mat-checkbox [(ngModel)]="form.is_active" name="is_active">
+            {{ "IS_ACTIVE" | translate }}
+          </mat-checkbox>
+        </div>
+      </div>
 
-      <!-- Role -->
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ "ROLE" | translate }}</mat-label>
-        <mat-select [(ngModel)]="form.role" name="role" required>
-          <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <!-- Password (required on create, optional on edit) -->
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ "PASSWORD" | translate }}{{ isEdit ? (" (" + ("OPTIONAL" | translate) + ")") : "" }}</mat-label>
-        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="form.password" name="password" [required]="!isEdit" />
-        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <!-- Confirm Password -->
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ "CONFIRM_PASSWORD" | translate }}</mat-label>
-        <input matInput [type]="hideConfirm ? 'password' : 'text'" [(ngModel)]="form.confirm_password" name="confirm_password" [required]="!isEdit" />
-        <button mat-icon-button matSuffix type="button" (click)="hideConfirm = !hideConfirm">
-          <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-      </mat-form-field>
+      <!-- Row 4: Password & Confirm Password -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "PASSWORD" | translate }}{{ isEdit ? (" (" + ("OPTIONAL" | translate) + ")") : "" }}</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="form.password" name="password" [required]="!isEdit" />
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ "CONFIRM_PASSWORD" | translate }}</mat-label>
+            <input matInput [type]="hideConfirm ? 'password' : 'text'" [(ngModel)]="form.confirm_password" name="confirm_password" [required]="!isEdit" />
+            <button mat-icon-button matSuffix type="button" (click)="hideConfirm = !hideConfirm">
+              <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
 
     </form>
   </div>

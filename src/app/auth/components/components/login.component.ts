@@ -50,6 +50,9 @@ export class LoginComponent implements OnInit {
           if (res.user.role === 'owner' || res.user.role === 'admin') {
             this.router.navigate(['branches']);
           } else {
+            if (res.user.branch_id && res.user.branch) {
+              localStorage.setItem('branch', JSON.stringify({ id: res.user.branch_id, name: res.user.branch }));
+            }
             this.toaster.success(res.message);
             this.router.navigate(['/dashboard']);
           }
