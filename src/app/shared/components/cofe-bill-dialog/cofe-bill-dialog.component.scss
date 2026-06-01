@@ -145,8 +145,20 @@
   }
 }
 
+/* Show full data on screen, masked data only on print */
+.print-only {
+  display: none;
+}
+
 /* Print Styling for XP-80 */
 @media print {
+  .screen-only {
+    display: none !important;
+  }
+  .print-only {
+    display: inline !important;
+  }
+
   /* Hide non-printable elements */
   .no-print,
   .bill-actions,

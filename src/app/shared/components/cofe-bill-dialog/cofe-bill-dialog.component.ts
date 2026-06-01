@@ -101,4 +101,24 @@ export class CofeBillDialogComponent implements OnInit {
     }
     return this.billData.first_child.map((child) => child.name).join(', ');
   }
+
+  private firstNameOf(name: string): string {
+    if (!name) return '';
+    return String(name).trim().split(/\s+/)[0];
+  }
+
+  getChildrenFirstNames(): string {
+    const fc: any = this.billData?.first_child;
+    if (!fc) return 'N/A';
+    if (typeof fc === 'string') {
+      return this.firstNameOf(fc);
+    }
+    if (Array.isArray(fc)) {
+      return fc
+        .map((child: any) => this.firstNameOf(child?.name))
+        .filter(Boolean)
+        .join(', ');
+    }
+    return String(fc);
+  }
 }

@@ -32,10 +32,18 @@
       </thead>
       <tbody>
         <tr *ngFor="let child of bill.children">
-          <td>{{ child.name }}</td>
           <td>
-            <div *ngFor="let phone of child.phone_numbers">
+            <span class="screen-only">{{ child.name }}</span>
+            <span class="print-only">{{ getFirstName(child.name) }}</span>
+          </td>
+          <td>
+            <div class="screen-only" *ngFor="let phone of child.phone_numbers">
               {{ phone.phone_number }} ({{ phone.relationship }})
+            </div>
+            <div class="print-only" *ngFor="let phone of child.phone_numbers">
+              <span dir="ltr">{{ maskPhone(phone.phone_number) }}</span> ({{
+                phone.relationship
+              }})
             </div>
           </td>
         </tr>
@@ -128,10 +136,18 @@
       </thead>
       <tbody>
         <tr *ngFor="let child of bill.children">
-          <td>{{ child.name }}</td>
           <td>
-            <div *ngFor="let phone of child.phone_numbers">
+            <span class="screen-only">{{ child.name }}</span>
+            <span class="print-only">{{ getFirstName(child.name) }}</span>
+          </td>
+          <td>
+            <div class="screen-only" *ngFor="let phone of child.phone_numbers">
               {{ phone.phone_number }} ({{ phone.relationship }})
+            </div>
+            <div class="print-only" *ngFor="let phone of child.phone_numbers">
+              <span dir="ltr">{{ maskPhone(phone.phone_number) }}</span> ({{
+                phone.relationship
+              }})
             </div>
           </td>
         </tr>

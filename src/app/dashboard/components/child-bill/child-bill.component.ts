@@ -25,6 +25,18 @@ export class ChildBillComponent implements OnInit {
       this.bill = res;
     });
   }
+  getFirstName(name: string): string {
+    if (!name) return '';
+    return name.trim().split(/\s+/)[0];
+  }
+
+  maskPhone(phone: string): string {
+    if (!phone) return '';
+    const value = String(phone);
+    if (value.length <= 4) return '*'.repeat(value.length);
+    return value.slice(0, value.length - 4) + '****';
+  }
+
   getSpentTimeFormatted(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;

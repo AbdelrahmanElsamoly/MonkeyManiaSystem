@@ -71,7 +71,8 @@
     <!-- Children Names -->
     <div class="bill-row">
       <span>{{ "CHILD_NAME" | translate }} :</span>
-      {{ billData.first_child }}
+      <span class="screen-only">{{ billData.first_child }}</span>
+      <span class="print-only">{{ getChildrenFirstNames() }}</span>
     </div>
 
     <!-- Created Date -->
