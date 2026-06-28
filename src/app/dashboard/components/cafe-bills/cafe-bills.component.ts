@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-dialog/promo-code-dialog.component';
 import { BillDialogComponent } from 'src/app/shared/components/bill-dialog/bill-dialog.component';
+import { DateTimeRangeChange, formatTimestampWithOffset } from 'src/app/shared/components/date-time-range-filter/date-time-range-filter.component';
 
 @Component({
   selector: 'app-cafe-bills',
@@ -18,14 +19,20 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   isLoading = false; // Add loading state
+  searchLoading = false;
+  private billsRequestId = 0;
 
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
     end: null,
   };
+  startTimestamp: string | null = null;
+  endTimestamp: string | null = null;
   type: string = '/';
   totalItems = 0;
   currentPage = 1;
+  perPage = 10;
+  pagesCount: number | null = null;
   selectedBranchIds: any[] = [];
   searchQuery: string = '';
   params: {
@@ -37,15 +44,13 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
   } = {
     searchQuery: this.searchQuery,
     branchIds: this.selectedBranchIds,
-    startDate: this.selectedDateRange.start
-      ? this.formatDateForAPI(this.selectedDateRange.start)
-      : null,
-    endDate: this.selectedDateRange.end
-      ? this.formatDateForAPI(this.selectedDateRange.end)
-      : null,
+    startDate: this.startTimestamp,
+    endDate: this.endTimestamp,
     page: 1,
   };
   displayedColumns = [
+    'BILL_NUMBER',
+    'CHILD_BILL_NUMBER',
     'TABLE_NUMBER',
     'TOTAL_PRICE',
     'TAKE_AWAY',
@@ -67,12 +72,16 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
     const today = new Date();
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+    today.setHours(23, 59, 0, 0);
 
     this.selectedDateRange.start = yesterday;
     this.selectedDateRange.end = today;
 
-    this.params.startDate = this.formatDateForAPI(yesterday);
-    this.params.endDate = this.formatDateForAPI(today);
+    this.startTimestamp = formatTimestampWithOffset(yesterday);
+    this.endTimestamp = formatTimestampWithOffset(today);
+    this.params.startDate = this.startTimestamp;
+    this.params.endDate = this.endTimestamp;
 
     this.getAllBills(this.type, this.params);
 
@@ -80,8 +89,8 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
       this.params = {
         searchQuery: query,
         branchIds: this.selectedBranchIds,
-        startDate: this.selectedDateRange.start ? this.formatDateForAPI(this.selectedDateRange.start) : null,
-        endDate: this.selectedDateRange.end ? this.formatDateForAPI(this.selectedDateRange.end) : null,
+        startDate: this.startTimestamp,
+        endDate: this.endTimestamp,
         page: 1,
       };
       this.getAllBills(this.type, this.params);
@@ -93,13 +102,17 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
   }
 
   getAllBills(type: string = '/', params: any) {
+    const requestId = ++this.billsRequestId;
     this.isLoading = true; // Start loading
+    this.searchLoading = true;
 
     this.dashboardService.getCafeBill(type, params).subscribe({
       next: (data: any) => {
+        if (requestId !== this.billsRequestId) return;
         this.billsRes = data.results.map((item: any) => {
           return {
             BILL_NUMBER: item.bill_number,
+            CHILD_BILL_NUMBER: item.child_bill_serial || '-',
             TABLE_NUMBER: item.table_number,
             TOTAL_PRICE: `${item.total_price} ${this.translate.instant('EGP')}`,
             TAKE_AWAY: item.take_away ? 'تيك أواي 🥡' : 'في المطعم 🍽️',
@@ -112,13 +125,18 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
         });
 
         this.totalItems = data.count || data.length || 0;
+        this.perPage = data.per_page || this.perPage;
+        this.pagesCount = data.pages_count ?? this.pagesCount;
         this.currentPage = params.page;
         this.isLoading = false; // Stop loading
+        this.searchLoading = false;
       },
       error: (error) => {
+        if (requestId !== this.billsRequestId) return;
         console.error('Error fetching cafe bills:', error);
         this.toaster.error(this.translate.instant('ERROR_FETCHING_BILLS'));
         this.isLoading = false; // Stop loading on error
+        this.searchLoading = false;
       },
     });
   }
@@ -140,15 +158,21 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
       minute: '2-digit',
     });
   }
+  onDateTimeRangeChange(range: DateTimeRangeChange): void {
+    this.selectedDateRange = { start: range.start, end: range.end };
+    this.startTimestamp = range.startTimestamp;
+    this.endTimestamp = range.endTimestamp;
 
-  onStartDateChange(date: Date): void {
-    this.selectedDateRange.start = date;
-    this.checkAndTrigger();
-  }
-
-  onEndDateChange(date: Date): void {
-    this.selectedDateRange.end = date;
-    this.checkAndTrigger();
+    if (this.startTimestamp && this.endTimestamp) {
+      this.params = {
+        searchQuery: this.searchQuery,
+        branchIds: this.selectedBranchIds,
+        startDate: this.startTimestamp,
+        endDate: this.endTimestamp,
+        page: 1,
+      };
+      this.getAllBills(this.type, this.params);
+    }
   }
 
   openUpdateBillDialog(billId: number) {
@@ -171,23 +195,8 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  checkAndTrigger(): void {
-    const { start, end } = this.selectedDateRange;
-
-    if (start && end) {
-      this.params = {
-        searchQuery: this.searchQuery,
-        branchIds: this.selectedBranchIds,
-        startDate: this.formatDateForAPI(start),
-        endDate: this.formatDateForAPI(end),
-        page: 1,
-      };
-      this.getAllBills(this.type, this.params);
-    }
-  }
-
   searchExpense(searchQuery: string) {
+    this.searchLoading = true;
     this.searchSubject.next(searchQuery);
   }
 
@@ -196,12 +205,8 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
     this.params = {
       searchQuery: this.searchQuery,
       branchIds: this.selectedBranchIds,
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : null,
+      startDate: this.startTimestamp,
+      endDate: this.endTimestamp,
       page: 1,
     };
     this.getAllBills(this.type, this.params);
@@ -293,3 +298,4 @@ export class CafeBillsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/dashboard/order']);
   }
 }
+

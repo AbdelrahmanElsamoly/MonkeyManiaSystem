@@ -2,13 +2,16 @@
   <h3>{{ "ALL_ACTIVE_CHILD_BILLS" | translate }} ... 🟢</h3>
   <div class="d-flex justify-content-between align-items-center">
     <div class="d-flex flex-column justify-content-between">
-      <input
-        type="text"
-        placeholder="ابحث عن فاتورة... 🔍"
-        class="search-input mt-4"
-        [(ngModel)]="searchQuery"
-        (input)="searchExpense(searchQuery)"
-      />
+      <div class="position-relative d-inline-block">
+        <input
+          type="text"
+          placeholder="ابحث عن فاتورة... 🔍"
+          class="search-input mt-4"
+          [(ngModel)]="searchQuery"
+          (input)="searchExpense(searchQuery)"
+        />
+        <mat-spinner *ngIf="searchLoading" diameter="20" class="search-field-spinner"></mat-spinner>
+      </div>
       <div
         class="d-flex justify-content-start align-items-center mt-4 flex-wrap gap-2"
         *ngIf="userInfo?.role === 'admin' || userInfo?.role === 'owner' || userInfo?.role === 'manager'"
@@ -53,6 +56,7 @@
 
 <app-data-table
   [displayedColumns]="[
+    'BILL_NUMBER',
     'NAME',
     'PHONE_NUMBER',
     'SPENT_TIME',

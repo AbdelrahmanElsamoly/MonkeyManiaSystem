@@ -77,6 +77,9 @@
   "SELECT_DATE_RANGE": "اختر نطاق التاريخ",
   "START_DATE": "تاريخ البدء",
   "END_DATE": "تاريخ الانتهاء",
+  "START_TIME": "وقت البدء",
+  "END_TIME": "وقت الانتهاء",
+  "TIME_RANGE": "نطاق الوقت",
   "FROM_DATE": "من تاريخ",
   "TO_DATE": "إلى تاريخ",
   "INVALID_DATE_RANGE": "نطاق التاريخ غير صالح",
@@ -192,6 +195,7 @@
   "UPDATE_BILL": "تعديل الفاتورة",
   "ORDERED_QUANTITY": "الكمية",
   "BILL_NUMBER": "رقم الفاتورة",
+  "CHILD_BILL_NUMBER": "\u0631\u0642\u0645 \u0641\u0627\u062A\u0648\u0631\u0629 \u0627\u0644\u0637\u0641\u0644",
   "PER_UNIT": "للوحدة",
   "PRODUCTS_PRICE": "سعر منتجات الكافيه",
   "TIME_PRICE": "سعر الوقت",
@@ -304,5 +308,6 @@
   "UPDATED_AT": "تاريخ التحديث",
   "accessible_branches": "الفروع المسموحة",
   "create_in_branch": "انشيء في فرع",
-  "HAS_ACTIVE_SUBSCRIPTION": "لديه اشتراك نشط"
+  "HAS_ACTIVE_SUBSCRIPTION": "لديه اشتراك نشط",
+  "APPLY": "تطبيق"
 }

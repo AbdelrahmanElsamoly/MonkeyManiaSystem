@@ -2,13 +2,20 @@
   <div class="d-flex justify-content-between align-items-center">
     <div class="d-flex flex-column justify-content-between">
       <h1>{{ "ALL_CHILD_BILLS" | translate }} ... 🧾</h1>
-      <input
-        type="text"
-        placeholder="ابحث عن فاتورة... 🔍"
-        class="search-input mt-4"
-        [(ngModel)]="searchQuery"
-        (input)="searchExpense(searchQuery)"
-      />
+      <div class="position-relative d-inline-block">
+        <input
+          type="text"
+          placeholder="ابحث عن فاتورة... 🔍"
+          class="search-input mt-4"
+          [(ngModel)]="searchQuery"
+          (input)="searchExpense(searchQuery)"
+        />
+        <mat-spinner
+          *ngIf="searchLoading"
+          diameter="20"
+          class="search-field-spinner"
+        ></mat-spinner>
+      </div>
       <div
         class="d-flex justify-content-start align-items-center mt-4 position-relative"
       >
@@ -17,48 +24,31 @@
           (selectedBranchesChange)="onBranchSelectionChange($event)"
           [class.disabled-filter]="isLoading"
         ></app-branch-multi-select>
-
         <!-- Filter Dropdown -->
-        <mat-form-field appearance="fill" class="mx-3" [class.disabled-filter]="isLoading" *ngIf="filterKeys.length">
-          <mat-label>تصفية</mat-label>
-          <mat-select [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange($event)" [disabled]="isLoading">
-            <mat-option value="">الكل</mat-option>
-            <mat-option *ngFor="let key of filterKeys" [value]="key">{{ key }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
         <mat-form-field
           appearance="fill"
           class="mx-3"
           [class.disabled-filter]="isLoading"
+          *ngIf="filterKeys.length"
         >
-          <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
-          <mat-date-range-input [rangePicker]="picker" [disabled]="isLoading">
-            <input
-              matStartDate
-              [placeholder]="'START_DATE' | translate"
-              (dateChange)="onStartDateChange($event.value)"
-              [disabled]="isLoading"
-              [value]="selectedDateRange.start"
-            />
-            <input
-              matEndDate
-              [placeholder]="'END_DATE' | translate"
-              (dateChange)="onEndDateChange($event.value)"
-              [disabled]="isLoading"
-              [value]="selectedDateRange.end"
-            />
-          </mat-date-range-input>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
+          <mat-label>تصفية</mat-label>
+          <mat-select
+            [(ngModel)]="selectedFilter"
+            (ngModelChange)="onFilterChange($event)"
             [disabled]="isLoading"
-          ></mat-datepicker-toggle>
-          <mat-date-range-picker
-            #picker
-            [disabled]="isLoading"
-          ></mat-date-range-picker>
+          >
+            <mat-option value="">الكل</mat-option>
+            <mat-option *ngFor="let key of filterKeys" [value]="key">{{
+              key
+            }}</mat-option>
+          </mat-select>
         </mat-form-field>
+        <app-date-time-range-filter
+          class="mx-3"
+          [value]="selectedDateRange"
+          [disabled]="isLoading"
+          (rangeChange)="onDateTimeRangeChange($event)"
+        ></app-date-time-range-filter>
       </div>
 
       <!-- Arabic date range display outside the date picker -->
@@ -92,19 +82,20 @@
 <div class="table-container position-relative">
   <!-- Loading overlay for table -->
   <div *ngIf="isLoading" class="table-loader-overlay">
-    <div class="spinner-container d-flex justify-content-center mb-4">
+    <!-- <div class="spinner-container d-flex justify-content-center mb-4">
       <mat-spinner diameter="40"></mat-spinner>
-    </div>
+    </div> -->
   </div>
 
   <app-data-table
     [displayedColumns]="[
+      'BILL_NUMBER',
       'NAME',
       'PHONE_NUMBER',
       'SPENT_TIME',
       'CHILDREN_COUNT',
       'PAYMENT_METHODS',
-      'BRANCH'
+      'BRANCH',
     ]"
     [data]="billsRes"
     [isActiveBills]="true"
@@ -113,6 +104,8 @@
     (promoClicked)="openPromoDialog($event)"
     [paginationType]="'server'"
     [totalItems]="totalItems"
+    [perPage]="perPage"
+    [pagesCount]="pagesCount"
     [currentPage]="currentPage"
     (editClicked)="openEditBillDialog($event)"
     (pageChange)="pageChanged($event)"

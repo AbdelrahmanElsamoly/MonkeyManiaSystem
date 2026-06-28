@@ -14,6 +14,9 @@ import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-d
   styleUrls: ['./children-active-bills.component.scss'],
 })
 export class ChildrenActiveBillsComponent implements OnInit {
+  searchLoading = false;
+  private billsRequestId = 0;
+
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
     end: null,
@@ -43,6 +46,7 @@ export class ChildrenActiveBillsComponent implements OnInit {
       : null,
   };
   displayedColumns = [
+    this.translate.instant('BILL_NUMBER'),
     this.translate.instant('NAME'),
     this.translate.instant('PHONE_NUMBER'),
     this.translate.instant('SPENT_TIME'),
@@ -64,10 +68,14 @@ export class ChildrenActiveBillsComponent implements OnInit {
     this.getAllBills(this.type, this.params);
   }
   getAllBills(type: string = '/active/', params: any) {
+    const requestId = ++this.billsRequestId;
+    this.searchLoading = true;
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
+        if (requestId !== this.billsRequestId) return;
         this.billsRes = data.map((item: any) => {
           return {
+            BILL_NUMBER: item?.serial || '-',
             NAME: item?.first_child,
             PHONE_NUMBER: item?.first_phone,
             SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
@@ -78,6 +86,12 @@ export class ChildrenActiveBillsComponent implements OnInit {
             CHILDREN_COUNT: item.children_count,
           };
         });
+        this.searchLoading = false;
+      },
+      error: (error) => {
+        if (requestId !== this.billsRequestId) return;
+        console.error('Error fetching active child bills:', error);
+        this.searchLoading = false;
       },
     });
   }

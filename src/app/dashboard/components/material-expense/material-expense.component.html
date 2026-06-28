@@ -61,6 +61,8 @@
   (itemClicked)="goToExpenseProfile($event)"
   [paginationType]="'server'"
   [totalItems]="totalItems"
+  [perPage]="perPage"
+  [pagesCount]="pagesCount"
   [currentPage]="currentPage"
   (pageChange)="pageChanged($event)"
 ></app-data-table>

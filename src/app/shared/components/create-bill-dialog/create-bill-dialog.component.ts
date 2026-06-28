@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -9,6 +9,7 @@ import {
 import { SharedService } from '../../shared.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { MatSelect } from '@angular/material/select';
 
 // Update the Child interface at the top of your component
 interface Child {
@@ -22,6 +23,7 @@ interface Child {
   birth_date?: string;
   is_blocked?: boolean;
   has_active_subscription?: boolean;
+  special_needs?: boolean;
 }
 
 interface PhoneNumber {
@@ -35,6 +37,8 @@ interface PhoneNumber {
   styleUrls: ['./create-bill-dialog.component.scss'],
 })
 export class CreateBillDialogComponent implements OnInit, OnDestroy {
+  @ViewChild('childrenSelect') childrenSelect?: MatSelect;
+
   // Form Controls
   childrenControl = new FormControl<number[]>([]);
   discount = new FormControl<string>('');
@@ -51,6 +55,13 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
 
   // Search timeout for debouncing
   private searchTimeout: any;
+  searchLoading = false;
+  loadingMoreChildren = false;
+  private childrenSearchRequestId = 0;
+  private childrenSearchPage = 1;
+  private childrenPagesCount: number | null = null;
+  private currentChildrenSearchTerm = '^';
+  private selectScrollHandler?: () => void;
 
   isSubscription = false;
 
@@ -87,6 +98,7 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
+    this.detachSelectScrollListener();
   }
 
   // Form Initialization
@@ -108,23 +120,93 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
     return this.form.get('new_children') as FormArray;
   }
 
-  // Data Loading - Only search, no initial load
-  private loadChildren(searchQuery?: string): void {
-    const searchTerm = searchQuery?.trim() || '^';
 
-    this.sharedService.getAllNonActiveChildren(searchTerm).subscribe({
+  get selectedChildrenOptions(): Child[] {
+    const visibleIds = new Set(this.filteredChildren.map((child) => child.id));
+    return this.persistentSelectedChildren.filter(
+      (child) => !visibleIds.has(child.id)
+    );
+  }
+
+  // Data Loading - Only search, no initial load
+  private loadChildren(searchQuery?: string, page: number = 1, append: boolean = false): void {
+    const searchTerm = searchQuery?.trim() || '^';
+    const requestId = ++this.childrenSearchRequestId;
+    this.currentChildrenSearchTerm = searchTerm;
+    this.childrenSearchPage = page;
+
+    if (append) {
+      this.loadingMoreChildren = true;
+    } else {
+      this.searchLoading = true;
+    }
+
+    this.sharedService.getAllNonActiveChildren(searchTerm, page).subscribe({
       next: (res: any) => {
-        // Merge search results with persistent selected children
-        this.itemList = this.mergeWithPersistentSelected(res);
-        this.filteredChildren = [...this.itemList];
+        if (requestId !== this.childrenSearchRequestId) return;
+
+        const children = Array.isArray(res) ? res : res?.results || [];
+        this.childrenPagesCount = Array.isArray(res) ? page : res?.pages_count ?? this.childrenPagesCount;
+        const nextChildren = append ? this.mergeUniqueChildren(this.itemList, children) : children;
+
+        this.itemList = nextChildren;
+        this.filteredChildren = [...nextChildren];
+        this.searchLoading = false;
+        this.loadingMoreChildren = false;
       },
       error: (err) => {
+        if (requestId !== this.childrenSearchRequestId) return;
         console.error('Failed to load children:', err);
         this.toaster.error('فشل في تحميل بيانات الأطفال');
+        this.searchLoading = false;
+        this.loadingMoreChildren = false;
       },
     });
   }
 
+  private mergeUniqueChildren(existing: Child[], incoming: Child[]): Child[] {
+    const seen = new Set(existing.map((child) => child.id));
+    return [...existing, ...incoming.filter((child) => !seen.has(child.id))];
+  }
+
+  onChildrenSelectOpened(opened: boolean): void {
+    if (!opened) {
+      this.detachSelectScrollListener();
+      return;
+    }
+
+    setTimeout(() => this.attachSelectScrollListener());
+  }
+
+  private attachSelectScrollListener(): void {
+    this.detachSelectScrollListener();
+    const panel = this.childrenSelect?.panel?.nativeElement as HTMLElement | undefined;
+    if (!panel) return;
+
+    const onScroll = () => {
+      const nearBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 40;
+      if (nearBottom) {
+        this.loadNextChildrenPage();
+      }
+    };
+
+    panel.addEventListener('scroll', onScroll);
+    this.selectScrollHandler = () => panel.removeEventListener('scroll', onScroll);
+  }
+
+  private detachSelectScrollListener(): void {
+    if (this.selectScrollHandler) {
+      this.selectScrollHandler();
+      this.selectScrollHandler = undefined;
+    }
+  }
+
+  private loadNextChildrenPage(): void {
+    if (this.searchLoading || this.loadingMoreChildren) return;
+    if (this.childrenPagesCount !== null && this.childrenSearchPage >= this.childrenPagesCount) return;
+
+    this.loadChildren(this.currentChildrenSearchTerm, this.childrenSearchPage + 1, true);
+  }
   // Add this method to your component class
   private calculateAgeFromBirthDate(birthDate: string): {
     years: number;
@@ -314,6 +396,11 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
     if (!this.searchValue.trim()) {
       this.itemList = [...this.persistentSelectedChildren];
       this.filteredChildren = [...this.persistentSelectedChildren];
+      this.searchLoading = false;
+      this.loadingMoreChildren = false;
+      this.childrenSearchRequestId++;
+      this.childrenSearchPage = 1;
+      this.childrenPagesCount = null;
       return;
     }
 
@@ -324,7 +411,9 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
   }
 
   private performSearch(): void {
-    this.loadChildren(this.searchValue);
+    this.childrenSearchPage = 1;
+    this.childrenPagesCount = null;
+    this.loadChildren(this.searchValue, 1, false);
   }
 
   clearFilter(): void {
@@ -333,6 +422,11 @@ export class CreateBillDialogComponent implements OnInit, OnDestroy {
       clearTimeout(this.searchTimeout);
     }
     // Show persistent selected children when clearing search
+    this.searchLoading = false;
+    this.loadingMoreChildren = false;
+    this.childrenSearchRequestId++;
+    this.childrenSearchPage = 1;
+    this.childrenPagesCount = null;
     this.itemList = [...this.persistentSelectedChildren];
     this.filteredChildren = [...this.persistentSelectedChildren];
   }

@@ -23,10 +23,14 @@ export class DataTableComponent implements OnInit, OnChanges {
   @Output() itemClicked = new EventEmitter<any>();
   @Input() isActiveBills: boolean = false;
   @Input() isActive: boolean = true;
+  @Input() showActions: boolean = true;
+  @Input() clickableColumns: string[] | null = null;
 
   // ✅ Server pagination inputs
   @Input() paginationType: 'local' | 'server' = 'local';
   @Input() totalItems: number = 0;
+  @Input() perPage: number = 10;
+  @Input() pagesCount: number | null = null;
   @Output() pageChange = new EventEmitter<number>();
 
   filteredData: any[] = [];
@@ -55,8 +59,11 @@ export class DataTableComponent implements OnInit, OnChanges {
       (changes['data'] || changes['searchQuery'])
     ) {
       this.applyFilter();
-    } else if (this.paginationType === 'server' && changes['data']) {
-      // In server mode, just update the data without resetting page
+    } else if (
+      this.paginationType === 'server' &&
+      (changes['data'] || changes['totalItems'] || changes['perPage'] || changes['pagesCount'] || changes['currentPage'])
+    ) {
+      // In server mode, just update the data without resetting page.
       this.filteredData = this.data;
       this.updatePagination();
     }
@@ -87,7 +94,11 @@ export class DataTableComponent implements OnInit, OnChanges {
 
   totalPages(): number {
     if (this.paginationType === 'server') {
-      return Math.ceil(this.totalItems / this.pageSize);
+      if (this.pagesCount !== null && this.pagesCount !== undefined) {
+        return this.pagesCount;
+      }
+
+      return Math.ceil(this.totalItems / (this.perPage || this.pageSize));
     }
     return Math.ceil(this.filteredData.length / this.pageSize);
   }
@@ -123,7 +134,7 @@ export class DataTableComponent implements OnInit, OnChanges {
     }
 
     this.visiblePages = Array.from(
-      { length: this.endPage - this.startPage + 1 },
+      { length: Math.max(this.endPage - this.startPage + 1, 0) },
       (_, i) => this.startPage + i
     );
   }
@@ -134,5 +145,15 @@ export class DataTableComponent implements OnInit, OnChanges {
 
   delete(row: any) {
     this.itemClicked.emit(row);
+  }
+
+  isColumnClickable(column: string): boolean {
+    return this.clickableColumns ? this.clickableColumns.includes(column) : true;
+  }
+
+  onCellClick(row: any, column: string): void {
+    if (this.isColumnClickable(column)) {
+      this.itemClicked.emit(row);
+    }
   }
 }

@@ -38,6 +38,8 @@ export class MaterialExpenseComponent implements OnInit {
   expenseRes: any[] = [];
   totalItems = 0;
   currentPage = 1;
+  perPage = 10;
+  pagesCount: number | null = null;
 
   constructor(
     private dashboardService: DashboardService,
@@ -66,6 +68,8 @@ export class MaterialExpenseComponent implements OnInit {
           MATERIAL_ID: item.material_id,
         }));
         this.totalItems = res.count;
+        this.perPage = res.per_page || this.perPage;
+        this.pagesCount = res.pages_count ?? this.pagesCount;
         this.currentPage = params.page;
       },
     });

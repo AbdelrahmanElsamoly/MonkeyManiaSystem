@@ -16,6 +16,10 @@ export class ChildDialogComponent implements OnInit {
   isUpdateMode: boolean = false;
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 
+  get isAdminOrOwner(): boolean {
+    return this.userInfo.role === 'admin' || this.userInfo.role === 'owner';
+  }
+
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<ChildDialogComponent>,
@@ -30,6 +34,7 @@ export class ChildDialogComponent implements OnInit {
       notes: [''],
       school: [null],
       is_blocked: [false],
+      special_needs: [false],
       child_phone_numbers_set: this.fb.array([this.createPhoneGroup()]),
     });
   }
@@ -81,6 +86,7 @@ export class ChildDialogComponent implements OnInit {
         ? this.schools.find((s) => s.id === child.school_id) || null
         : null,
       is_blocked: child.is_blocked || false,
+      special_needs: child.special_needs || false,
     });
 
     this.phoneNumbers.clear();
@@ -99,8 +105,6 @@ export class ChildDialogComponent implements OnInit {
   onSubmit() {
     const formValue = this.childForm.value;
 
-    const isAdminOrOwner = this.userInfo.role === 'admin' || this.userInfo.role === 'owner';
-
     // ✅ Prepare request body
     const body: any = {
       name: formValue.name,
@@ -114,7 +118,8 @@ export class ChildDialogComponent implements OnInit {
           relationship: item.relationship,
         })
       ),
-      ...(isAdminOrOwner && { is_blocked: formValue.is_blocked }),
+      ...(this.isAdminOrOwner && { is_blocked: formValue.is_blocked }),
+      ...(this.isUpdateMode && this.isAdminOrOwner && { special_needs: formValue.special_needs }),
     };
 
     if (this.isUpdateMode) {
@@ -164,7 +169,7 @@ export class ChildDialogComponent implements OnInit {
       this.filteredSchools = res;
 
       // ✅ Only patch data after schools are loaded
-      if (this.data.childData) {
+      if (this.data?.childData) {
         this.isUpdateMode = true;
         this.patchChildData(this.data.childData);
       }

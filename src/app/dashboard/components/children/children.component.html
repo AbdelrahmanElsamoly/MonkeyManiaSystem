@@ -1,12 +1,15 @@
 <h1 class="my-4">{{ "CHILDREN" | translate }} ... 🧒</h1>
 <div class="d-flex justify-content-between align-items-center">
-  <input
-    type="text"
-    [(ngModel)]="searchTerm"
-    (input)="getChildrenData(searchTerm)"
-    placeholder="ابحث عن طفل... 🔍"
-    class="search-input mt-4"
-  />
+  <div class="position-relative d-inline-block">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="getChildrenData(searchTerm)"
+      placeholder="ابحث عن طفل... 🔍"
+      class="search-input mt-4"
+    />
+    <mat-spinner *ngIf="searchLoading" diameter="20" class="search-field-spinner"></mat-spinner>
+  </div>
   <button (click)="openCreateChildDialog()" class="create-btn">
     + {{ "CREATE" | translate }}
   </button>
@@ -18,6 +21,8 @@
   (editClicked)="editChild($event)"
   [paginationType]="'server'"
   [totalItems]="totalChildren"
+  [perPage]="perPage"
+  [pagesCount]="pagesCount"
   (pageChange)="getChildrenData(searchTerm, $event)"
   [currentPage]="currentPage"
 ></app-data-table>

@@ -20,10 +20,14 @@ export class ChildrenComponent implements OnInit {
   ];
   totalChildren: number = 0;
   currentPage: number = 1;
+  perPage: number = 10;
+  pagesCount: number | null = null;
   pageSize: number = 10;
   searchTerm: string = '';
   myTableData = [];
   isloadign: boolean = false;
+  searchLoading = false;
+  private childrenRequestId = 0;
 
   constructor(
     private dashboardService: DashboardService,
@@ -35,10 +39,14 @@ export class ChildrenComponent implements OnInit {
     this.getChildrenData();
   }
   getChildrenData(searchQuery: string = '', page: number = 1) {
+    const requestId = ++this.childrenRequestId;
     this.isloadign = true;
+    this.searchLoading = true;
     this.dashboardService.getChild(searchQuery, page).subscribe({
       next: (res: any) => {
+        if (requestId !== this.childrenRequestId) return;
         this.isloadign = false;
+        this.searchLoading = false;
 
         this.myTableData = res.results.map((child: any) => ({
           CHILD_NAME: child.name,
@@ -50,12 +58,16 @@ export class ChildrenComponent implements OnInit {
           HAS_ACTIVE_SUBSCRIPTION: child.has_active_subscription ? '✅' : '❌',
         }));
 
-        this.totalChildren = res.count; // ✅ needed for DataTable totalItems
+        this.totalChildren = res.count;
+        this.perPage = res.per_page || this.perPage;
+        this.pagesCount = res.pages_count ?? this.pagesCount; // ✅ needed for DataTable totalItems
         this.currentPage = page; // ✅ keep current page in sync
       },
       error: (error) => {
+        if (requestId !== this.childrenRequestId) return;
         console.error('Error fetching children:', error);
         this.isloadign = false;
+        this.searchLoading = false;
       },
     });
   }

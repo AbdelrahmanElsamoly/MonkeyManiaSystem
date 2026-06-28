@@ -28,6 +28,8 @@ export class UserComponent {
   // ✅ Added for server pagination
   totalUsers: number = 0;
   currentPage: number = 1;
+  perPage: number = 10;
+  pagesCount: number | null = null;
   pageSize: number = 10;
 
   constructor(
@@ -63,6 +65,8 @@ export class UserComponent {
         }));
 
         this.totalUsers = res.count;
+        this.perPage = res.per_page || this.perPage;
+        this.pagesCount = res.pages_count ?? this.pagesCount;
         this.currentPage = page;
       },
       error: (error) => {

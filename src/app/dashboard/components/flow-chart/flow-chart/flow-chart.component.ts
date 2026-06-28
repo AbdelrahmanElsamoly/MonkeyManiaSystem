@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/dashboard/dashboard.service';
+import { DateTimeRangeChange } from 'src/app/shared/components/date-time-range-filter/date-time-range-filter.component';
 
 export interface DownloadFileModel {
   MimeType?: string | null;
@@ -28,6 +29,8 @@ export class FlowChartComponent implements OnInit {
     start: null,
     end: null,
   };
+  startTimestamp: string | null = null;
+  endTimestamp: string | null = null;
 
   // Branch selection properties
   selectedBranches: any[] = [];
@@ -73,15 +76,11 @@ export class FlowChartComponent implements OnInit {
     this.selectedBranches = branches;
     console.log('Selected branches:', branches);
   }
-
-  onStartDateChange(date: Date | null): void {
-    this.selectedDateRange.start = date;
-    console.log('Start date changed:', date);
-  }
-
-  onEndDateChange(date: Date | null): void {
-    this.selectedDateRange.end = date;
-    console.log('End date changed:', date);
+  onDateTimeRangeChange(range: DateTimeRangeChange): void {
+    this.selectedDateRange = { start: range.start, end: range.end };
+    this.startTimestamp = range.startTimestamp;
+    this.endTimestamp = range.endTimestamp;
+    console.log('Date time range changed:', range);
   }
 
   get canCreateRequest(): boolean {
@@ -97,12 +96,8 @@ export class FlowChartComponent implements OnInit {
     const requestParams = {
       type: this.selectedType,
       branchIds: this.selectedBranches.map((branch) => branch.id || branch),
-      startDate: this.selectedDateRange.start
-        ? this.formatDate(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDate(this.selectedDateRange.end)
-        : null,
+      startDate: this.startTimestamp,
+      endDate: this.endTimestamp,
     };
 
     console.log('Creating request with params:', requestParams);
@@ -480,6 +475,8 @@ export class FlowChartComponent implements OnInit {
     this.selectedType = '';
     this.selectedBranches = [];
     this.selectedDateRange = { start: null, end: null };
+    this.startTimestamp = null;
+    this.endTimestamp = null;
     this.error = '';
   }
 
@@ -487,3 +484,6 @@ export class FlowChartComponent implements OnInit {
     this.error = '';
   }
 }
+
+
+

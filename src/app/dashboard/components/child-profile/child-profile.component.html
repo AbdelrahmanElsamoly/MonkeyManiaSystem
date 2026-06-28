@@ -84,4 +84,27 @@
       <span class="value">{{ childData?.updated | date : "medium" }}</span>
     </div>
   </div>
+
+  <section class="child-visits-section" *ngIf="childData">
+    <div class="child-visits-header">
+      <h3>{{ visitHistoryTitle }}</h3>
+      <button type="button" class="all-bills-button" (click)="goToAllChildBills()">
+        {{ allChildBillsLabel }}
+      </button>
+    </div>
+
+    <div class="visits-table-wrapper" *ngIf="visitRows.length; else noVisits">
+      <app-data-table
+        [displayedColumns]="visitColumns"
+        [data]="visitRows"
+        [showActions]="false"
+        [clickableColumns]="['serial']"
+        (itemClicked)="goToBillDetails($event)"
+      ></app-data-table>
+    </div>
+
+    <ng-template #noVisits>
+      <p class="no-visits">{{ noVisitsText }}</p>
+    </ng-template>
+  </section>
 </div>

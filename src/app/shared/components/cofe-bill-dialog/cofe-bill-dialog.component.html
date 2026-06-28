@@ -51,6 +51,10 @@
       <span>{{ "TABLE_NUMBER" | translate }} :</span>
       {{ productBillData.table_number }}
     </div>
+    <div class="bill-row" *ngIf="productBillData.child_bill_serial">
+      <span>{{ "CHILD_BILL_NUMBER" | translate }} :</span>
+      {{ productBillData.child_bill_serial }}
+    </div>
 
     <div class="bill-row">
       <span>{{ "TOTAL" | translate }} :</span>

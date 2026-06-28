@@ -56,3 +56,11 @@ body {
 :lang(en) {
   font-family: "Montserrat", sans-serif !important;
 }
+
+.search-field-spinner {
+  position: absolute !important;
+  inset-inline-start: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}

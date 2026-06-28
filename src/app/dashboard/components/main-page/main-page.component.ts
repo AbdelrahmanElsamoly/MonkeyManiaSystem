@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { DateTimeRangeChange } from 'src/app/shared/components/date-time-range-filter/date-time-range-filter.component';
 
 @Component({
   selector: 'app-main-page',
@@ -20,6 +21,8 @@ export class MainPageComponent implements OnInit {
     start: null,
     end: null,
   };
+  startTimestamp: string | null = null;
+  endTimestamp: string | null = null;
 
   constructor(
     private dashboardService: DashboardService,
@@ -45,10 +48,10 @@ export class MainPageComponent implements OnInit {
     // Only send params if dates are selected
     let paramsObj: any = {};
 
-    if (this.selectedDateRange.start && this.selectedDateRange.end) {
+    if (this.startTimestamp && this.endTimestamp) {
       paramsObj = {
-        startDate: this.formatDateForAPI(this.selectedDateRange.start),
-        endDate: this.formatDateForAPI(this.selectedDateRange.end),
+        startDate: this.startTimestamp,
+        endDate: this.endTimestamp,
       };
     }
 
@@ -138,21 +141,12 @@ export class MainPageComponent implements OnInit {
     const match = strValue.match(/\((\d+)\)/);
     return match ? parseInt(match[1]) : 0;
   }
+  onDateTimeRangeChange(range: DateTimeRangeChange): void {
+    this.selectedDateRange = { start: range.start, end: range.end };
+    this.startTimestamp = range.startTimestamp;
+    this.endTimestamp = range.endTimestamp;
 
-  // Add date change handlers
-  onStartDateChange(date: Date): void {
-    this.selectedDateRange.start = date;
-    this.checkAndTrigger();
-  }
-
-  onEndDateChange(date: Date): void {
-    this.selectedDateRange.end = date;
-    this.checkAndTrigger();
-  }
-
-  checkAndTrigger(): void {
-    const { start, end } = this.selectedDateRange;
-    if (start && end) {
+    if (this.startTimestamp && this.endTimestamp) {
       this.getStatstics();
     }
   }
@@ -206,3 +200,4 @@ export class MainPageComponent implements OnInit {
     return `من ${startDay} ${startDate} ${startMonth} ${startYear} إلى ${endDay} ${endDate} ${endMonth} ${endYear}`;
   }
 }
+

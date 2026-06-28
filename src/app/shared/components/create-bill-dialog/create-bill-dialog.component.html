@@ -38,7 +38,7 @@
     <mat-form-field style="width: 100%" appearance="outline">
       <mat-label>{{ label }}</mat-label>
 
-      <mat-select [formControl]="childrenControl" multiple>
+      <mat-select #childrenSelect [formControl]="childrenControl" multiple (openedChange)="onChildrenSelectOpened($event)">
         <!-- Custom trigger to show selected children -->
         <mat-select-trigger>
           <div
@@ -83,6 +83,11 @@
             (click)="$event.stopPropagation()"
             [placeholder]="'SEARCH_CHILD' | translate"
           />
+          <mat-spinner
+            *ngIf="searchLoading"
+            diameter="20"
+            style="position: absolute; left: 30px; top: 12px"
+          ></mat-spinner>
           <button
             *ngIf="searchValue"
             style="position: absolute; left: -10px; top: 5px"
@@ -102,6 +107,13 @@
         >
           {{ "" }}
         </mat-option>
+        <mat-option
+          *ngFor="let child of selectedChildrenOptions"
+          [value]="child.id"
+          style="display: none"
+        >
+          {{ child.name }}
+        </mat-option>
         <mat-option *ngFor="let child of filteredChildren" [value]="child.id">
           <span class="child-option-row">
             <span>{{ child.name }}</span>
@@ -112,9 +124,18 @@
               <span *ngIf="child.has_active_subscription" class="child-badge subscribed">
                 <span class="badge-dot"></span> لديه اشتراك
               </span>
+              <span *ngIf="child.special_needs" class="child-badge warning">
+                <span class="badge-dot"></span> {{ "SPECIAL_NEEDS" | translate }}
+              </span>
             </span>
           </span>
         </mat-option>
+        <div
+          *ngIf="loadingMoreChildren"
+          class="children-load-more"
+        >
+          <mat-spinner diameter="22"></mat-spinner>
+        </div>
         <!-- No Results Message -->
         <div
           *ngIf="filteredChildren.length === 0"

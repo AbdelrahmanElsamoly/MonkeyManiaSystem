@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -115,6 +115,10 @@ registerLocaleData(localeAr);
       },
     }),
   ],
-  providers: [{ provide: LOCALE_ID, useValue: 'ar-EG' }],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'ar-EG' },
+    { provide: MAT_DATE_LOCALE, useValue: 'ar-EG' },
+  ],
 })
 export class dashboardModule {}
+

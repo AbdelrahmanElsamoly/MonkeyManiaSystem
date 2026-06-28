@@ -142,6 +142,7 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
   })();
 
   private searchSubject = new Subject<string>();
+  private searchRequestId = 0;
 
   constructor(
     private dashboardService: DashboardService,
@@ -321,6 +322,8 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
   }
 
   private performSearch(term: string): void {
+    const requestId = ++this.searchRequestId;
+
     if (!term.trim()) {
       this.searchResults = [];
       this.searchLoading = false;
@@ -329,8 +332,9 @@ export class CofeOrderComponent implements OnInit, OnDestroy {
 
     this.searchLoading = true;
 
-    // Simulate async search with a small delay to show spinner
+    // Keep the small async delay for UI feedback, but ignore stale searches.
     setTimeout(() => {
+      if (requestId !== this.searchRequestId) return;
       this.searchResults = this.allActiveBills.filter((bill) =>
         bill.children.some((child) =>
           child.name.toLowerCase().includes(term.toLowerCase())

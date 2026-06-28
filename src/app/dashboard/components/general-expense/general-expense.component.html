@@ -53,6 +53,8 @@
   [data]="expenseRes"
   [paginationType]="'server'"
   [totalItems]="totalItems"
+  [perPage]="perPage"
+  [pagesCount]="pagesCount"
   [currentPage]="currentPage"
   (pageChange)="pageChanged($event)"
   (editClicked)="editExpense($event)"

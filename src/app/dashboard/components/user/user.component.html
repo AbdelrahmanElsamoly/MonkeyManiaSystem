@@ -26,6 +26,9 @@
     (editClicked)="openEditUserDialog($event)"
     [paginationType]="'server'"
     [totalItems]="totalUsers"
+  [perPage]="perPage"
+  [pagesCount]="pagesCount"
+    [currentPage]="currentPage"
     (pageChange)="onPageChange($event)"
   ></app-data-table>
 </div>

@@ -1,0 +1,91 @@
+﻿<div class="date-time-range-field" [class.disabled-filter]="disabled">
+  <div class="date-trigger-shell">
+    <span class="date-trigger-icon" aria-hidden="true">
+      <i class="bi bi-calendar3"></i>
+    </span>
+    <input
+      type="text"
+      class="date-time-range-input"
+      ngxDaterangepickerMd
+      name="dateTimeRange"
+      [placeholder]="label | translate"
+      [disabled]="disabled"
+      [locale]="locale"
+      [ranges]="ranges"
+      [timePicker]="false"
+      [alwaysShowCalendars]="true"
+      [showCancel]="true"
+      [showClearButton]="false"
+      [linkedCalendars]="false"
+      [autoApply]="false"
+      [keepCalendarOpeningWithRange]="true"
+      [showRangeLabelOnInput]="false"
+      [opens]="pickerOpenDirection"
+      drops="down"
+      [(ngModel)]="selected"
+      [ngModelOptions]="{ standalone: true }"
+      (datesUpdated)="onDatesUpdated($event)"
+      (mousedown)="preparePickerOpen($event)"
+      (click)="preparePickerOpen($event)"
+      (focus)="preparePickerOpen($event)"
+      (clearClicked)="onClear()"
+    />
+  </div>
+
+  <div class="time-range-strip" aria-label="Time range">
+    <div class="time-panel">
+      <span class="time-panel-label">Start</span>
+      <div class="time-box-group">
+        <button type="button" class="time-square hour-square" (click)="toggleTimeMenu('startHour', $event)">{{ pad(startHour) }}</button>
+        <span class="time-colon">:</span>
+        <button type="button" class="time-square minute-square" (click)="toggleTimeMenu('startMinute', $event)">{{ pad(startMinute) }}</button>
+        <button type="button" class="period-square" (click)="toggleTimeMenu('startPeriod', $event)">{{ startPeriod }}</button>
+
+        <div class="square-time-menu hour-grid" *ngIf="activeTimeMenu === 'startHour'" (click)="$event.stopPropagation()">
+          <button type="button" *ngFor="let hour of hours" [class.active-option]="hour === startHour" (click)="selectHour('start', hour)">{{ pad(hour) }}</button>
+        </div>
+        <div class="square-time-menu minute-grid" *ngIf="activeTimeMenu === 'startMinute'" (click)="$event.stopPropagation()">
+          <button type="button" *ngFor="let minute of minutes" [class.active-option]="minute === startMinute" (click)="selectMinute('start', minute)">{{ pad(minute) }}</button>
+        </div>
+        <div class="square-time-menu period-grid" *ngIf="activeTimeMenu === 'startPeriod'" (click)="$event.stopPropagation()">
+          <button type="button" *ngFor="let period of periods" [class.active-option]="period === startPeriod" (click)="selectPeriod('start', period)">{{ period }}</button>
+        </div>
+      </div>
+    </div>
+
+    <span class="range-separator" aria-hidden="true">
+      <i class="bi bi-arrow-right"></i>
+    </span>
+
+    <div class="time-panel">
+      <span class="time-panel-label">End</span>
+      <div class="time-box-group end-time-group">
+        <button type="button" class="time-square hour-square" (click)="toggleTimeMenu('endHour', $event)">{{ pad(endHour) }}</button>
+        <span class="time-colon">:</span>
+        <button type="button" class="time-square minute-square" (click)="toggleTimeMenu('endMinute', $event)">{{ pad(endMinute) }}</button>
+        <button type="button" class="period-square" (click)="toggleTimeMenu('endPeriod', $event)">{{ endPeriod }}</button>
+
+        <div class="square-time-menu hour-grid" *ngIf="activeTimeMenu === 'endHour'" (click)="$event.stopPropagation()">
+          <button type="button" *ngFor="let hour of hours" [class.active-option]="hour === endHour" (click)="selectHour('end', hour)">{{ pad(hour) }}</button>
+        </div>
+        <div class="square-time-menu minute-grid" *ngIf="activeTimeMenu === 'endMinute'" (click)="$event.stopPropagation()">
+          <button type="button" *ngFor="let minute of minutes" [class.active-option]="minute === endMinute" (click)="selectMinute('end', minute)">{{ pad(minute) }}</button>
+        </div>
+        <div class="square-time-menu period-grid" *ngIf="activeTimeMenu === 'endPeriod'" (click)="$event.stopPropagation()">
+          <button type="button" *ngFor="let period of periods" [class.active-option]="period === endPeriod" (click)="selectPeriod('end', period)">{{ period }}</button>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="apply-range-button" [disabled]="disabled || !selected" (click)="applyRange()" aria-label="Apply date and time range">
+      <i class="bi bi-search" aria-hidden="true"></i>
+      <span>Apply</span>
+    </button>
+  </div>
+</div>
+
+
+
+
+
+

@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CloseBillDialogComponent } from 'src/app/shared/components/close-bill-dialog/close-bill-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { CreateBillDialogComponent } from 'src/app/shared/components/create-bill-dialog/create-bill-dialog.component';
 import { PromoCodeDialogComponent } from 'src/app/shared/components/promo-code-dialog/promo-code-dialog.component';
 import { EditBillDialogComponent } from 'src/app/shared/components/edit-bill/edit-bill-dialog/edit-bill-dialog.component';
+import { DateTimeRangeChange, formatTimestampWithOffset } from 'src/app/shared/components/date-time-range-filter/date-time-range-filter.component';
 
 @Component({
   selector: 'app-children-bills',
@@ -17,6 +18,8 @@ import { EditBillDialogComponent } from 'src/app/shared/components/edit-bill/edi
 export class ChildrenBillsComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
   isLoading = false;
+  searchLoading = false;
+  private billsRequestId = 0;
   filterKeys: string[] = [];
   selectedFilter: string = '';
 
@@ -24,11 +27,16 @@ export class ChildrenBillsComponent implements OnInit {
     start: null,
     end: null,
   };
+  startTimestamp: string | null = null;
+  endTimestamp: string | null = null;
   type: string = '/';
   totalItems = 0;
   currentPage = 1;
+  perPage = 10;
+  pagesCount: number | null = null;
   selectedBranchIds: any[] = [];
   searchQuery: string = '';
+  childId: string | null = null;
   params: {
     searchQuery: string;
     branchIds: any[];
@@ -36,18 +44,16 @@ export class ChildrenBillsComponent implements OnInit {
     endDate: Date | string | null;
     page: number;
     filter?: string;
+    childId?: string | null;
   } = {
     searchQuery: this.searchQuery,
     branchIds: this.selectedBranchIds,
-    startDate: this.selectedDateRange.start
-      ? this.formatDateForAPI(this.selectedDateRange.start)
-      : null,
-    endDate: this.selectedDateRange.end
-      ? this.formatDateForAPI(this.selectedDateRange.end)
-      : null,
+    startDate: this.startTimestamp,
+    endDate: this.endTimestamp,
     page: 1,
   };
   displayedColumns = [
+    this.translate.instant('BILL_NUMBER'),
     this.translate.instant('NAME'),
     this.translate.instant('PHONE_NUMBER'),
     this.translate.instant('SPENT_TIME'),
@@ -60,34 +66,59 @@ export class ChildrenBillsComponent implements OnInit {
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private toaster: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.childId = this.route.snapshot.queryParamMap.get('child_id');
+    this.params.childId = this.childId;
+
     this.dashboardService.getBillFilterKeys().subscribe({
       next: (keys: any) => { this.filterKeys = keys[0] ?? []; },
     });
 
-    // Auto select last two days
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+    if (!this.childId) {
+      // Auto select last two days for the regular all-bills page.
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+      yesterday.setHours(0, 0, 0, 0);
+      today.setHours(23, 59, 0, 0);
 
-    this.selectedDateRange.start = yesterday;
-    this.selectedDateRange.end = today;
+      this.selectedDateRange.start = yesterday;
+      this.selectedDateRange.end = today;
 
-    this.params.startDate = this.formatDateForAPI(yesterday);
-    this.params.endDate = this.formatDateForAPI(today);
+      this.startTimestamp = formatTimestampWithOffset(yesterday);
+      this.endTimestamp = formatTimestampWithOffset(today);
+      this.params.startDate = this.startTimestamp;
+      this.params.endDate = this.endTimestamp;
+    }
 
     this.getAllBills(this.type, this.params);
   }
 
+  private buildParams(page: number = 1): any {
+    return {
+      searchQuery: this.searchQuery,
+      branchIds: this.selectedBranchIds,
+      startDate: this.startTimestamp,
+      endDate: this.endTimestamp,
+      page,
+      filter: this.selectedFilter || undefined,
+      childId: this.childId,
+    };
+  }
+
   getAllBills(type: string = '/', params: any) {
+    const requestId = ++this.billsRequestId;
     this.isLoading = true; // Start loading
+    this.searchLoading = true;
 
     this.dashboardService.getChildrenBills(type, params).subscribe({
       next: (data: any) => {
+        if (requestId !== this.billsRequestId) return;
         this.billsRes = data.results.map((item: any) => {
           const methods = [
             parseFloat(item.cash) > 0 ? { icon: '💵', label: 'كاش' } : null,
@@ -95,6 +126,7 @@ export class ChildrenBillsComponent implements OnInit {
             parseFloat(item.visa) > 0 ? { icon: '💳', label: 'فيزا' } : null,
           ].filter(Boolean);
           return {
+            BILL_NUMBER: item?.serial || '-',
             NAME: item?.first_child,
             PHONE_NUMBER: item?.first_phone,
             SPENT_TIME: this.getSpentTimeFormatted(item.spent_time),
@@ -107,12 +139,17 @@ export class ChildrenBillsComponent implements OnInit {
           };
         });
         this.totalItems = data.count;
+        this.perPage = data.per_page || this.perPage;
+        this.pagesCount = data.pages_count ?? this.pagesCount;
         this.currentPage = params.page;
         this.isLoading = false; // Stop loading
+        this.searchLoading = false;
       },
       error: (error) => {
+        if (requestId !== this.billsRequestId) return;
         console.error('Error fetching bills:', error);
         this.isLoading = false; // Stop loading on error
+        this.searchLoading = false;
       },
     });
   }
@@ -127,64 +164,27 @@ export class ChildrenBillsComponent implements OnInit {
     if (hoursPart && minutesPart) return `${hoursPart} و${minutesPart}`;
     return hoursPart || minutesPart || '0 دقيقة';
   }
+  onDateTimeRangeChange(range: DateTimeRangeChange): void {
+    this.selectedDateRange = { start: range.start, end: range.end };
+    this.startTimestamp = range.startTimestamp;
+    this.endTimestamp = range.endTimestamp;
 
-  onStartDateChange(date: Date): void {
-    this.selectedDateRange.start = date;
-    this.checkAndTrigger();
-  }
-
-  onEndDateChange(date: Date): void {
-    this.selectedDateRange.end = date;
-    this.checkAndTrigger();
-  }
-
-  checkAndTrigger(): void {
-    const { start, end } = this.selectedDateRange;
-
-    if (start && end) {
-      this.params = {
-        searchQuery: this.searchQuery,
-        branchIds: this.selectedBranchIds,
-        startDate: this.formatDateForAPI(start),
-        endDate: this.formatDateForAPI(end),
-        page: 1,
-        filter: this.selectedFilter || undefined,
-      };
+    if (this.startTimestamp && this.endTimestamp) {
+      this.params = this.buildParams(1);
       this.getAllBills(this.type, this.params);
     }
   }
 
   searchExpense(searchQuery: string) {
-    this.params = {
-      searchQuery: searchQuery,
-      branchIds: this.selectedBranchIds,
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : null,
-      page: 1,
-      filter: this.selectedFilter || undefined,
-    };
+    this.searchQuery = searchQuery;
+    this.params = this.buildParams(1);
 
     this.getAllBills(this.type, this.params);
   }
 
   onBranchSelectionChange(selected: any) {
     this.selectedBranchIds = selected;
-    this.params = {
-      searchQuery: this.searchQuery,
-      branchIds: this.selectedBranchIds,
-      startDate: this.selectedDateRange.start
-        ? this.formatDateForAPI(this.selectedDateRange.start)
-        : null,
-      endDate: this.selectedDateRange.end
-        ? this.formatDateForAPI(this.selectedDateRange.end)
-        : null,
-      page: 1,
-      filter: this.selectedFilter || undefined,
-    };
+    this.params = this.buildParams(1);
     this.getAllBills(this.type, this.params);
   }
 
@@ -317,7 +317,7 @@ export class ChildrenBillsComponent implements OnInit {
 
   onFilterChange(filter: string): void {
     this.selectedFilter = filter;
-    this.params = { ...this.params, filter: filter || undefined, page: 1 };
+    this.params = this.buildParams(1);
     this.getAllBills(this.type, this.params);
   }
 
@@ -352,3 +352,4 @@ export class ChildrenBillsComponent implements OnInit {
     });
   }
 }
+

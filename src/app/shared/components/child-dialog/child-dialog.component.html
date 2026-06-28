@@ -67,12 +67,22 @@
 
     <!-- Is Blocked (admin/owner only) -->
     <div
-      *ngIf="userInfo.role === 'admin' || userInfo.role === 'owner'"
+      *ngIf="isAdminOrOwner"
       class="mt-3"
       style="color: white;"
     >
       <mat-checkbox formControlName="is_blocked">
         {{ "IS_BLOCKED" | translate }}
+      </mat-checkbox>
+    </div>
+
+    <!-- Special Needs (admin/owner only in update mode) -->
+    <div
+      *ngIf="isUpdateMode && isAdminOrOwner"
+      class="mt-1 admin-flags"
+    >
+      <mat-checkbox formControlName="special_needs">
+        {{ "SPECIAL_NEEDS" | translate }}
       </mat-checkbox>
     </div>
 

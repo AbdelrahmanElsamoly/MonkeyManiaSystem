@@ -14,6 +14,8 @@ import { BillDialogComponent } from 'src/app/shared/components/bill-dialog/bill-
 })
 export class CafeActiveBillsComponent implements OnInit {
   userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  searchLoading = false;
+  private billsRequestId = 0;
 
   selectedDateRange: { start: Date | null; end: Date | null } = {
     start: null,
@@ -42,6 +44,8 @@ export class CafeActiveBillsComponent implements OnInit {
     page: 1,
   };
   displayedColumns = [
+    'BILL_NUMBER',
+    'CHILD_BILL_NUMBER',
     'TABLE_NUMBER',
     'TOTAL_PRICE',
     'TAKE_AWAY',
@@ -71,11 +75,15 @@ export class CafeActiveBillsComponent implements OnInit {
   }
 
   getAllBills(type: string = '/active/', params: any) {
+    const requestId = ++this.billsRequestId;
+    this.searchLoading = true;
     this.dashboardService.getCafeBill(type, params).subscribe({
       next: (data: any) => {
+        if (requestId !== this.billsRequestId) return;
         this.billsRes = data.map((item: any) => {
           return {
             BILL_NUMBER: item.bill_number,
+            CHILD_BILL_NUMBER: item.child_bill_serial || '-',
             TABLE_NUMBER: item.table_number,
             TOTAL_PRICE: `${item.total_price} ${this.translate.instant('EGP')}`,
             TAKE_AWAY: item.take_away ? 'تيك أواي 🥡' : 'في المطعم 🍽️',
@@ -86,10 +94,13 @@ export class CafeActiveBillsComponent implements OnInit {
             rawData: item, // Keep original data for reference
           };
         });
+        this.searchLoading = false;
       },
       error: (error) => {
+        if (requestId !== this.billsRequestId) return;
         console.error('Error fetching cafe bills:', error);
         this.toaster.error(this.translate.instant('ERROR_FETCHING_BILLS'));
+        this.searchLoading = false;
       },
     });
   }
@@ -131,6 +142,7 @@ export class CafeActiveBillsComponent implements OnInit {
   }
 
   searchExpense(searchQuery: string) {
+    this.searchLoading = true;
     this.params = {
       searchQuery: searchQuery,
       branchIds: this.selectedBranchIds,

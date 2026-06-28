@@ -16,6 +16,7 @@ interface ProductBillData {
   id: number;
   bill_number: number;
   table_number: number;
+  child_bill_serial: string;
   total_price: string;
   take_away: boolean;
   bill: number;

@@ -13,26 +13,12 @@
       userInfo.role == 'admin'
     "
   >
-    <div class="d-flex align-items-center">
-      <mat-form-field appearance="fill" style="margin: 0px 30px 0px 30px">
-        <mat-label>{{ "SELECT_DATE_RANGE" | translate }} : 🌅</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input
-            matStartDate
-            [placeholder]="'START_DATE' | translate"
-            (dateChange)="onStartDateChange($event.value)"
-            [value]="selectedDateRange.start"
-          />
-          <input
-            matEndDate
-            [placeholder]="'END_DATE' | translate"
-            (dateChange)="onEndDateChange($event.value)"
-            [value]="selectedDateRange.end"
-          />
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
+    <div class="d-flex align-items-center my-3">
+      <app-date-time-range-filter
+        style="margin: 0px 30px 0px 30px"
+        [value]="selectedDateRange"
+        (rangeChange)="onDateTimeRangeChange($event)"
+      ></app-date-time-range-filter>
     </div>
     <!-- Arabic date range display -->
     <div
@@ -48,7 +34,7 @@
       class="widget-card"
       *ngFor="let item of data"
       [ngStyle]="{
-        background: item.gradient
+        background: item.gradient,
       }"
     >
       <div

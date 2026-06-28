@@ -5,14 +5,15 @@
         <th *ngFor="let column of displayedColumns">
           {{ column | translate }}
         </th>
-        <th>{{ "ACTIONS" | translate }}</th>
+        <th *ngIf="showActions">{{ "ACTIONS" | translate }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let row of paginatedData">
         <td
           *ngFor="let column of displayedColumns"
-          (click)="itemClicked.emit(row)"
+          [class.clickable-cell]="isColumnClickable(column)"
+          (click)="onCellClick(row, column)"
         >
           <ng-container *ngIf="column !== 'PAYMENT_METHODS'; else paymentCell">
             {{ row[column] }}
@@ -25,11 +26,11 @@
             >{{ method.icon }}</span>
           </ng-template>
         </td>
-        <td *ngIf="!isActiveBills">
+        <td *ngIf="showActions && !isActiveBills">
           <button (click)="editClicked.emit(row)">✏️</button>
           <button (click)="delete(row)">🗑️</button>
         </td>
-        <td *ngIf="isActiveBills">
+        <td *ngIf="showActions && isActiveBills">
           <button
             [disabled]="!row?.isActive"
             (click)="CloseBillClicked.emit(row)"
@@ -89,7 +90,7 @@
     <!-- Next -->
     <button
       (click)="changePage(currentPage + 1)"
-      [disabled]="currentPage === totalPages()"
+      [disabled]="totalPages() <= 1 || currentPage === totalPages()"
     >
       »
     </button>

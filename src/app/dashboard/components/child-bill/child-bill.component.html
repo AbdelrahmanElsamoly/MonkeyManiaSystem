@@ -16,6 +16,11 @@
   </h6>
 
   <div class="bill-card">
+    <div class="bill-row" *ngIf="bill.serial">
+      <span>{{ "BILL_NUMBER" | translate }}:</span>
+      {{ bill.serial }}
+    </div>
+
     <!-- Children Count -->
     <div class="bill-row" *ngIf="bill.children?.length">
       <span>{{ "CHILDREN_COUNT" | translate }}:</span>
@@ -125,6 +130,11 @@
     <h2 class="bill-title">
       {{ "TOTAL_PRICE" | translate }}: {{ bill.total_price }} EGP
     </h2>
+
+    <div class="bill-row" *ngIf="bill.serial">
+      <span>{{ "BILL_NUMBER" | translate }}:</span>
+      {{ bill.serial }}
+    </div>
 
     <!-- Children Table -->
     <table class="children-table" *ngIf="bill.children?.length">

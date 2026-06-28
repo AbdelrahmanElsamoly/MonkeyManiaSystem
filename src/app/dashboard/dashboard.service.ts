@@ -180,6 +180,9 @@ export class DashboardService {
     if (paramsOj.filter) {
       params = params.set('filter', paramsOj.filter);
     }
+    if (paramsOj.childId) {
+      params = params.set('child_id', paramsOj.childId);
+    }
     return this.http.get(`bill${type}all/`, { params });
   }
 

@@ -32,6 +32,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CsvUploaderComponent } from './components/csv-uploader/csv-uploader.component';
 import { ChildDialogComponent } from './components/child-dialog/child-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { CloseBillDialogComponent } from './components/close-bill-dialog/close-bill-dialog.component';
 import { CreateBillDialogComponent } from './components/create-bill-dialog/create-bill-dialog.component';
 import { MapSelectedChildrenPipe } from './pipes/map-selected-children.pipe';
@@ -46,6 +47,8 @@ import { SubscriptionDialogComponent } from './components/subscription-dialog/su
 import { ChildSubscriptionDialogComponent } from './components/child-subscription-dialog/child-subscription-dialog.component';
 import { ChildSubscriptionDetailDialogComponent } from './components/child-subscription-detail-dialog/child-subscription-detail-dialog.component';
 import { CreateUserDialogComponent } from './components/create-user-dialog/create-user-dialog.component';
+import { DateTimeRangeFilterComponent } from './components/date-time-range-filter/date-time-range-filter.component';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -74,6 +77,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ChildSubscriptionDialogComponent,
     ChildSubscriptionDetailDialogComponent,
     CreateUserDialogComponent,
+    DateTimeRangeFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -94,6 +98,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSelectModule,
     MatCheckboxModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     RouterModule,
     MatListModule,
     MatCardModule,
@@ -101,6 +106,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatExpansionModule,
     MatRadioModule,
     ReactiveFormsModule,
+    NgxDaterangepickerMd.forRoot(),
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -127,6 +133,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SubscriptionDialogComponent,
     ChildSubscriptionDialogComponent,
     ChildSubscriptionDetailDialogComponent,
+    DateTimeRangeFilterComponent,
   ],
 })
 export class SharedModule {}

@@ -84,47 +84,16 @@
         <label class="form-label">{{
           "FLOW_CHART.FILTERS.DATE_RANGE.LABEL" | translate
         }}</label>
-        <mat-form-field
-          appearance="outline"
+        <app-date-time-range-filter
           class="w-100"
-          [class.disabled-filter]="isLoading || isCreatingRequest"
-        >
-          <mat-date-range-input
-            [rangePicker]="picker"
-            [disabled]="isLoading || isCreatingRequest"
-          >
-            <input
-              matStartDate
-              [placeholder]="
-                'FLOW_CHART.FILTERS.DATE_RANGE.START_DATE_PLACEHOLDER'
-                  | translate
-              "
-              (dateChange)="onStartDateChange($event.value)"
-              [disabled]="isLoading || isCreatingRequest"
-              [value]="selectedDateRange.start"
-            />
-            <input
-              matEndDate
-              [placeholder]="
-                'FLOW_CHART.FILTERS.DATE_RANGE.END_DATE_PLACEHOLDER' | translate
-              "
-              (dateChange)="onEndDateChange($event.value)"
-              [disabled]="isLoading || isCreatingRequest"
-              [value]="selectedDateRange.end"
-            />
-          </mat-date-range-input>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-            [disabled]="isLoading || isCreatingRequest"
-          >
-          </mat-datepicker-toggle>
-          <mat-date-range-picker
-            #picker
-            [disabled]="isLoading || isCreatingRequest"
-          >
-          </mat-date-range-picker>
-        </mat-form-field>
+          appearance="outline"
+          [value]="selectedDateRange"
+          [disabled]="isLoading || isCreatingRequest"
+          label="FLOW_CHART.FILTERS.DATE_RANGE.LABEL"
+          startPlaceholder="FLOW_CHART.FILTERS.DATE_RANGE.START_DATE_PLACEHOLDER"
+          endPlaceholder="FLOW_CHART.FILTERS.DATE_RANGE.END_DATE_PLACEHOLDER"
+          (rangeChange)="onDateTimeRangeChange($event)"
+        ></app-date-time-range-filter>
       </div>
     </div>
 
@@ -186,13 +155,13 @@
           <strong>{{ "FLOW_CHART.DEBUG.START_DATE" | translate }}</strong>
           {{
             selectedDateRange.start
-              ? (selectedDateRange.start | date : "yyyy-MM-dd")
+              ? (startTimestamp)
               : ("FLOW_CHART.DEBUG.NOT_SET" | translate)
           }}<br />
           <strong>{{ "FLOW_CHART.DEBUG.END_DATE" | translate }}</strong>
           {{
             selectedDateRange.end
-              ? (selectedDateRange.end | date : "yyyy-MM-dd")
+              ? (endTimestamp)
               : ("FLOW_CHART.DEBUG.NOT_SET" | translate)
           }}<br />
         </div>
@@ -207,9 +176,9 @@
                 : selectedBranches.join(",")
             }}<span *ngIf="selectedDateRange.start && selectedDateRange.end"
               >&start_date={{
-                selectedDateRange.start | date : "yyyy-MM-dd"
+                startTimestamp
               }}&end_date={{
-                selectedDateRange.end | date : "yyyy-MM-dd"
+                endTimestamp
               }}</span
             ></code
           >
@@ -223,3 +192,4 @@
     </div>
   </div>
 </div>
+

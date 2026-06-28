@@ -2,13 +2,16 @@
   <div class="d-flex justify-content-between align-items-center">
     <div class="d-flex flex-column justify-content-between">
       <h1>{{ "ALL_CAFE_BILLS" | translate }} ... ☕🧾</h1>
-      <input
-        type="text"
-        placeholder="ابحث عن فاتورة... 🔍"
-        class="search-input mt-4"
-        [(ngModel)]="searchQuery"
-        (input)="searchExpense(searchQuery)"
-      />
+      <div class="position-relative d-inline-block">
+        <input
+          type="text"
+          placeholder="ابحث عن فاتورة... 🔍"
+          class="search-input mt-4"
+          [(ngModel)]="searchQuery"
+          (input)="searchExpense(searchQuery)"
+        />
+        <mat-spinner *ngIf="searchLoading" diameter="20" class="search-field-spinner"></mat-spinner>
+      </div>
       <div
         class="d-flex justify-content-start align-items-center mt-4 position-relative"
       >
@@ -17,39 +20,12 @@
           (selectedBranchesChange)="onBranchSelectionChange($event)"
           [class.disabled-filter]="isLoading"
         ></app-branch-multi-select>
-
-        <mat-form-field
-          appearance="fill"
+        <app-date-time-range-filter
           class="mx-3"
-          [class.disabled-filter]="isLoading"
-        >
-          <mat-label>{{ "SELECT_DATE_RANGE" | translate }}</mat-label>
-          <mat-date-range-input [rangePicker]="picker" [disabled]="isLoading">
-            <input
-              matStartDate
-              [placeholder]="'START_DATE' | translate"
-              (dateChange)="onStartDateChange($event.value)"
-              [disabled]="isLoading"
-              [value]="selectedDateRange.start"
-            />
-            <input
-              matEndDate
-              [placeholder]="'END_DATE' | translate"
-              (dateChange)="onEndDateChange($event.value)"
-              [disabled]="isLoading"
-              [value]="selectedDateRange.end"
-            />
-          </mat-date-range-input>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-            [disabled]="isLoading"
-          ></mat-datepicker-toggle>
-          <mat-date-range-picker
-            #picker
-            [disabled]="isLoading"
-          ></mat-date-range-picker>
-        </mat-form-field>
+          [value]="selectedDateRange"
+          [disabled]="isLoading"
+          (rangeChange)="onDateTimeRangeChange($event)"
+        ></app-date-time-range-filter>
       </div>
 
       <!-- Arabic date range display outside the date picker -->
@@ -87,9 +63,12 @@
     (itemClicked)="openBillDialog($event.BILLS_ID)"
     [paginationType]="'server'"
     [totalItems]="totalItems"
+  [perPage]="perPage"
+  [pagesCount]="pagesCount"
     (editClicked)="openUpdateBillDialog($event.BILLS_ID)"
     [currentPage]="currentPage"
     (pageChange)="pageChanged($event)"
     [class.loading-state]="isLoading"
   ></app-data-table>
 </div>
+
